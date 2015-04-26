@@ -213,13 +213,15 @@ void  initializations(void) {
   MODRR = 0x02; //PT1 used as output
   PWME = 0x02;  //enable Ch 01
   PWMPOL = 0xFF; //Active low polarity
-  PWMCTL = 0x00; // 8-bit
+  PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
   PWMPER1 = 0xFF; // max period
   PWMDTY1 = 0;   // initial zero duty cycle
   PWMSCLA = 59;
   PWMCLK = 0x02; //Clock SA for ch 1
   PWMPRCLK = 0x03; //Clock A =  3 MHz
+  DDRT_DDRT0 = 1;
+  
             
 /* Initialize interrupts */
 	      
@@ -245,12 +247,16 @@ int i = 0;
    //if (new_Data) 
    //{ 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
-    PWMDTY1 = 39; //go to 90 degrees
-    //PWMDTY1 = 26; // go to 0 degrees
+    PWMDTY1 = 10023; //go to 90 degrees
+    PTT_PTT0 = 1;
+    
     for (i = 0; i < 19999; i++) {}
-    PWMDTY1 = 16; // go to y degrees
-    //PWMDTY1 = 51; // go to 180 degrees
+    
+    PWMDTY1 = 4112; // go to y degrees
+    PTT_PTT0 = 0;
+
     for (i = 0; i < 19999; i++) {}
+    
     //new_Data = 0;
    //}
   
