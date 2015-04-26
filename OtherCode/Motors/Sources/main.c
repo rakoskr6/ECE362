@@ -217,7 +217,7 @@ void  initializations(void) {
   PWMCAE = 0; // left-aligned
   PWMPER1 = 0xFF; // max period
   PWMDTY1 = 0;   // initial zero duty cycle
-  PWMSCLA = 125;
+  PWMSCLA = 59;
   PWMCLK = 0x02; //Clock SA for ch 1
   PWMPRCLK = 0x03; //Clock A =  3 MHz
             
@@ -233,6 +233,7 @@ Main
 ***********************************************************************
 */
 void main(void) {
+int i = 0;
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
@@ -244,7 +245,12 @@ void main(void) {
    if (new_Data) 
    { 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
-    PWMDTY1 = 50; //apparently motor speed
+    PWMDTY1 = 26; //go to 0 degrees
+    for (i = 0; i < 999999; i++) {
+      
+      
+    }
+    PWMDTY1 = 51; // go to 180 degrees
     new_Data = 0;
    }
   
