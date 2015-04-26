@@ -212,7 +212,7 @@ void  initializations(void) {
   
   MODRR = 0x02; //PT1 used as output
   PWME = 0x02;  //enable Ch 01
-  PWMPOL = 0x00; //Active low polarity
+  PWMPOL = 0xFF; //Active low polarity
   PWMCTL = 0x00; // 8-bit
   PWMCAE = 0; // left-aligned
   PWMPER1 = 0xFF; // max period
@@ -242,17 +242,17 @@ int i = 0;
   
 /* < start of your main loop > */ 
 
-   if (new_Data) 
-   { 
+   //if (new_Data) 
+   //{ 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
-    PWMDTY1 = 26; //go to 0 degrees
-    for (i = 0; i < 999999; i++) {
-      
-      
-    }
-    PWMDTY1 = 51; // go to 180 degrees
-    new_Data = 0;
-   }
+    PWMDTY1 = 39; //go to 90 degrees
+    //PWMDTY1 = 26; // go to 0 degrees
+    for (i = 0; i < 19999; i++) {}
+    PWMDTY1 = 16; // go to y degrees
+    //PWMDTY1 = 51; // go to 180 degrees
+    for (i = 0; i < 19999; i++) {}
+    //new_Data = 0;
+   //}
   
    } /* loop forever */
    

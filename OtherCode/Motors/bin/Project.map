@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "Z:\ECE362\Motors\bin\Project.abs"
+PROGRAM "C:\Users\Kyle\Documents\GitHub\ECE362\OtherCode\Motors\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -23,8 +23,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     10
-  _Copy    *toCopyDownBeg 0xC0E5
+  _Range   pZeroOut       0x900     8
+  _Copy    *toCopyDownBeg 0xC0F1
 } _startupData;
 
 *********************************************************************************************
@@ -33,10 +33,9 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                            170     R     0xC03B     0xC0E4   ROM_C000
-.copy                              7     R     0xC0E5     0xC0EB   ROM_C000
+.text                            182     R     0xC03B     0xC0F0   ROM_C000
+.copy                              2     R     0xC0F1     0xC0F2   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
-.data                              2   R/W      0x900      0x901   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -261,12 +260,12 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
-.bss                               8   R/W      0x902      0x909   RAM
+.bss                               8   R/W      0x900      0x907   RAM
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):          F4 (dec:      244)
-READ_WRITE (R/W):      10A (dec:      266)
+READ_ONLY (R):          FB (dec:      251)
+READ_WRITE (R/W):      108 (dec:      264)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -498,24 +497,23 @@ MODULE:                 -- mc9s12c32.c.o --
      _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       2   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C03B      60      96       1   .text       
-     main                                      C09B      18      24       1   .text       
-     RTI_ISR                                   C0B3       4       4       1   .text       
-     TIM_ISR                                   C0B7      2D      45       1   .text       
-     SCI_ISR                                   C0E4       1       1       1   .text       
+     initializations                           C03B      5F      95       1   .text       
+     main                                      C09A      25      37       1   .text       
+     RTI_ISR                                   C0BF       4       4       1   .text       
+     TIM_ISR                                   C0C3      2D      45       1   .text       
+     SCI_ISR                                   C0F0       1       1       1   .text       
 - VARIABLES:
-     new_Data                                   900       2       2       2   .data       
-     mincnt                                     902       2       2       3   .bss        
-     minute_flag                                904       2       2       1   .bss        
-     ten_min                                    906       2       2       3   .bss        
-     ten_min_flag                               908       2       2       1   .bss        
+     mincnt                                     900       2       2       3   .bss        
+     minute_flag                                902       2       2       1   .bss        
+     ten_min                                    904       2       2       3   .bss        
+     ten_min_flag                               906       2       2       1   .bss        
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
@@ -533,17 +531,15 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                    10    170      6
+  main.c.o                                     8    182      6
   Start12.c.o                                  0     49      0
-  other                                      256     12      7
+  other                                      256     12      2
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
   initializations main RTI_ISR TIM_ISR SCI_ISR 
-SECTION: ".data"
-  new_Data 
 SECTION: ".bss"
   mincnt minute_flag ten_min ten_min_flag 
 SECTION: ".init"
@@ -1110,7 +1106,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       2   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
@@ -1222,18 +1218,17 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     new_Data                                   900       2       2       2   .data       
-     mincnt                                     902       2       2       3   .bss        
-     minute_flag                                904       2       2       1   .bss        
-     ten_min                                    906       2       2       3   .bss        
-     ten_min_flag                               908       2       2       1   .bss        
+     mincnt                                     900       2       2       3   .bss        
+     minute_flag                                902       2       2       1   .bss        
+     ten_min                                    904       2       2       3   .bss        
+     ten_min_flag                               906       2       2       1   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     initializations                           C03B      60      96       1   .text       
-     main                                      C09B      18      24       1   .text       
-     RTI_ISR                                   C0B3       4       4       1   .text       
-     TIM_ISR                                   C0B7      2D      45       1   .text       
-     SCI_ISR                                   C0E4       1       1       1   .text       
+     initializations                           C03B      5F      95       1   .text       
+     main                                      C09A      25      37       1   .text       
+     RTI_ISR                                   C0BF       4       4       1   .text       
+     TIM_ISR                                   C0C3      2D      45       1   .text       
+     SCI_ISR                                   C0F0       1       1       1   .text       
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1246,23 +1241,17 @@ main.c.o:
   get_Data Conversion star_Calculate inchar outchar 
 NOT USED VARIABLES
 main.c.o:
-  ALT daysInMonth RA_hours DEC_degrees Recieved Lat_Sgn Lat0 Lat1 Lat2 Lat3 
-  Long_Sgn Long0 Long1 Long2 Long3 Long4 Month0 Month1 Day0 Day1 Year0 Year1 
-  Year2 Year3 Hours0 Hours1 Min0 Min1 Star Junk Lat_Found Long_Found 
-  Month_Found Day_Found Year_Found Hours_Found Min_Found Star_Found 
+  ALT daysInMonth RA_hours DEC_degrees new_Data Recieved Lat_Sgn Lat0 Lat1 
+  Lat2 Lat3 Long_Sgn Long0 Long1 Long2 Long3 Long4 Month0 Month1 Day0 Day1 
+  Year0 Year1 Year2 Year3 Hours0 Hours1 Min0 Min1 Star Junk Lat_Found 
+  Long_Found Month_Found Day_Found Year_Found Hours_Found Min_Found Star_Found 
   Recieve_Complete LAT LONG year day month hour minute RA DEC 
   star_Calculate_Complete i UTC JDays yearsSince2000 GMSTHours LHA AZ 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC0E5 ---- SIZE       4 ---
-Filling bytes inserted
- 00010901
-------- ROM-ADDRESS: 0xC0E9 ---- RAM-ADDRESS: 0x901 ---- SIZE       1 ---
-Name of initialized Object : new_Data:1
- 01
-------- ROM-ADDRESS: 0xC0EA ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC0F1 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1275,7 +1264,7 @@ initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL
                                 _SCIBD _SCICR1 _SCICR2 _DDRAB _PORTAB _TSCR1 _TIOS 
                                 _TSCR2 _TC7 _TIE _MODRR _PWME _PWMPOL _PWMCTL _PWMCAE 
                                 _PWMPER01 _PWMDTY01 _PWMSCLA _PWMCLK _PWMPRCLK 
-main                      USES initializations new_Data _PWMDTY01 
+main                      USES initializations _PWMDTY01 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 mincnt minute_flag ten_min ten_min_flag 
 _Vector_20                USES SCI_ISR 
@@ -1316,5 +1305,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 244
+Total size of all blocks to be downloaded: 251
 
