@@ -351,14 +351,15 @@ void  initializations(void) {
   SPIBR = 0x10;
   SPICR1 = 0x50;
   SPICR2 = 0x00;
-  PERT_PERT4 = 1;
+  PERT_PERT4 = 0;
   
             
 /* Initialize interrupts */
 
 /* Initialize RTI for 2.048 ms interrupt rate */	
   CRGINT_RTIE = 1; // enable RTI interrupt
-  RTICTL = 0x50; // 2.048ms interrupt rate
+  RTICTL = 0x1F; // 1.024ms interrupt rate
+  //RTICTL =0x50; // 2.048ms interrupt rate
   
   // Initialize LCD
   // Reset LCD by pulsing RST low, then high
@@ -887,7 +888,14 @@ interrupt 7 void RTI_ISR(void)
     char rowDR[4] = {&DDRAD_DDRAD6, &DDRAD_DDRAD4, &DDRAD_DDRAD2, &DDRAD_DDRAD1};
     */
     // clear RTI interrupt flagt
-  	CRGFLG = CRGFLG | 0x80;   	
+  	CRGFLG = CRGFLG | 0x80;
+  	// Rotary pulse generator push button
+  	if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
+  	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
+  	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
+  	prevrpgA = RPGA;
+  	prevrpgB = RPGB;
+  	prevRPG = RPGBUTTON;   	
     /*    Keypad Section      */
     // Set row to inputs, column to outputs
     // column = 1,3,5
@@ -957,21 +965,14 @@ interrupt 7 void RTI_ISR(void)
     }
     
     // Rotary Pulse Generator
-     if(PTT_PTT4 != 0) {
-		   if(prevRPG == 1) {
-		    RPG = 1;
-		   }
-		    prevRPG = 0;
-		  } else if (PTT_PTT4 == 0) {
-		   prevRPG = 1;
-		  }
-  	// Rotary pulse generator push button
-  	//if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
-  	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
-  	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
-  	prevrpgA = RPGA;
-  	prevrpgB = RPGB;
-  	//prevRPG = RPGBUTTON;
+    // if(PTT_PTT4 != 0) {
+		//   if(prevRPG == 1) {
+		//    RPG = 1;
+		//   }
+		//    prevRPG = 0;
+		//  } else if (PTT_PTT4 == 0) {
+		//   prevRPG = 1;
+		//  }
   	
   	}
 
