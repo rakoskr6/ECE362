@@ -63,14 +63,27 @@
 #include <hidef.h>      /* common defines and macros */
 #include "derivative.h"      /* derivative-specific definitions */
 #include <mc9s12c32.h>
+#include <float.h>
 
 /* All functions after main should be initialized here */
 char inchar(void);
 void outchar(char x);
 
+//SPI Utility Functions
+void transmit(char x);
+char receive();
+char transfer(char x);
+
+//Compass Utility Functions
+char compassReadByte(char x);
+
 
 /* Variable declarations */
-
+double mRes = 2.0 / 32768.0;
+char xmtest;
+char xmtest2;
+char WHOAMI;
+int i;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -89,6 +102,10 @@ void outchar(char x);
 #define CURMOV 0xFE	// LCD cursor move instruction
 #define LINE1 = 0x80	// LCD line 1 cursor position
 #define LINE2 = 0xC0	// LCD line 2 cursor position
+
+/* COMPASS REGISTERS */
+#define WHO_AM_I_XM 0x0F //Check register
+
 
 	 	   		
 /*	 	   		
@@ -119,6 +136,16 @@ void  initializations(void) {
   PORTB  =  0x10; //assert DTR pin on COM port
 
 /* Initialize peripherals */
+
+// SPI Initialization
+
+  SPICR1 = 0x1C; //master, no interrupt, idle high, sample at odd edges, off initially
+  SPICR2 = 0; //normal, non-bidirection
+  SPIBR = 0x12; //Baud rate to 6.0 Megabits/second
+  // Compass
+  DDRT = 0x80;
+  PTT_PTT7 = 1;
+  
             
 /* Initialize interrupts */
 	      
@@ -132,9 +159,13 @@ Main
 ***********************************************************************
 */
 void main(void) {
-  	DisableInterrupts
+  	DisableInterrupts;
 	initializations(); 		  			 		  		
 	EnableInterrupts;
+	WHOAMI = 0x0F;
+	WHOAMI = WHOAMI | 0x80;
+	xmtest = compassReadByte(WHOAMI);
+	xmtest2 = compassReadByte(0x20);
 
  for(;;) {
   
@@ -146,8 +177,44 @@ void main(void) {
    } /* loop forever */
    
 }   /* do not leave main */
+/*
+****************************
+SPI UTILITY FUNCTIONS
+****************************
+*/
 
+void transmit(char x){
+  while(SPISR_SPTEF == 0);
+  SPIDR = x;
+}
 
+char receive(){
+  while(SPISR_SPIF == 0);
+  return SPIDR;
+}
+
+char transfer(char x){
+  transmit(x);
+  return receive();
+}
+
+/*
+*****************************
+COMPASS UTILITY FUNCTIONS
+*****************************
+*/
+
+char compassReadByte(char x){
+  char returnChar;
+  x |= 0x80; //MSB for compass reads is 1
+  PTT_PTT7 = 0;
+  SPICR1 |= 0x40; //Enables SPI
+  transfer(x); //Sends the instruction to compass
+  returnChar = transfer(0x00); //Reads the result of instruction
+  SPICR1 &= 0xBF; //Disables SPI
+  PTT_PTT7 = 1;
+  return returnChar;
+}   
 
 
 /*
