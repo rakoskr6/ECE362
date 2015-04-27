@@ -134,7 +134,7 @@ double JDays;
 int yearsSince2000;
 double GMSTHours;
 double LHA;
-double ALT = 45;
+double ALT = 31;
 double AZ;
   
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -268,17 +268,7 @@ int i = 0;
     //PTT_PTT0 = 1;
     
     for (i = 0; i < 19999; i++) {}
-    
-     PWMDTY1 = Z_00; // go to 90 degrees
-    //PTT_PTT0 = 0;
-
-    for (i = 0; i < 19999; i++) {} 
-    
-    
-    PWMDTY1 = final_ALT; //final_ALT;
-    //PTT_PTT0 = 1;
-    
-    for (i = 0; i < 19999; i++) {}
+ 
     
     
     

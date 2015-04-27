@@ -73,7 +73,7 @@ void Conversion(void);
 void get_Data(void);
 void star_Calculate(void);
 
-/* Variable declarations */
+/* Transmission variable declarations */
 char Recieved = 0;
 char Lat_Sgn = 0;
 char Lat0 = 0;
@@ -141,13 +141,24 @@ int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 double RA_hours[8] = {5.92, 6.40, 3.79, 2.53, 5.24, 6.75, 19.08, 18.62};
 double DEC_degrees[8] = {7.41, -52.70, 24.12, 89.26, -8.20, -16.72, 63.87, 38.78};
 
+// Main Program Flags
 int new_Data = 0;
-int star_Calculate_Complete = 0;		  			 		       
+int star_Calculate_Complete = 0;
+int azimuth_Complete = 0;
+int altitude_Complete = 0;		  			 		       
 
+// Timing Flags
 int mincnt = 0;
 int minute_flag = 0;
 int ten_min = 0;
 int ten_min_flag = 0;
+
+// Servo Calculation Variables
+#define R_90 39
+#define Z_00 16
+double adjusted_ALT;
+int final_ALT;
+
 /* Special ASCII characters */
 #define CR 0x0D		// ASCII return 
 #define LF 0x0A		// ASCII new line 
@@ -212,14 +223,15 @@ void  initializations(void) {
   
   MODRR = 0x02; //PT1 used as output
   PWME = 0x02;  //enable Ch 01
-  PWMPOL = 0x00; //Active low polarity
-  PWMCTL = 0x00; // 8-bit
+  PWMPOL = 0xFF; //Active low polarity
+  PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
-  PWMPER3 = 0xFF; // max period
-  PWMDTY3 = 0;   // initial zero duty cycle
+  PWMPER1 = 0xFF; // max period
+  PWMDTY1 = 0;   // initial zero duty cycle
   PWMSCLA = 59;
-  PWMCLK = 0x02; //Clock SA for ch 3
+  PWMCLK = 0x02; //Clock SA for ch 1
   PWMPRCLK = 0x03; //Clock A =  3 MHz
+  DDRT_DDRT0 = 1;
             
 /* Initialize interrupts */
 	      
@@ -234,8 +246,8 @@ Main
 */
 void main(void) {
   	DisableInterrupts
-	initializations(); 		  			 		  		
-	EnableInterrupts;
+	  initializations(); 		  			 		  		
+	  EnableInterrupts;
 
  for(;;) {
   
@@ -255,7 +267,6 @@ void main(void) {
           Star_Found = 0;
         }
          get_Data();
-         star_Calculate_Complete = 0;
       }
       
       if(!star_Calculate_Complete&&Recieve_Complete)
@@ -264,7 +275,28 @@ void main(void) {
          //Change PWM Duty Cycle Here (I think...)
          TIE_C7I = 1;
       }
-  
+      
+      if(star_Calculate_Complete && !azimuth_Complete) 
+      {
+         // move azimuth with stepper code
+         azimuth_Complete = 1; // put this in azimuth function
+      }
+      
+      if(star_Calculate_Complete && azimuth_Complete && !altitude_Complete) 
+      {
+        adjusted_ALT = (ALT * (R_90 - Z_00 + 1) / 90.0) + Z_00; // get value for pwm
+        final_ALT = floor(adjusted_ALT + 0.5); //rounding 
+        PWMDTY1 = final_ALT;
+        altitude_Complete = 1;
+      }
+      
+      /*
+      if (altitude_Complete) 
+      {  
+        PWMDTY1 = final_ALT;
+      }
+      */
+      
       if(ten_min_flag)
       {
          ten_min_flag = 0;
