@@ -224,6 +224,7 @@ byte displayMap[LCD_WIDTH * LCD_HEIGHT / 8] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,40)->(83,47) !!! The bottom right pixel!
 };
 
+
 /* All functions after main should be initialized here */
 char inchar(void);
 void outchar(char x);
@@ -246,6 +247,7 @@ void LCD_moveCurGlob(int x, int y);
 void updateDate(void);
 void updateTime(void);
 void clearKeypad(void);
+void printStarMenu(void);
 
 
 /* Variable declarations */
@@ -282,6 +284,8 @@ char time[6] = "HHMMA";
 char star;
 int Menu = 1;
 int Position = 1;
+char *starList[8];//[11];
+
 
 // Transmit Variables
 char tin	= 0;	// SCI transmit display buffer IN pointer
@@ -351,14 +355,14 @@ void  initializations(void) {
   SPIBR = 0x10;
   SPICR1 = 0x50;
   SPICR2 = 0x00;
-  PERT_PERT4 = 1;
+  PERT_PERT4 = 0;
   
             
 /* Initialize interrupts */
 
 /* Initialize RTI for 2.048 ms interrupt rate */	
   CRGINT_RTIE = 1; // enable RTI interrupt
-  RTICTL = 0x50; // 2.048ms interrupt rate
+  RTICTL = 0x1F; // 2.048ms interrupt rate
   
   // Initialize LCD
   // Reset LCD by pulsing RST low, then high
@@ -392,6 +396,22 @@ Main
 ***********************************************************************
 */
 void main(void) {
+/*#############################
+
+
+STAR DECLARATIONS
+
+#############################*/
+
+starList[0] = "Betelgeuse";
+starList[1] = "Canopus";
+starList[2] = "Pleiades";
+starList[3] = "Polaris";
+starList[4] = "Rigel";
+starList[5] = "Sirius";
+starList[6] = "Sun";
+starList[7] = "Vega";
+
   DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
@@ -748,71 +768,53 @@ void main(void) {
  }
   
  // Set star
-    star = '7';
-    Menu = 4;
+    star = '0';
+    Menu = 0;
     drawRect(2,12,82,46,1,0);
     updateDisplay(); 
+    LCD_moveCurGlob(2,2);
+    LCD_printWrap("Select Star:", 1);     
     LCD_moveCurGlob(2,12);
-    LCD_printWrap("Select Star:\r\n", 1); 
     validInput = 0;
     getOut = 0;
     i = 0;
     j = 0;
-    if(Menu == 1)
+    validInput = 0;
+    while(!validInput)
     {
-      if(Position == 1)
+      while(!getOut && !RPG)
       {
-         LCD_printWrap("->Betelgeuse\r\n",2);
-         LCD_printWrap("  Canopus\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Betelgeuse\r\n",2);
-         LCD_printWrap("->Canopus\r\n",3);
+        for(i=0; i<11; i++)
+        {
+           if(keypad[i])
+           {
+             getOut=1;
+             break;
+           }
+        }
       }
-    } 
-    else if(Menu == 2)
-    {
-      if(Position == 1)
+      getOut = 0;
+      LCD_moveCurGlob(2,12);
+      // if KP 9 or 11 are pressed, move up or down
+      if(RPG)
       {
-         LCD_printWrap("->Pleiades\r\n",2);
-         LCD_printWrap("  Polaris\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Pleiades\r\n",2);
-         LCD_printWrap("->Polaris\r\n",3);
+        validInput = 1;
       }
-      
-    }
-    else if(Menu == 3)
-    {
-      if(Position == 1)
+      if(i == 9)
       {
-         LCD_printWrap("->Rigel\r\n",2);
-         LCD_printWrap("  Sirius\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Rigel\r\n",2);
-         LCD_printWrap("->Sirius\r\n",3);
+        Menu = (Menu-1)%8;
+        star = '0' + Menu;
       }
-      
-    } 
-    else if(Menu == 4)
-    {
-      if(Position == 1)
+      if(i == 11)
       {
-         LCD_printWrap("->Sun\r\n",2);
-         LCD_printWrap("  Vega\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Sun\r\n",2);
-         LCD_printWrap("->Vega\r\n",3);
+        Menu = (Menu+1)%8;
+        star = '0' + Menu; 
       }
-      
-    }     
+      // Print 3 things
+      printStarMenu();
+      clearKeypad();
+    }    
+    setChar('?', 74, 22, 1);
  // SEND THINGS
  // Latitude is stored in Latitude = "+XXXX"
  // Longitude is stored in Longitude = "+YYYYY"
@@ -876,6 +878,9 @@ interrupt 7 void RTI_ISR(void)
 { 
     int i = 0;
     int j = 0;
+    
+    
+  	
     /*
     // Column Port Register
     char colPT[3] = {&PTAD_PTAD7, &PTAD_PTAD5, &PTAD_PTAD3};
@@ -888,6 +893,13 @@ interrupt 7 void RTI_ISR(void)
     */
     // clear RTI interrupt flagt
   	CRGFLG = CRGFLG | 0x80;   	
+    // Rotary pulse generator push button
+  	if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
+  	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
+  	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
+  	prevrpgA = RPGA;
+  	prevrpgB = RPGB;
+  	prevRPG = RPGBUTTON;
     /*    Keypad Section      */
     // Set row to inputs, column to outputs
     // column = 1,3,5
@@ -957,21 +969,14 @@ interrupt 7 void RTI_ISR(void)
     }
     
     // Rotary Pulse Generator
-     if(PTT_PTT4 != 0) {
+    /* if(PTT_PTT4 != 0) {
 		   if(prevRPG == 1) {
 		    RPG = 1;
 		   }
 		    prevRPG = 0;
 		  } else if (PTT_PTT4 == 0) {
 		   prevRPG = 1;
-		  }
-  	// Rotary pulse generator push button
-  	//if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
-  	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
-  	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
-  	prevrpgA = RPGA;
-  	prevrpgB = RPGB;
-  	//prevRPG = RPGBUTTON;
+		  } */
   	
   	}
 
@@ -1388,6 +1393,17 @@ void updateTime(void)
    setChar(' ', 44, 22, 1);
    setChar(time[4], 50, 22, 1);
    setChar('M', 56, 22, 1);
+   updateDisplay();
+}
+
+void printStarMenu(void)
+{
+   LCD_moveCurGlob(2,12);
+   LCD_printWrap(starList[(Menu-1)%8],1);
+   LCD_printWrap("\r\n->",1);
+   LCD_printWrap(starList[Menu],1);
+   LCD_printWrap("\r\n",1);
+   LCD_printWrap(starList[(Menu+1)%8],1);
    updateDisplay();
 }
 
