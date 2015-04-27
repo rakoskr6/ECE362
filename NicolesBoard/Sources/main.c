@@ -1,4 +1,4 @@
-/*
+#/*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
 ***********************************************************************
@@ -224,6 +224,7 @@ byte displayMap[LCD_WIDTH * LCD_HEIGHT / 8] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,40)->(83,47) !!! The bottom right pixel!
 };
 
+
 /* All functions after main should be initialized here */
 char inchar(void);
 void outchar(char x);
@@ -246,7 +247,9 @@ void LCD_moveCurGlob(int x, int y);
 void updateDate(void);
 void updateTime(void);
 void clearKeypad(void);
-
+void printStarMenu(void);
+void wait(void);
+void prompt_for_star(void);
 
 /* Variable declarations */
 int keyPadData[3][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0}}; 
@@ -282,6 +285,9 @@ char time[6] = "HHMMA";
 char star;
 int Menu = 1;
 int Position = 1;
+char *starList[8];//[11];
+char New_Data = '0';
+
 
 // Transmit Variables
 char tin	= 0;	// SCI transmit display buffer IN pointer
@@ -329,7 +335,7 @@ void  initializations(void) {
   
 /* 
    Initialize TIM Ch 7 (TC7) for periodic interrupts every 10.0 ms  
-    - Enable timer subsystem                         
+    - Enable timer subsystem                         
     - Set channel 7 for output compare
     - Set appropriate pre-scale factor and enable counter reset after OC7
     - Set up channel 7 to generate 10 ms interrupt rate
@@ -393,6 +399,22 @@ Main
 ***********************************************************************
 */
 void main(void) {
+/*#############################
+
+
+STAR DECLARATIONS
+
+#############################*/
+
+starList[0] = "Betelgeuse";
+starList[1] = "Canopus";
+starList[2] = "Pleiades";
+starList[3] = "Polaris";
+starList[4] = "Rigel";
+starList[5] = "Sirius";
+starList[6] = "Sun";
+starList[7] = "Vega";
+
   DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
@@ -570,10 +592,7 @@ void main(void) {
  /////////////////////////////////////////
  // DATE
  /////////////////////////////////////////
- for(i=0;i<5000;i++)
- {
-   for(j=0;j<500;j++);
- }
+ wait();
  drawRect(2,12,82,46,1,0);
  updateDisplay(); 
  LCD_moveCurGlob(2,12);
@@ -653,10 +672,7 @@ void main(void) {
  /////////////////////////////
  // TIME
  /////////////////////////////
- for(i=0;i<5000;i++)
- {
-   for(j=0;j<500;j++);
- }
+ wait();
  drawRect(2,12,82,46,1,0);
  updateDisplay(); 
  LCD_moveCurGlob(2,12);
@@ -747,73 +763,10 @@ void main(void) {
     time[0]+=1;
     time[1]+=2;
  }
-  
- // Set star
-    star = '7';
-    Menu = 4;
-    drawRect(2,12,82,46,1,0);
-    updateDisplay(); 
-    LCD_moveCurGlob(2,12);
-    LCD_printWrap("Select Star:\r\n", 1); 
-    validInput = 0;
-    getOut = 0;
-    i = 0;
-    j = 0;
-    if(Menu == 1)
-    {
-      if(Position == 1)
-      {
-         LCD_printWrap("->Betelgeuse\r\n",2);
-         LCD_printWrap("  Canopus\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Betelgeuse\r\n",2);
-         LCD_printWrap("->Canopus\r\n",3);
-      }
-    } 
-    else if(Menu == 2)
-    {
-      if(Position == 1)
-      {
-         LCD_printWrap("->Pleiades\r\n",2);
-         LCD_printWrap("  Polaris\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Pleiades\r\n",2);
-         LCD_printWrap("->Polaris\r\n",3);
-      }
-      
-    }
-    else if(Menu == 3)
-    {
-      if(Position == 1)
-      {
-         LCD_printWrap("->Rigel\r\n",2);
-         LCD_printWrap("  Sirius\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Rigel\r\n",2);
-         LCD_printWrap("->Sirius\r\n",3);
-      }
-      
-    } 
-    else if(Menu == 4)
-    {
-      if(Position == 1)
-      {
-         LCD_printWrap("->Sun\r\n",2);
-         LCD_printWrap("  Vega\r\n",3);
-      } 
-      else
-      {
-         LCD_printWrap("  Sun\r\n",2);
-         LCD_printWrap("->Vega\r\n",3);
-      }
-      
-    }     
+ 
+    wait();
+    prompt_for_star();
+    
  // SEND THINGS
  // Latitude is stored in Latitude = "+XXXX"
  // Longitude is stored in Longitude = "+YYYYY"
@@ -826,6 +779,8 @@ void main(void) {
  
  {
      // Transmit forever until new data is entered
+     bco('n');
+     bco(New_Data);
      bco('s');
      bco(star);
      bco('o');
@@ -859,6 +814,13 @@ void main(void) {
      bco(time[2]);
      bco(time[3]);
 
+     // Change star
+     if(RPG == 1) 
+     {
+        RPG = 0;
+        prompt_for_star();
+        New_Data++;
+     }
   
    } /* loop forever */
    
@@ -868,7 +830,7 @@ void main(void) {
 
 
 /*
-***********************************************************************                       
+***********************************************************************                       
  RTI interrupt service routine: RTI_ISR
 ************************************************************************
 */
@@ -877,6 +839,9 @@ interrupt 7 void RTI_ISR(void)
 { 
     int i = 0;
     int j = 0;
+    
+    
+  	
     /*
     // Column Port Register
     char colPT[3] = {&PTAD_PTAD7, &PTAD_PTAD5, &PTAD_PTAD3};
@@ -965,6 +930,14 @@ interrupt 7 void RTI_ISR(void)
     }
     
     // Rotary Pulse Generator
+    /* if(PTT_PTT4 != 0) {
+		   if(prevRPG == 1) {
+		    RPG = 1;
+		   }
+		    prevRPG = 0;
+		  } else if (PTT_PTT4 == 0) {
+		   prevRPG = 1;
+		  } */
     // if(PTT_PTT4 != 0) {
 		//   if(prevRPG == 1) {
 		//    RPG = 1;
@@ -977,7 +950,7 @@ interrupt 7 void RTI_ISR(void)
   	}
 
 /*
-***********************************************************************                       
+***********************************************************************                       
   TIM interrupt service routine	  		
 ***********************************************************************
 */
@@ -1010,7 +983,7 @@ interrupt 15 void TIM_ISR(void)
 }
 
 /*
-***********************************************************************                       
+***********************************************************************                       
   SCI interrupt service routine		 		  		
 ***********************************************************************
 */
@@ -1036,7 +1009,7 @@ interrupt 20 void SCI_ISR(void)
 }
 
 /*
-***********************************************************************                              
+***********************************************************************                              
   SCI buffered character output routine - bco
 
   Places character x passed to it into TBUF
@@ -1390,6 +1363,96 @@ void updateTime(void)
    setChar(time[4], 50, 22, 1);
    setChar('M', 56, 22, 1);
    updateDisplay();
+}
+
+void printStarMenu(void)
+{
+   drawRect(2,12,82,46,1,0);
+   updateDisplay();
+   LCD_moveCurGlob(2,12);
+   LCD_printWrap(starList[(Menu-1)%8],1);
+   LCD_printWrap("\r\n->",1);
+   LCD_printWrap(starList[Menu],1);
+   LCD_printWrap("\r\n",1);
+   LCD_printWrap(starList[(Menu+1)%8],1);
+   updateDisplay();
+}
+
+void wait(void)
+{
+ for(i=0;i<5000;i++)
+ {
+   for(j=0;j<500;j++);
+ }
+}
+
+void prompt_for_star(void)
+{
+ // Set star
+    star = '0';
+    Menu = 0;
+    drawRect(2,12,82,46,1,0);
+    updateDisplay(); 
+    LCD_moveCurGlob(2,2);
+    LCD_printWrap("Select Star:", 1);     
+    LCD_moveCurGlob(2,12);
+    validInput = 0;
+    getOut = 0;
+    i = 0;
+    j = 0;
+    validInput = 0;
+    printStarMenu();
+    while(!validInput)
+    {
+      while(!getOut && !RPG)
+      {
+        for(i=0; i<12; i++)
+        {
+           if(keypad[i])
+           {
+             getOut=1;
+             break;
+           }
+        }
+      }
+      getOut = 0;
+      LCD_moveCurGlob(2,12);
+      // if KP 9 or 11 are pressed, move up or down
+      if(RPG)
+      {
+        RPG = 0;
+        validInput = 1;
+        break;
+      }
+      if(i == 9)
+      {
+        Menu = (Menu-1);//%8;
+        if(Menu <0)
+        {
+           Menu = 7;
+        }
+        star = '0' + Menu;
+      } 
+      else if(i == 11)
+      {
+        Menu = (Menu+1);//%8;
+        if(Menu > 7)
+        {
+           Menu = 0;
+        }
+        star = '0' + Menu; 
+      }
+      // Print 3 things
+      printStarMenu();
+      clearKeypad();
+    } 
+     drawRect(2,12,82,46,1,0);
+     updateDisplay();
+     LCD_moveCurGlob(2,12);
+     LCD_printWrap("Finding:\r\n", 1);
+     LCD_printWrap(starList[Menu],2);
+     LCD_printWrap("...",2);    
+    //setChar('?', 74, 22, 1);
 }
 
 
