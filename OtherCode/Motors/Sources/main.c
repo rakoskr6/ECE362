@@ -134,7 +134,7 @@ double JDays;
 int yearsSince2000;
 double GMSTHours;
 double LHA;
-double ALT = 15;
+double ALT = 45;
 double AZ;
   
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -148,6 +148,13 @@ int mincnt = 0;
 int minute_flag = 0;
 int ten_min = 0;
 int ten_min_flag = 0;
+
+// Servo Calculation Variables
+#define R_90 39
+#define Z_00 16
+double adjusted_ALT;
+int final_ALT;
+
 /* Special ASCII characters */
 #define CR 0x0D		// ASCII return 
 #define LF 0x0A		// ASCII new line 
@@ -239,6 +246,8 @@ int i = 0;
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
+	    adjusted_ALT = (ALT * (R_90 - Z_00 + 1) / 90.0) + Z_00; // get value for pwm
+    final_ALT = floor(adjusted_ALT + 0.5); //rounding
 
  for(;;) {
   
@@ -247,15 +256,31 @@ int i = 0;
    //if (new_Data) 
    //{ 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
-    PWMDTY1 = 10023; //go to 90 degrees
-    PTT_PTT0 = 1;
     
-    for (i = 0; i < 19999; i++) {}
-    
-    PWMDTY1 = 4112; // go to y degrees
-    PTT_PTT0 = 0;
+  
+    PWMDTY1 = Z_00; // go to 0 degrees
+    //PTT_PTT0 = 0;
 
+    for (i = 0; i < 19999; i++) {} 
+    
+    
+    PWMDTY1 = final_ALT; //final_ALT;
+    //PTT_PTT0 = 1;
+    
     for (i = 0; i < 19999; i++) {}
+    
+     PWMDTY1 = Z_00; // go to 90 degrees
+    //PTT_PTT0 = 0;
+
+    for (i = 0; i < 19999; i++) {} 
+    
+    
+    PWMDTY1 = final_ALT; //final_ALT;
+    //PTT_PTT0 = 1;
+    
+    for (i = 0; i < 19999; i++) {}
+    
+    
     
     //new_Data = 0;
    //}
