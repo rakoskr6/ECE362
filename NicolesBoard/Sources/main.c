@@ -280,6 +280,8 @@ char getOut = 0;
 char date[9] = "2YYYMMDD";
 char time[6] = "HHMMA";
 char star;
+int Menu = 1;
+int Position = 1;
 
 // Transmit Variables
 char tin	= 0;	// SCI transmit display buffer IN pointer
@@ -567,7 +569,7 @@ void main(void) {
  /////////////////////////////////////////
  // DATE
  /////////////////////////////////////////
- for(i=0;i<20000;i++)
+ for(i=0;i<5000;i++)
  {
    for(j=0;j<500;j++);
  }
@@ -650,7 +652,7 @@ void main(void) {
  /////////////////////////////
  // TIME
  /////////////////////////////
- for(i=0;i<20000;i++)
+ for(i=0;i<5000;i++)
  {
    for(j=0;j<500;j++);
  }
@@ -746,8 +748,71 @@ void main(void) {
  }
   
  // Set star
-    star = '7'; 
-  
+    star = '7';
+    Menu = 4;
+    drawRect(2,12,82,46,1,0);
+    updateDisplay(); 
+    LCD_moveCurGlob(2,12);
+    LCD_printWrap("Select Star:\r\n", 1); 
+    validInput = 0;
+    getOut = 0;
+    i = 0;
+    j = 0;
+    if(Menu == 1)
+    {
+      if(Position == 1)
+      {
+         LCD_printWrap("->Betelgeuse\r\n",2);
+         LCD_printWrap("  Canopus\r\n",3);
+      } 
+      else
+      {
+         LCD_printWrap("  Betelgeuse\r\n",2);
+         LCD_printWrap("->Canopus\r\n",3);
+      }
+    } 
+    else if(Menu == 2)
+    {
+      if(Position == 1)
+      {
+         LCD_printWrap("->Pleiades\r\n",2);
+         LCD_printWrap("  Polaris\r\n",3);
+      } 
+      else
+      {
+         LCD_printWrap("  Pleiades\r\n",2);
+         LCD_printWrap("->Polaris\r\n",3);
+      }
+      
+    }
+    else if(Menu == 3)
+    {
+      if(Position == 1)
+      {
+         LCD_printWrap("->Rigel\r\n",2);
+         LCD_printWrap("  Sirius\r\n",3);
+      } 
+      else
+      {
+         LCD_printWrap("  Rigel\r\n",2);
+         LCD_printWrap("->Sirius\r\n",3);
+      }
+      
+    } 
+    else if(Menu == 4)
+    {
+      if(Position == 1)
+      {
+         LCD_printWrap("->Sun\r\n",2);
+         LCD_printWrap("  Vega\r\n",3);
+      } 
+      else
+      {
+         LCD_printWrap("  Sun\r\n",2);
+         LCD_printWrap("->Vega\r\n",3);
+      }
+      
+    }     
  // SEND THINGS
  // Latitude is stored in Latitude = "+XXXX"
  // Longitude is stored in Longitude = "+YYYYY"
@@ -900,14 +965,13 @@ interrupt 7 void RTI_ISR(void)
 		  } else if (PTT_PTT4 == 0) {
 		   prevRPG = 1;
 		  }
-		RPGA = !PTT_PTT5;
-		RPGB = !PTT_PTT6;
-    //if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
-		if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
+  	// Rotary pulse generator push button
+  	//if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
+  	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
   	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
-  	//prevRPG = RPGBUTTON;
   	prevrpgA = RPGA;
   	prevrpgB = RPGB;
+  	//prevRPG = RPGBUTTON;
   	
   	}
 
