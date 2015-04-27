@@ -108,7 +108,9 @@ int Year_Found = 0;
 int Hours_Found = 0;
 int Min_Found = 0;
 int Star_Found = 0;
+int New_Found = 0;
 int Recieve_Complete = 0;
+int prev_Data = 0;
 
 
 // Star Algorithm
@@ -240,24 +242,16 @@ void main(void) {
  for(;;) {
   
 /* < start of your main loop > */ 
-      if(!Recieve_Complete||new_Data||Junk)
+  
+      get_Data();
+      if(new_Data != prev_Data)
       {
-        if (new_Data)  
-        {
-          Lat_Found = 0;
-          Long_Found = 0;
-          Month_Found = 0;
-          Day_Found = 0;
-          Month_Found = 0;
-          Year_Found = 0;
-          Hours_Found = 0;
-          Min_Found = 0;
           Star_Found = 0;
-        }
-         get_Data();
-         star_Calculate_Complete = 0;
-      }
-      
+          New_Found = 0;
+          star_Calculate_Complete = 0;   
+       }
+       prev_Data = new_Data;
+              
       if(!star_Calculate_Complete&&Recieve_Complete)
       {
          star_Calculate();
@@ -426,15 +420,24 @@ void get_Data(void)
         Star = inchar();
         Star_Found = 1;
      } 
+     else if(Recieved == 'n')
+     {
+        new_Data = (int)Recieved - '0'; 
+        New_Found = 1;
+        
+     }
      else
      {
         Junk = 1;
      }
      
      if(Lat_Found&&Long_Found&&Month_Found&&Day_Found&&Month_Found&&Year_Found&&
-        Hours_Found&&Min_Found&&Star_Found)
+        Hours_Found&&Min_Found&&Star_Found&&New_Found)
      {
-        Conversion();
+        if(!new_Data)
+        {
+           Conversion();
+        } 
         Recieve_Complete = 1;
         Junk = 0;
      } 
