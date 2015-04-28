@@ -74,7 +74,8 @@ void get_Data(void);
 void star_Calculate(void);
 
 /* Transmission variable declarations */
-char Recieved = 0;
+char Received = 0;
+char Receive_Check = 0;
 char Lat_Sgn = 0;
 char Lat0 = 0;
 char Lat1 = 0;
@@ -108,7 +109,7 @@ int Year_Found = 0;
 int Hours_Found = 0;
 int Min_Found = 0;
 int Star_Found = 0;
-int Recieve_Complete = 0;
+int Receive_Complete = 0;
 
 
 // Star Algorithm
@@ -251,25 +252,32 @@ void main(void) {
 
  for(;;) {
   
-/* < start of your main loop > */ 
-      if(!Recieve_Complete||new_Data||Junk)
+/* < start of your main loop > */
+      get_Data(); 
+     // if(!Receive_Complete||new_Data||Junk)
+     // {
+     //   if (new_Data)  
+     //   {
+     //     Lat_Found = 0;
+     //     Long_Found = 0;
+     //     Month_Found = 0;
+     //     Day_Found = 0;
+     //     Month_Found = 0;
+     //     Year_Found = 0;
+     //     Hours_Found = 0;
+     //     Min_Found = 0;
+     //    Star_Found = 0;
+     //   }
+     //    get_Data();
+     // }
+     
+      if(new_Data == 1)
       {
-        if (new_Data)  
-        {
-          Lat_Found = 0;
-          Long_Found = 0;
-          Month_Found = 0;
-          Day_Found = 0;
-          Month_Found = 0;
-          Year_Found = 0;
-          Hours_Found = 0;
-          Min_Found = 0;
-          Star_Found = 0;
-        }
-         get_Data();
+         new_Data = 0;
+         star_Calculate_Complete = 0;
       }
       
-      if(!star_Calculate_Complete&&Recieve_Complete)
+      if(!star_Calculate_Complete&&Receive_Complete)
       {
          star_Calculate();
          //Change PWM Duty Cycle Here (I think...)
@@ -396,78 +404,199 @@ interrupt 20 void SCI_ISR(void)
 
 /*
 ***********************************************************************
-Recieve Data Function
+Receive Data Function
 ***********************************************************************
 */
 void get_Data(void)
 {
-     Recieved = inchar();
-     if(Recieved == 'p')
+     // Receive Latitude
+     while(Received != 'p')
      {
-        Lat_Sgn = inchar();
-        Lat0 = inchar();
-        Lat1 = inchar();
-        Lat2 = inchar();
-        Lat3 = inchar();
-        Lat_Found = 1;
-     } 
-     else if(Recieved == 'o')
-     {
-        Long_Sgn = inchar();
-        Long0 = inchar();
-        Long1 = inchar();
-        Long2 = inchar();
-        Long3 = inchar();
-        Long4 = inchar();
-        Long_Found = 1;
-     } 
-     else if(Recieved == 't')
-     {
-        Month0 = inchar();
-        Month1 = inchar();
-        Month_Found = 1;
-     } 
-     else if(Recieved == 'd')
-     {
-        Day0 = inchar();
-        Day1 = inchar();
-        Day_Found = 1;
+        Received = inchar();
      }
-     else if(Recieved == 'y')
+     Receive_Check = inchar();
+     if(Receive_Check != Lat_Sgn)
      {
-        Year0 = inchar();
-        Year1 = inchar();
-        Year2 = inchar();
-        Year3 = inchar();
-        Year_Found = 1;
-     } 
-     else if(Recieved == 'h')
-     {
-        Hours0 = inchar();
-        Hours1 = inchar();
-        Hours_Found = 1;
-     } 
-     else if(Recieved == 'm')
-     {
-        Min0 = inchar();
-        Min1 = inchar();
-        Min_Found = 1;
-     } 
-     else if(Recieved == 's')
-     {
-        Star = inchar();
-        Star_Found = 1;
-     } 
-     else
-     {
-        Junk = 1;
+        Lat_Sgn = Receive_Check;
      }
+     Receive_Check = inchar();
+     if(Receive_Check != Lat0)
+     {
+        Lat0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Lat1)
+     {
+        Lat1= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Lat2)
+     {
+        Lat2= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Lat3)
+     {
+        Lat3= Receive_Check;
+     }
+     Lat_Found = 1;
+     
+     //Receive Longitude
+     while(Received != 'o')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long_Sgn)
+     {
+        Long_Sgn= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long0)
+     {
+        Long0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long1)
+     {
+        Long1= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long2)
+     {
+        Long2= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long3)
+     {
+        Long3= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Long4)
+     {
+        Long4= Receive_Check;
+     }
+     Long_Found = 1;
+        
+         
+     //Receive Month
+     while(Received!= 't')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Month0)
+     {
+        Month0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Month1)
+     {
+        Month1= Receive_Check;
+     }
+     Month_Found = 1;
+
+     //Receive Day
+     while(Received!='d')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Day0)
+     {
+        Day0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Day1)
+     {  
+        Day1= Receive_Check;
+     }
+     Day_Found = 1;
+
+     //Receive Year
+     while(Received != 'y')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Year0)
+     {
+        Year0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Year1)
+     {
+        Year1= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Year2)
+     {
+        Year2= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Year3)
+     {
+        Year3= Receive_Check;
+     }
+     Year_Found = 1;
+ 
+     //Receive Hours
+     while(Received != 'h')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Hours0)
+     {
+        Hours0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Hours1)
+     {
+        Hours1= Receive_Check;
+     }
+     Hours_Found = 1;
+     
+     //Receive Minute 
+     while(Received != 'm')
+     {
+        Received = inchar();
+     }          
+     Receive_Check = inchar();
+     if(Receive_Check != Min0)
+     {
+        Min0= Receive_Check;
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Min1)
+     {
+        Min1= Receive_Check;
+     }
+     Min_Found = 1;
+     
+     //Receive Star 
+     while(Received != 's')
+     {
+        Received = inchar();
+     }
+     Receive_Check = inchar();
+     if(Receive_Check != Star)
+     {
+        Star= Receive_Check;
+        new_Data = 1;
+     }
+     Star_Found = 1;
+ 
+     //else
+     //{
+     //   Junk = 1;
+     //}
      
      if(Lat_Found&&Long_Found&&Month_Found&&Day_Found&&Month_Found&&Year_Found&&
         Hours_Found&&Min_Found&&Star_Found)
      {
         Conversion();
-        Recieve_Complete = 1;
+        Receive_Complete = 1;
         Junk = 0;
      } 
 }
