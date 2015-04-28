@@ -3,9 +3,9 @@
  ECE 362 - Mini-Project C Source File - Spring 2015
 ***********************************************************************
 	 	   			 		  			 		  		
- Team ID: < ? >
+ Team ID: 11
 
- Project Name: < ? >
+ Project Name: Star Treker
 
  Team Members:
 
@@ -15,7 +15,7 @@
 
    - Interface Leader: < ? >     Signature: ______________________
 
-   - Peripheral Leader: < ? >    Signature: ______________________
+   - Peripheral Leader: < ? >    Signature: Christopher Chow______
 
 
  Academic Honesty Statement:  In signing above, we hereby certify that we 
@@ -50,7 +50,7 @@
 
   Update history (add an entry every time a significant change is made):
 
-  Date: < ? >  Name: < ? >   Update: < ? >
+  Date: 4/25   Name: Christopher Chow   Update: Created: LCD, Keypad code
 
   Date: < ? >  Name: < ? >   Update: < ? >
 
