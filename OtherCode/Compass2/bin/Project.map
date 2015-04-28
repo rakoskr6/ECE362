@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\alexm_000\Documents\CodeWarrior\Compass2\bin\Project.abs"
+PROGRAM "C:\Users\alexm_000\Documents\GitHub\ECE362\OtherCode\Compass2\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -32,8 +32,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     32
-  _Copy    *toCopyDownBeg 0xD587
+  _Range   pZeroOut       0x900     35
+  _Copy    *toCopyDownBeg 0xD5E9
 } _startupData;
 
 *********************************************************************************************
@@ -43,8 +43,8 @@ Section Name                    Size  Type     From       To       Segment
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                            8     R     0xC03B     0xC042   ROM_C000
-.text                           3809     R     0xC043     0xCF23   ROM_C000
-.copy                              2     R     0xD587     0xD588   ROM_C000
+.text                           3900     R     0xC043     0xCF7E   ROM_C000
+.copy                              2     R     0xD5E9     0xD5EA   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -271,13 +271,13 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
 .bss                              18   R/W      0x900      0x911   RAM
-.common                           14   R/W      0x912      0x91F   RAM
-RUNTIME                         1635     R     0xCF24     0xD586   ROM_C000
+.common                           17   R/W      0x912      0x922   RAM
+RUNTIME                         1642     R     0xCF7F     0xD5E8   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):        1591 (dec:     5521)
-READ_WRITE (R/W):      120 (dec:      288)
+READ_ONLY (R):        15F3 (dec:     5619)
+READ_WRITE (R/W):      123 (dec:      291)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -516,19 +516,19 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C043      77     119       1   .text       
-     main                                      C0BA      BA     186       2   .text       
-     transmit                                  C174       9       9       1   .text       
-     receive                                   C17D       7       7       1   .text       
-     transfer                                  C184       5       5       6   .text       
-     compassReadByte                           C189      1B      27       1   .text       
-     compassWriteByte                          C1A4      1C      28       5   .text       
-     compassReadBytes                          C1C0      3D      61       1   .text       
-     readMag                                   C1FD      1D      29       1   .text       
-     getHeading                                C21A      DC     220       2   .text       
-     RTI_ISR                                   C2F6       4       4       1   .text       
-     TIM_ISR                                   C2FA       4       4       1   .text       
-     SCI_ISR                                   C2FE       1       1       1   .text       
+     initializations                           C043      99     153       1   .text       
+     main                                      C0DC      B9     185       2   .text       
+     transmit                                  C195       9       9       1   .text       
+     receive                                   C19E       7       7       1   .text       
+     transfer                                  C1A5       5       5       6   .text       
+     compassReadByte                           C1AA      1B      27       2   .text       
+     compassWriteByte                          C1C5      1C      28       5   .text       
+     compassReadBytes                          C1E1      3D      61       1   .text       
+     readMag                                   C21E      4A      74       1   .text       
+     getHeading                                C268      E9     233       2   .text       
+     RTI_ISR                                   C351       4       4       1   .text       
+     TIM_ISR                                   C355       4       4       1   .text       
+     SCI_ISR                                   C359       1       1       1   .text       
 - VARIABLES:
      headingSum                                 900       8       8      10   .bss        
      avgHeading                                 908       8       8       4   .bss        
@@ -536,11 +536,11 @@ MODULE:                 -- main.c.o --
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
-     mx                                         912       1       1       2   .common     
-     my                                         913       1       1       2   .common     
-     mz                                         914       1       1       1   .common     
-     check                                      915       1       1       1   .common     
-     heading                                    916       8       8      10   .common     
+     mx                                         912       2       2       2   .common     
+     my                                         914       2       2       2   .common     
+     mz                                         916       2       2       1   .common     
+     check                                      918       1       1       2   .common     
+     heading                                    919       8       8      10   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -551,76 +551,77 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- MATH.C.o (ansisf.lib) --
 - PROCEDURES:
-     logb                                      C2FF      20      32       2   .text       
-     fabs                                      C31F      2C      44       3   .text       
-     is_special                                C34B      59      89       3   .text       
-     SetSign                                   C3A4      4A      74       7   .text       
-     atan2                                     C3EE     B01    2817     119   .text       
-     atan                                      CEEF      35      53       1   .text       
+     logb                                      C35A      20      32       2   .text       
+     fabs                                      C37A      2C      44       3   .text       
+     is_special                                C3A6      59      89       3   .text       
+     SetSign                                   C3FF      4A      74       7   .text       
+     atan2                                     C449     B01    2817     119   .text       
+     atan                                      CF4A      35      53       1   .text       
 - VARIABLES:
      infinity                                  C03B       8       8       4   .rodata     
 MODULE:                 -- DADD.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_ADDKL                                   CF24      BC     188       1   RUNTIME     
-     _DADD                                     CFE0      11      17      34   RUNTIME     
-     _DSUB                                     CFF1      19      25       8   RUNTIME     
-     _DNEG                                     D00A      17      23       3   RUNTIME     
+     D_ADDKL                                   CF7F      BC     188       1   RUNTIME     
+     _DADD                                     D03B      11      17      34   RUNTIME     
+     _DSUB                                     D04C      19      25       9   RUNTIME     
+     _DNEG                                     D065      17      23       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DANSI.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_FREXP                                   D021      20      32       1   RUNTIME     
-     D_LDEXP                                   D041      18      24       1   RUNTIME     
-     frexp                                     D059      1F      31       1   RUNTIME     
-     RetErrDom                                 D078      1F      31       1   RUNTIME     
-     ldexp                                     D097      27      39       2   RUNTIME     
+     D_FREXP                                   D07C      20      32       1   RUNTIME     
+     D_LDEXP                                   D09C      18      24       1   RUNTIME     
+     frexp                                     D0B4      1F      31       1   RUNTIME     
+     RetErrDom                                 D0D3      1F      31       1   RUNTIME     
+     ldexp                                     D0F2      27      39       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DCMP.C.o (ansisf.lib) --
 - PROCEDURES:
-     _DCMP                                     D0BE      30      48       4   RUNTIME     
+     _DCMP                                     D119      30      48       4   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DCONV.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_TOLONGK                                 D0EE      33      51       1   RUNTIME     
-     D_FRLONGK                                 D121      19      25       1   RUNTIME     
-     _DSFLOAT                                  D13A      14      20       2   RUNTIME     
-     _DSTRUNC                                  D14E      19      25       1   RUNTIME     
-     D_PSHK_UNARY                              D167      1E      30       1   RUNTIME     
-     D_CLRK_UNARY                              D185       D      13       2   RUNTIME     
-     D_MAXK_UNARY                              D192       A      10       1   RUNTIME     
-     D_NORMK_UNARY                             D19C      5C      92       1   RUNTIME     
+     D_TOLONGK                                 D149      33      51       1   RUNTIME     
+     D_FRLONGK                                 D17C      19      25       1   RUNTIME     
+     _DSFLOAT                                  D195      14      20       2   RUNTIME     
+     _DSTRUNC                                  D1A9      19      25       1   RUNTIME     
+     D_PSHK_UNARY                              D1C2      1E      30       1   RUNTIME     
+     D_CLRK_UNARY                              D1E0       D      13       2   RUNTIME     
+     D_MAXK_UNARY                              D1ED       A      10       1   RUNTIME     
+     D_NORMK_UNARY                             D1F7      5C      92       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DMUL.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_DIVKL                                   D1F8      F5     245       2   RUNTIME     
-     D_MULKL                                   D2ED      90     144       1   RUNTIME     
-     _DMUL                                     D37D      11      17       6   RUNTIME     
-     _DDIV                                     D38E      11      17       6   RUNTIME     
+     D_DIVKL                                   D253      F5     245       2   RUNTIME     
+     D_MULKL                                   D348      90     144       1   RUNTIME     
+     _DMUL                                     D3D8      11      17       6   RUNTIME     
+     _DDIV                                     D3E9      11      17       6   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_PULK                                    D39F      29      41       5   RUNTIME     
-     D_PULL                                    D3C8      25      37       4   RUNTIME     
-     D_PSHK                                    D3ED      23      35       3   RUNTIME     
-     D_STAL                                    D410      2A      42       2   RUNTIME     
-     D_XGKL                                    D43A      39      57       2   RUNTIME     
-     D_CLRK                                    D473      13      19       3   RUNTIME     
-     D_MAXK                                    D486       A      10       2   RUNTIME     
-     D_NORMK                                   D490      8F     143       5   RUNTIME     
+     D_PULK                                    D3FA      29      41       5   RUNTIME     
+     D_PULL                                    D423      25      37       4   RUNTIME     
+     D_PSHK                                    D448      23      35       3   RUNTIME     
+     D_STAL                                    D46B      2A      42       2   RUNTIME     
+     D_XGKL                                    D495      39      57       2   RUNTIME     
+     D_CLRK                                    D4CE      13      19       3   RUNTIME     
+     D_MAXK                                    D4E1       A      10       2   RUNTIME     
+     D_NORMK                                   D4EB      8F     143       5   RUNTIME     
 - VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP                                     D51F      19      25       1   RUNTIME     
-     _NEG_P                                    D538       F      15       1   RUNTIME     
-     _COPY                                     D547       8       8      12   RUNTIME     
-     _CASE_CHECKED                             D54F       B      11       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        D55A      14      20       2   RUNTIME     
+     _LCMP                                     D57A      19      25       1   RUNTIME     
+     _NEG_P                                    D593       F      15       1   RUNTIME     
+     _ILSEXT                                   D5A2       7       7       2   RUNTIME     
+     _COPY                                     D5A9       8       8      12   RUNTIME     
+     _CASE_CHECKED                             D5B1       B      11       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        D5BC      14      20       2   RUNTIME     
 - VARIABLES:
-     errno                                      91E       2       2       2   .common     
+     errno                                      921       2       2       2   .common     
 MODULE:                 -- VREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     L_NEGK                                    D56E       7       7       2   RUNTIME     
-     L_PSHK                                    D575       8       8       1   RUNTIME     
-     SL_PULK                                   D57D       A      10       1   RUNTIME     
+     L_NEGK                                    D5D0       7       7       2   RUNTIME     
+     L_PSHK                                    D5D7       8       8       1   RUNTIME     
+     SL_PULK                                   D5DF       A      10       1   RUNTIME     
 - VARIABLES:
 
 *********************************************************************************************
@@ -628,7 +629,7 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                    30    700      6
+  main.c.o                                    33    791      6
   Start12.c.o                                  0     49      0
   MATH.C.o (ansisf.lib)                        0   3109      8
   DADD.C.o (ansisf.lib)                        0    253      0
@@ -637,7 +638,7 @@ MODULE STATISTIC
   DCONV.C.o (ansisf.lib)                       0    266      0
   DMUL.C.o (ansisf.lib)                        0    423      0
   DREGS.C.o (ansisf.lib)                       0    384      0
-  rtshc12.c.o (ansisf.lib)                     2     79      0
+  rtshc12.c.o (ansisf.lib)                     2     86      0
   VREGS.C.o (ansisf.lib)                       0     25      0
   other                                      256     12      2
 
@@ -1108,8 +1109,8 @@ SECTION: "RUNTIME"
   D_ADDKL _DADD _DSUB _DNEG D_FREXP D_LDEXP frexp RetErrDom ldexp _DCMP 
   D_TOLONGK D_FRLONGK _DSFLOAT _DSTRUNC D_PSHK_UNARY D_CLRK_UNARY D_MAXK_UNARY 
   D_NORMK_UNARY D_DIVKL D_MULKL _DMUL _DDIV D_PULK D_PULL D_PSHK D_STAL D_XGKL 
-  D_CLRK D_MAXK D_NORMK _LCMP _NEG_P _COPY _CASE_CHECKED _CASE_CHECKED_BYTE 
-  L_NEGK L_PSHK SL_PULK 
+  D_CLRK D_MAXK D_NORMK _LCMP _NEG_P _ILSEXT _COPY _CASE_CHECKED 
+  _CASE_CHECKED_BYTE L_NEGK L_PSHK SL_PULK 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1339,72 +1340,73 @@ OBJECT LIST SORTED BY ADDRESS
      headingSum                                 900       8       8      10   .bss        
      avgHeading                                 908       8       8       4   .bss        
      i                                          910       2       2       3   .bss        
-     mx                                         912       1       1       2   .common     
-     my                                         913       1       1       2   .common     
-     mz                                         914       1       1       1   .common     
-     check                                      915       1       1       1   .common     
-     heading                                    916       8       8      10   .common     
-     errno                                      91E       2       2       2   .common     
+     mx                                         912       2       2       2   .common     
+     my                                         914       2       2       2   .common     
+     mz                                         916       2       2       1   .common     
+     check                                      918       1       1       2   .common     
+     heading                                    919       8       8      10   .common     
+     errno                                      921       2       2       2   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
      infinity                                  C03B       8       8       4   .rodata     
-     initializations                           C043      77     119       1   .text       
-     main                                      C0BA      BA     186       2   .text       
-     transmit                                  C174       9       9       1   .text       
-     receive                                   C17D       7       7       1   .text       
-     transfer                                  C184       5       5       6   .text       
-     compassReadByte                           C189      1B      27       1   .text       
-     compassWriteByte                          C1A4      1C      28       5   .text       
-     compassReadBytes                          C1C0      3D      61       1   .text       
-     readMag                                   C1FD      1D      29       1   .text       
-     getHeading                                C21A      DC     220       2   .text       
-     RTI_ISR                                   C2F6       4       4       1   .text       
-     TIM_ISR                                   C2FA       4       4       1   .text       
-     SCI_ISR                                   C2FE       1       1       1   .text       
-     logb                                      C2FF      20      32       2   .text       
-     fabs                                      C31F      2C      44       3   .text       
-     is_special                                C34B      59      89       3   .text       
-     SetSign                                   C3A4      4A      74       7   .text       
-     atan2                                     C3EE     B01    2817     119   .text       
-     atan                                      CEEF      35      53       1   .text       
-     D_ADDKL                                   CF24      BC     188       1   RUNTIME     
-     _DADD                                     CFE0      11      17      34   RUNTIME     
-     _DSUB                                     CFF1      19      25       8   RUNTIME     
-     _DNEG                                     D00A      17      23       3   RUNTIME     
-     D_FREXP                                   D021      20      32       1   RUNTIME     
-     D_LDEXP                                   D041      18      24       1   RUNTIME     
-     frexp                                     D059      1F      31       1   RUNTIME     
-     RetErrDom                                 D078      1F      31       1   RUNTIME     
-     ldexp                                     D097      27      39       2   RUNTIME     
-     _DCMP                                     D0BE      30      48       4   RUNTIME     
-     D_TOLONGK                                 D0EE      33      51       1   RUNTIME     
-     D_FRLONGK                                 D121      19      25       1   RUNTIME     
-     _DSFLOAT                                  D13A      14      20       2   RUNTIME     
-     _DSTRUNC                                  D14E      19      25       1   RUNTIME     
-     D_PSHK_UNARY                              D167      1E      30       1   RUNTIME     
-     D_CLRK_UNARY                              D185       D      13       2   RUNTIME     
-     D_MAXK_UNARY                              D192       A      10       1   RUNTIME     
-     D_NORMK_UNARY                             D19C      5C      92       1   RUNTIME     
-     D_DIVKL                                   D1F8      F5     245       2   RUNTIME     
-     D_MULKL                                   D2ED      90     144       1   RUNTIME     
-     _DMUL                                     D37D      11      17       6   RUNTIME     
-     _DDIV                                     D38E      11      17       6   RUNTIME     
-     D_PULK                                    D39F      29      41       5   RUNTIME     
-     D_PULL                                    D3C8      25      37       4   RUNTIME     
-     D_PSHK                                    D3ED      23      35       3   RUNTIME     
-     D_STAL                                    D410      2A      42       2   RUNTIME     
-     D_XGKL                                    D43A      39      57       2   RUNTIME     
-     D_CLRK                                    D473      13      19       3   RUNTIME     
-     D_MAXK                                    D486       A      10       2   RUNTIME     
-     D_NORMK                                   D490      8F     143       5   RUNTIME     
-     _LCMP                                     D51F      19      25       1   RUNTIME     
-     _NEG_P                                    D538       F      15       1   RUNTIME     
-     _COPY                                     D547       8       8      12   RUNTIME     
-     _CASE_CHECKED                             D54F       B      11       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        D55A      14      20       2   RUNTIME     
-     L_NEGK                                    D56E       7       7       2   RUNTIME     
-     L_PSHK                                    D575       8       8       1   RUNTIME     
-     SL_PULK                                   D57D       A      10       1   RUNTIME     
+     initializations                           C043      99     153       1   .text       
+     main                                      C0DC      B9     185       2   .text       
+     transmit                                  C195       9       9       1   .text       
+     receive                                   C19E       7       7       1   .text       
+     transfer                                  C1A5       5       5       6   .text       
+     compassReadByte                           C1AA      1B      27       2   .text       
+     compassWriteByte                          C1C5      1C      28       5   .text       
+     compassReadBytes                          C1E1      3D      61       1   .text       
+     readMag                                   C21E      4A      74       1   .text       
+     getHeading                                C268      E9     233       2   .text       
+     RTI_ISR                                   C351       4       4       1   .text       
+     TIM_ISR                                   C355       4       4       1   .text       
+     SCI_ISR                                   C359       1       1       1   .text       
+     logb                                      C35A      20      32       2   .text       
+     fabs                                      C37A      2C      44       3   .text       
+     is_special                                C3A6      59      89       3   .text       
+     SetSign                                   C3FF      4A      74       7   .text       
+     atan2                                     C449     B01    2817     119   .text       
+     atan                                      CF4A      35      53       1   .text       
+     D_ADDKL                                   CF7F      BC     188       1   RUNTIME     
+     _DADD                                     D03B      11      17      34   RUNTIME     
+     _DSUB                                     D04C      19      25       9   RUNTIME     
+     _DNEG                                     D065      17      23       2   RUNTIME     
+     D_FREXP                                   D07C      20      32       1   RUNTIME     
+     D_LDEXP                                   D09C      18      24       1   RUNTIME     
+     frexp                                     D0B4      1F      31       1   RUNTIME     
+     RetErrDom                                 D0D3      1F      31       1   RUNTIME     
+     ldexp                                     D0F2      27      39       2   RUNTIME     
+     _DCMP                                     D119      30      48       4   RUNTIME     
+     D_TOLONGK                                 D149      33      51       1   RUNTIME     
+     D_FRLONGK                                 D17C      19      25       1   RUNTIME     
+     _DSFLOAT                                  D195      14      20       2   RUNTIME     
+     _DSTRUNC                                  D1A9      19      25       1   RUNTIME     
+     D_PSHK_UNARY                              D1C2      1E      30       1   RUNTIME     
+     D_CLRK_UNARY                              D1E0       D      13       2   RUNTIME     
+     D_MAXK_UNARY                              D1ED       A      10       1   RUNTIME     
+     D_NORMK_UNARY                             D1F7      5C      92       1   RUNTIME     
+     D_DIVKL                                   D253      F5     245       2   RUNTIME     
+     D_MULKL                                   D348      90     144       1   RUNTIME     
+     _DMUL                                     D3D8      11      17       6   RUNTIME     
+     _DDIV                                     D3E9      11      17       6   RUNTIME     
+     D_PULK                                    D3FA      29      41       5   RUNTIME     
+     D_PULL                                    D423      25      37       4   RUNTIME     
+     D_PSHK                                    D448      23      35       3   RUNTIME     
+     D_STAL                                    D46B      2A      42       2   RUNTIME     
+     D_XGKL                                    D495      39      57       2   RUNTIME     
+     D_CLRK                                    D4CE      13      19       3   RUNTIME     
+     D_MAXK                                    D4E1       A      10       2   RUNTIME     
+     D_NORMK                                   D4EB      8F     143       5   RUNTIME     
+     _LCMP                                     D57A      19      25       1   RUNTIME     
+     _NEG_P                                    D593       F      15       1   RUNTIME     
+     _ILSEXT                                   D5A2       7       7       2   RUNTIME     
+     _COPY                                     D5A9       8       8      12   RUNTIME     
+     _CASE_CHECKED                             D5B1       B      11       1   RUNTIME     
+     _CASE_CHECKED_BYTE                        D5BC      14      20       2   RUNTIME     
+     L_NEGK                                    D5D0       7       7       2   RUNTIME     
+     L_PSHK                                    D5D7       8       8       1   RUNTIME     
+     SL_PULK                                   D5DF       A      10       1   RUNTIME     
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1429,7 +1431,7 @@ DREGS.C.o (ansisf.lib):
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
   _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LINC _LDEC 
-  _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS _ILSEXT 
+  _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
   _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
   _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
 VREGS.C.o (ansisf.lib):
@@ -1445,7 +1447,7 @@ rtshc12.c.o (ansisf.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xD587 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD5E9 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1456,10 +1458,11 @@ Init                      USES _startupData
 _Startup                  USES __SEG_END_SSTACK Init main 
 initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL 
                                 _SCIBD _SCICR1 _SCICR2 _DDRAB _PORTAB _SPICR1 _SPICR2 
-                                _SPIBR _DDRT _PTT compassWriteByte 
+                                _SPIBR _DDRT _PTT compassWriteByte compassReadByte 
+                                check 
 main                      USES initializations compassReadByte check i readMag 
-                                mx _DSFLOAT my getHeading headingSum heading 
-                                _DADD _DDIV avgHeading main _COPY 
+                                mx _ILSEXT _DSFLOAT my getHeading headingSum 
+                                heading _DADD _DDIV avgHeading main _COPY 
 transmit                  USES _SPISR _SPIDR 
 receive                   USES _SPISR _SPIDR 
 transfer                  USES transmit receive 
@@ -1467,8 +1470,8 @@ compassReadByte           USES _PTT _SPICR1 transfer
 compassWriteByte          USES _PTT _SPICR1 transfer 
 compassReadBytes          USES _PTT _SPICR1 transfer 
 readMag                   USES compassReadBytes mx my mz 
-getHeading                USES _COPY _DCMP _DSUB getHeading _DNEG heading 
-                                _DDIV atan _DMUL 
+getHeading                USES _COPY _DCMP _DSUB getHeading heading _DDIV atan 
+                                _DMUL 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 
 logb                      USES _COPY frexp 
@@ -1513,23 +1516,27 @@ DEPENDENCY TREE
  |  +- initializations     
  |  |  | 
  |  |  +- compassWriteByte    
+ |  |  |  | 
+ |  |  |  +- transfer            
+ |  |  |     | 
+ |  |  |     +- transmit            
+ |  |  |     |    
+ |  |  |     +- receive             
+ |  |  |          
+ |  |  +- compassReadByte     
  |  |     | 
- |  |     +- transfer            
- |  |        | 
- |  |        +- transmit            
- |  |        |    
- |  |        +- receive             
- |  |             
- |  +- compassReadByte     
- |  |  | 
- |  |  +- transfer             (see above)
- |  |     
+ |  |     +- transfer             (see above)
+ |  |        
+ |  +- compassReadByte      (see above)
+ |  |  
  |  +- readMag             
  |  |  | 
  |  |  +- compassReadBytes    
  |  |     | 
  |  |     +- transfer             (see above)
  |  |        
+ |  +- _ILSEXT             
+ |  |    
  |  +- _DSFLOAT            
  |  |  | 
  |  |  +- SL_PULK             
@@ -1578,8 +1585,6 @@ DEPENDENCY TREE
  |  |  |     |           
  |  |  |     +- D_PSHK              
  |  |  |          
- |  |  +- _DNEG               
- |  |  |    
  |  |  +- _DDIV               
  |  |  |  | 
  |  |  |  +- D_PULL               (see above)
@@ -1610,8 +1615,8 @@ DEPENDENCY TREE
  |  |  |     |  | 
  |  |  |     |  +- fabs                
  |  |  |     |  |    
- |  |  |     |  +- _DNEG                (see above)
- |  |  |     |  |  
+ |  |  |     |  +- _DNEG               
+ |  |  |     |  |    
  |  |  |     |  +- _COPY                (see above)
  |  |  |     |     
  |  |  |     +- fabs                 (see above)
@@ -1710,6 +1715,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 5521
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 5619
 

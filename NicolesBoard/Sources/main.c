@@ -1,4 +1,4 @@
-#/*
+/*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
 ***********************************************************************
@@ -282,17 +282,17 @@ int j = 0;
 char getOut = 0;
 char date[9] = "2YYYMMDD";
 char time[6] = "HHMMA";
-char star;
+char star = '1';
 int Menu = 1;
 int Position = 1;
 char *starList[8];//[11];
-char New_Data = '0';
+//char New_Data = '0';
 
 
 // Transmit Variables
 char tin	= 0;	// SCI transmit display buffer IN pointer
 char tout	= 0;	// SCI transmit display buffer OUT pointer
-#define TSIZE 81	// transmit buffer size (80 characters)
+#define TSIZE 101	// transmit buffer size (80 characters)
 char tbuf[TSIZE];	// SCI transmit display buffer    
 
        	   			 		  			 		      
@@ -364,7 +364,8 @@ void  initializations(void) {
 
 /* Initialize RTI for 2.048 ms interrupt rate */	
   CRGINT_RTIE = 1; // enable RTI interrupt
-  RTICTL = 0x1F; // 2.048ms interrupt rate
+  RTICTL = 0x1F; // 1.024ms interrupt rate
+  //RTICTL =0x50; // 2.048ms interrupt rate
   
   // Initialize LCD
   // Reset LCD by pulsing RST low, then high
@@ -423,9 +424,8 @@ starList[7] = "Vega";
  LCD_printWrap(" LAT:+ __.__\r\n",1);
  LCD_printWrap("LONG:+___.__\r\n",1);
  //LAT
- while(validInput == 0)
+ while(!validInput)
  {
-  RPG = 0;
   while(RPG == 0 && !getOut)
   {
     for(i = 0; i < 12; i++)
@@ -470,11 +470,7 @@ starList[7] = "Vega";
     {
       Latitude[1+j] = '0';
     }
-    else if(i == 11)
-    {
-      j=(j-1)%5;
-    }
-    else if(i == 9)
+    else if(i == 9 || i == 11)
     //else if(rpgrightflag||rpgleftflag)
     {
       //rpgrightflag = 0;
@@ -489,7 +485,12 @@ starList[7] = "Vega";
     }
     else 
     {
-      Latitude[1+j] =  i+'1';
+      if(i != 10 && Latitude[1] == '9' && (j == 1 || j == 2 || j == 3)) {
+        j = (j-1)%4; 
+      } else {
+        
+        Latitude[1+j] =  i+'1';
+      }
     }
     j = (j+1)%4;    
   }
@@ -506,9 +507,8 @@ starList[7] = "Vega";
  RPG = 0;
  j = 0;
  //LONG
- while(validInput == 0)
- {  
-  RPG = 0;
+ while(!validInput)
+ {
   while(RPG == 0 && !getOut)
   {
     for(i = 0; i < 12; i++)
@@ -556,11 +556,7 @@ starList[7] = "Vega";
     {
       Longitude[1+j] = '0';
     }
-    else if(i == 11)
-    {
-      j = (j-1)%5;
-    }
-    else if(i == 9)
+    else if(i == 9 || i == 11)
     {
       if(Longitude[0] == '+')
         Longitude[0] = '-';
@@ -572,11 +568,14 @@ starList[7] = "Vega";
     }
     else 
     {
-      if(j == 0 && (i != 0))
+      if((j == 0 && (i != 0)) ||
+         (j > 0 && Longitude[1] == '1' && i == 8) ||
+         (j > 1 && Longitude[1] == '1' && Longitude[2] == '8'))
       {
         j = (j-1)%5;
+      } else {
+        Longitude[1+j] =  i+'1';
       }
-      Longitude[1+j] =  i+'1';
     }
     j = (j+1)%5;    
   }
@@ -603,10 +602,11 @@ starList[7] = "Vega";
  getOut = 0;
  i = 0;
  j = 0;
- RPG = 0;
  while(!validInput)
- {      
-  RPG = 0;
+ {
+    if (j==8)
+      j=0;
+    clearKeypad();
     while(!getOut && !RPG)
     {
       for(i=0; i<11; i++)
@@ -623,28 +623,14 @@ starList[7] = "Vega";
     if(RPG)
     {
       RPG = 0;
-      if(date[0] != 'Y' && 
-         date[1] != 'Y' && 
-         date[2] != 'Y' && 
-         date[3] != 'Y' &&  
-         date[4] != 'M' && 
-         date[5] != 'M' && 
-         date[6] != 'D' && 
-         date[7] != 'D')
-      {
+      if(date[0] != 'Y' && date[1] != 'Y' && date[2] != 'Y' && date[3] != 'Y' &&  
+         date[4] != 'M' && date[5] != 'M' && date[6] != 'D' && date[7] != 'D') {
+        
           validInput = 1;
-          continue;
-      }
-      else
-      {
-        validInput = 0; 
-        continue;
-      }
+          break;
+         }
     }
-    else
-    {
-      
-    //reset date
+    //reset longitude
     if(j == 0 && date[7] != 'D')
     {
        date[0] = '2';
@@ -661,19 +647,23 @@ starList[7] = "Vega";
     }
     if(i == 9 || i == 11)
     {
-      clearKeypad();
       continue;
     }
     //check valid months
-    if((i != 0 && i != 10) && j == 3)
+    if(
+        (i != 0 && i != 10 && j == 3) ||
+        (i > 1 && i < 9 && date[4] == '1' && j == 4) ||
+        (i == 10 && date[4] == '0' && j == 4)
+        )
     {
-      clearKeypad();
       continue; 
     }
     // valid dates
-    if((i != 0 && i != 10 && i != 1 && i != 2) && j == 5)
-    {
-      clearKeypad();
+    if(((i != 0 && i != 10 && i != 1 && i != 2) && j == 5) ||
+       (i > 1 && i != 10 && j == 6 && date[6] == '3') ||
+       (i == 10 && date[6] == '0' && j==6)
+    )
+    {                   
       continue; 
     }
     
@@ -683,10 +673,8 @@ starList[7] = "Vega";
       date[j+1] = '0'; 
     }
     j = (j+1)%7;
-    updateDate();
-    clearKeypad();
-        
-    }
+    updateDate(); 
+  
  }
  setChar('?', 68, 22, 1);
  updateDisplay();
@@ -694,7 +682,6 @@ starList[7] = "Vega";
  // TIME
  /////////////////////////////
  wait();
- RPG = 0;
  drawRect(2,12,82,46,1,0);
  updateDisplay(); 
  LCD_moveCurGlob(2,12);
@@ -704,10 +691,8 @@ starList[7] = "Vega";
  getOut = 0;
  i = 0;
  j = 0;
- while(validInput == 0)
+ while(!validInput)
  {
- 
-  RPG = 0;
     clearKeypad();
     while(!getOut && !RPG)
     {
@@ -725,25 +710,15 @@ starList[7] = "Vega";
     if(RPG)
     {
       RPG = 0;
-      if(time[0] != 'H' &&
-         time[1] != 'H' && 
-         time[2] != 'M' && 
-         time[3] != 'M')
-      {
+      if(time[0] != 'H' && time[1] != 'H' && time[2] != 'M' && time[3] != 'M') {
+        
           validInput = 1;
-          continue;
-      } 
-        else
-        {
-          validInput = 0; 
-          continue;
-        }
+          break;
+      }
     }
-    else 
-    {
-      
+    RPG = 0;
     //reset time
-    if(j == 0 && time[3] != 'M')
+    if(j == 0 && time[3] != 'M' && i != 9)
     {
        time[0] = 'H';
        time[1] = 'H';
@@ -785,9 +760,9 @@ starList[7] = "Vega";
       time[2] = 'M';
       j = (j-1)%4; 
     }
-    j = (j+1)%5;
+    j = (j+1)%4;
     updateTime(); 
-    }
+  
  }
  setChar('?', 62, 22, 1);
  updateDisplay();
@@ -795,63 +770,16 @@ starList[7] = "Vega";
  //MAIN
  ////////////////////////
  // Adjust time if necessary
- RPG = 0;
+    RPG = 0;
  if (time[4] == 'P') 
  { 
     time[0]+=1;
     time[1]+=2;
  }
+    Menu = 1;
     wait();
     prompt_for_star();
-  
- // Set star
-    star = '0';
-    Menu = 0;
-    drawRect(2,12,82,46,1,0);
-    updateDisplay(); 
-    LCD_moveCurGlob(2,2);
-    LCD_printWrap("Select Star:", 1);     
-    LCD_moveCurGlob(2,12);
-    validInput = 0;
-    getOut = 0;
-    i = 0;
-    j = 0;
-    validInput = 0;
-    while(!validInput)
-    {
-      while(!getOut && !RPG)
-      {
-        for(i=0; i<11; i++)
-        {
-           if(keypad[i])
-           {
-             getOut=1;
-             break;
-           }
-        }
-      }
-      getOut = 0;
-      LCD_moveCurGlob(2,12);
-      // if KP 9 or 11 are pressed, move up or down
-      if(RPG)
-      {
-        validInput = 1;
-      }
-      if(i == 9)
-      {
-        Menu = (Menu-1)%8;
-        star = '0' + Menu;
-      }
-      if(i == 11)
-      {
-        Menu = (Menu+1)%8;
-        star = '0' + Menu; 
-      }
-      // Print 3 things
-      printStarMenu();
-      clearKeypad();
-    }    
-    setChar('?', 74, 22, 1);
+    
  // SEND THINGS
  // Latitude is stored in Latitude = "+XXXX"
  // Longitude is stored in Longitude = "+YYYYY"
@@ -859,28 +787,26 @@ starList[7] = "Vega";
  // Time is stored in time = "HHMMA"
  // then send
  
- 
+    RPG = 0;
     for(;;) 
  
  {
      // Transmit forever until new data is entered
-     bco('n');
-     bco(New_Data);
-     bco('s');
-     bco(star);
-     bco('o');
-     bco(Longitude[0]); //Longitute Sign
-     bco(Longitude[1]);
-     bco(Longitude[2]);
-     bco(Longitude[3]);
-     bco(Longitude[4]);
-     bco(Longitude[5]);
+     //bco('n');
+     //bco(New_Data);
      bco('p');
      bco(Latitude[0]);  // Latitude Sign
      bco(Latitude[1]);
      bco(Latitude[2]);
      bco(Latitude[3]);
-     bco(Latitude[4]);
+     bco(Latitude[4]);    
+     bco('o');
+     bco(Longitude[0]); //Longitude Sign
+     bco(Longitude[1]);
+     bco(Longitude[2]);
+     bco(Longitude[3]);
+     bco(Longitude[4]);
+     bco(Longitude[5]);
      bco('t'); // Month
      bco(date[4]);
      bco(date[5]);
@@ -898,13 +824,15 @@ starList[7] = "Vega";
      bco('m'); // Min
      bco(time[2]);
      bco(time[3]);
-
+     bco('s');
+     bco(star);
+     
      // Change star
      if(RPG == 1) 
      {
         RPG = 0;
         prompt_for_star();
-        New_Data++;
+        //New_Data++;
      }
   
    } /* loop forever */
@@ -938,14 +866,14 @@ interrupt 7 void RTI_ISR(void)
     char rowDR[4] = {&DDRAD_DDRAD6, &DDRAD_DDRAD4, &DDRAD_DDRAD2, &DDRAD_DDRAD1};
     */
     // clear RTI interrupt flagt
-  	CRGFLG = CRGFLG | 0x80;   	
-    // Rotary pulse generator push button
+  	CRGFLG = CRGFLG | 0x80;
+  	// Rotary pulse generator push button
   	if(RPGBUTTON == 1 && prevRPG == 0) RPG=1;
   	if(RPGB == 1 && RPGA == 1 && prevrpgA == 1 && prevrpgB == 0) rpgrightflag = 1;
   	if(RPGA == 1 && RPGB == 1 && prevrpgA == 0 && prevrpgB == 1) rpgleftflag = 1;
   	prevrpgA = RPGA;
   	prevrpgB = RPGB;
-  	prevRPG = RPGBUTTON;
+  	prevRPG = RPGBUTTON;   	
     /*    Keypad Section      */
     // Set row to inputs, column to outputs
     // column = 1,3,5
@@ -1023,6 +951,15 @@ interrupt 7 void RTI_ISR(void)
 		  } else if (PTT_PTT4 == 0) {
 		   prevRPG = 1;
 		  } */
+    // if(PTT_PTT4 != 0) {
+		//   if(prevRPG == 1) {
+		//    RPG = 1;
+		//   }
+		//    prevRPG = 0;
+		//  } else if (PTT_PTT4 == 0) {
+		//   prevRPG = 1;
+		//  }
+  	
   	}
 
 /*
@@ -1195,7 +1132,7 @@ void shiftout(char x) {
   while((SPISR_SPTEF) != 1) {};
   
   SPIDR = x;
-  for(i=0; i<1000; i++);
+  for(i=0; i<300; i++);
 }
 
 void LCD_command(char x) {
@@ -1446,7 +1383,7 @@ void printStarMenu(void)
    drawRect(2,12,82,46,1,0);
    updateDisplay();
    LCD_moveCurGlob(2,12);
-   if(menu>0)
+   if(Menu>0)
     LCD_printWrap(starList[(Menu-1)%8],1);
    else
     LCD_printWrap(starList[7],1);
@@ -1468,10 +1405,11 @@ void wait(void)
 void prompt_for_star(void)
 {
  // Set star
-    star = '0';
-    Menu = 0;
+    star = '1';
+    Menu = 1;  
+    RPG = 0;
+    clearKeypad();
     drawRect(2,12,82,46,1,0);
-    updateDisplay(); 
     LCD_moveCurGlob(2,2);
     LCD_printWrap("Select Star:", 1);     
     LCD_moveCurGlob(2,12);
