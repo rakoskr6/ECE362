@@ -275,6 +275,8 @@ void main(void) {
       {
          new_Data = 0;
          star_Calculate_Complete = 0;
+         azimuth_Complete = 0;
+         altitude_Complete = 0;
       }
       
       if(!star_Calculate_Complete&&Receive_Complete)
