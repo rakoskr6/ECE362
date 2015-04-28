@@ -229,6 +229,26 @@ void  initializations(void) {
   PWMPRCLK = 0x03; //Clock A =  3 MHz
   DDRT_DDRT0 = 1;
   
+  // Motor pin declarations
+  
+  #define stp PM0
+  #define dir STEPPER
+  #define MS1 PORTAD0_PTAD6
+  #define MS2 PORTAD0_PTAD5
+  #define EN  PORTAD0_PTAD7
+  #define RST PORTAD0_PTAD4
+  #define SLEEP PTT_PTT0
+  int num_steps = 0;
+  int curr_angle = 0;
+  
+  // Set pins to output
+  
+  DDRT_AN7 = 1;
+  DDRT_AN5 = 1;
+  DDRT_AN6 = 1;
+  DDRT_STEPPER = 1;
+  DDRT_PM0 = 1;  
+  
             
 /* Initialize interrupts */
 	      
@@ -246,13 +266,43 @@ int i = 0;
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
+	/*
 	    adjusted_ALT = (ALT * (R_90 - Z_00 + 1) / 90.0) + Z_00; // get value for pwm
     final_ALT = floor(adjusted_ALT + 0.5); //rounding
+  */
+  
+  EN = 1;
+  MS1 = 0;
+  MS2 = 0;
+  RST = 1;
+  SLEEP = 1;
+    
 
  for(;;) {
   
 /* < start of your main loop > */ 
 
+    dir = 1;
+    for (i = 0; i < 100; i++) 
+    {
+       step = 1;
+       for (x = 0; x < 100; x++) {}
+       step = 0;
+    }
+   
+    for (i = 0; i < 19999; i++) {}
+    
+    dir = 0;
+    for (i = 0; i < 100; i++) 
+    {
+       step = 1;
+       for (x = 0; x < 100; x++) {}
+       step = 0;
+    }
+   
+   
+   
+   /* SERVO CODE 
    //if (new_Data) 
    //{ 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
@@ -268,12 +318,14 @@ int i = 0;
     //PTT_PTT0 = 1;
     
     for (i = 0; i < 19999; i++) {}
+    
+    new_Data = 0;
+    }
+    */
+    
+    
+    
  
-    
-    
-    
-    //new_Data = 0;
-   //}
   
    } /* loop forever */
    
