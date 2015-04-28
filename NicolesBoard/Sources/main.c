@@ -282,7 +282,7 @@ int j = 0;
 char getOut = 0;
 char date[9] = "2YYYMMDD";
 char time[6] = "HHMMA";
-char star;
+char star = '1';
 int Menu = 1;
 int Position = 1;
 char *starList[8];//[11];
@@ -292,7 +292,7 @@ char *starList[8];//[11];
 // Transmit Variables
 char tin	= 0;	// SCI transmit display buffer IN pointer
 char tout	= 0;	// SCI transmit display buffer OUT pointer
-#define TSIZE 81	// transmit buffer size (80 characters)
+#define TSIZE 101	// transmit buffer size (80 characters)
 char tbuf[TSIZE];	// SCI transmit display buffer    
 
        	   			 		  			 		      
@@ -470,11 +470,7 @@ starList[7] = "Vega";
     {
       Latitude[1+j] = '0';
     }
-    else if(i == 11)
-    {
-      j=(j-1)%5;
-    }
-    else if(i == 9)
+    else if(i == 9 || i == 11)
     //else if(rpgrightflag||rpgleftflag)
     {
       //rpgrightflag = 0;
@@ -560,11 +556,7 @@ starList[7] = "Vega";
     {
       Longitude[1+j] = '0';
     }
-    else if(i == 11)
-    {
-      j = (j-1)%5;
-    }
-    else if(i == 9)
+    else if(i == 9 || i == 11)
     {
       if(Longitude[0] == '+')
         Longitude[0] = '-';
@@ -668,7 +660,8 @@ starList[7] = "Vega";
     }
     // valid dates
     if(((i != 0 && i != 10 && i != 1 && i != 2) && j == 5) ||
-       (i > 1 && i != 10 && j == 6 && date[6] == '3')
+       (i > 1 && i != 10 && j == 6 && date[6] == '3') ||
+       (i == 10 && date[6] == '0' && j==6)
     )
     {                   
       continue; 
@@ -717,12 +710,13 @@ starList[7] = "Vega";
     if(RPG)
     {
       RPG = 0;
-      if(time[1] != 'H' && time[1] != 'H' && time[1] != 'M' && time[1] != 'M') {
+      if(time[0] != 'H' && time[1] != 'H' && time[2] != 'M' && time[3] != 'M') {
         
           validInput = 1;
           break;
       }
     }
+    RPG = 0;
     //reset time
     if(j == 0 && time[3] != 'M' && i != 9)
     {
@@ -776,6 +770,7 @@ starList[7] = "Vega";
  //MAIN
  ////////////////////////
  // Adjust time if necessary
+    RPG = 0;
  if (time[4] == 'P') 
  { 
     time[0]+=1;
@@ -792,7 +787,7 @@ starList[7] = "Vega";
  // Time is stored in time = "HHMMA"
  // then send
  
- 
+    RPG = 0;
     for(;;) 
  
  {
@@ -1137,7 +1132,7 @@ void shiftout(char x) {
   while((SPISR_SPTEF) != 1) {};
   
   SPIDR = x;
-  for(i=0; i<200; i++);
+  for(i=0; i<300; i++);
 }
 
 void LCD_command(char x) {
@@ -1411,9 +1406,10 @@ void prompt_for_star(void)
 {
  // Set star
     star = '1';
-    Menu = 1;
+    Menu = 1;  
+    RPG = 0;
+    clearKeypad();
     drawRect(2,12,82,46,1,0);
-    updateDisplay(); 
     LCD_moveCurGlob(2,2);
     LCD_printWrap("Select Star:", 1);     
     LCD_moveCurGlob(2,12);

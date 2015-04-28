@@ -24,8 +24,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     710
-  _Copy    *toCopyDownBeg 0xD506
+  _Range   pZeroOut       0x900     730
+  _Copy    *toCopyDownBeg 0xD54A
 } _startupData;
 
 *********************************************************************************************
@@ -36,10 +36,10 @@ Section Name                    Size  Type     From       To       Segment
 .startData                        10     R     0xC031     0xC03A   ROM_C000
 .rodata                          480     R     0xC03B     0xC21A   ROM_C000
 .rodata1                         165     R     0xC21B     0xC2BF   ROM_C000
-.text                           4659     R     0xC2C0     0xD4F2   ROM_C000
-.copy                            189     R     0xD506     0xD5C2   ROM_C000
+.text                           4727     R     0xC2C0     0xD536   ROM_C000
+.copy                            190     R     0xD54A     0xD607   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
-.data                            540   R/W      0x900      0xB1B   RAM
+.data                            541   R/W      0x900      0xB1C   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -264,14 +264,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
-.bss                              72   R/W      0xB1C      0xB63   RAM
-.common                           98   R/W      0xB64      0xBC5   RAM
-RUNTIME                           19     R     0xD4F3     0xD505   ROM_C000
+.bss                              72   R/W      0xB1D      0xB64   RAM
+.common                          117   R/W      0xB65      0xBD9   RAM
+RUNTIME                           19     R     0xD537     0xD549   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):        15CB (dec:     5579)
-READ_WRITE (R/W):      3C6 (dec:      966)
+READ_ONLY (R):        1610 (dec:     5648)
+READ_WRITE (R/W):      3DA (dec:      986)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -511,29 +511,29 @@ MODULE:                 -- mc9s12c32.c.o --
 MODULE:                 -- main.c.o --
 - PROCEDURES:
      initializations                           C2C0      D2     210       1   .text       
-     main                                      C392     820    2080       9   .text       
-     RTI_ISR                                   CBB2     27F     639       1   .text       
-     TIM_ISR                                   CE31       4       4       1   .text       
-     SCI_ISR                                   CE35      25      37       1   .text       
-     bco                                       CE5A      2A      42      32   .text       
-     clearKeypad                               CE84       E      14       5   .text       
-     shiftout                                  CE92      14      20       2   .text       
-     LCD_command                               CEA6       B      11       9   .text       
-     updateDisplay                             CEB1      1F      31      23   .text       
-     gotoXY                                    CED0       F      15       1   .text       
-     drawLine                                  CEDF      E1     225       5   .text       
-     setPixel                                  CFC0      5D      93       4   .text       
-     drawRect                                  D01D      87     135       7   .text       
-     fillDisplay                               D0A4      25      37       1   .text       
-     setChar                                   D0C9      63      99      44   .text       
-     LCD_print                                 D12C      59      89       1   .text       
-     LCD_printWrap                             D185      60      96      14   .text       
-     LCD_moveCurGlob                           D1E5       B      11       7   .text       
-     updateDate                                D1F0      B2     178       3   .text       
-     updateTime                                D2A2      8E     142       3   .text       
-     printStarMenu                             D330      85     133       2   .text       
-     wait                                      D3B5      1E      30       3   .text       
-     prompt_for_star                           D3D3     120     288       2   .text       
+     main                                      C392     860    2144       9   .text       
+     RTI_ISR                                   CBF2     27F     639       1   .text       
+     TIM_ISR                                   CE71       4       4       1   .text       
+     SCI_ISR                                   CE75      25      37       1   .text       
+     bco                                       CE9A      2A      42      32   .text       
+     clearKeypad                               CEC4       E      14       6   .text       
+     shiftout                                  CED2      14      20       2   .text       
+     LCD_command                               CEE6       B      11       9   .text       
+     updateDisplay                             CEF1      1F      31      22   .text       
+     gotoXY                                    CF10       F      15       1   .text       
+     drawLine                                  CF1F      E1     225       5   .text       
+     setPixel                                  D000      5D      93       4   .text       
+     drawRect                                  D05D      87     135       7   .text       
+     fillDisplay                               D0E4      25      37       1   .text       
+     setChar                                   D109      63      99      44   .text       
+     LCD_print                                 D16C      59      89       1   .text       
+     LCD_printWrap                             D1C5      60      96      14   .text       
+     LCD_moveCurGlob                           D225       B      11       7   .text       
+     updateDate                                D230      B2     178       3   .text       
+     updateTime                                D2E2      8E     142       3   .text       
+     printStarMenu                             D370      85     133       2   .text       
+     wait                                      D3F5      1E      30       3   .text       
+     prompt_for_star                           D413     124     292       3   .text       
 - VARIABLES:
      ASCII                                     C03B     1E0     480       1   .rodata     
      STRING.Star.Treker..5                     C21B       D      13       1   .rodata1    
@@ -562,29 +562,29 @@ MODULE:                 -- main.c.o --
      prevrpgB                                   AFD       1       1       3   .data       
      Latitude                                   AFE       6       6      23   .data       
      Longitude                                  B04       7       7      29   .data       
-     date                                       B0B       9       9      33   .data       
-     time                                       B14       6       6      28   .data       
-     Menu                                       B1A       2       2      13   .data       
-     keyPadData                                 B1C      18      24      26   .bss        
-     prevkp                                     B34       C      12       3   .bss        
-     keypad                                     B40       C      12       7   .bss        
-     deltaKP                                    B4C       C      12      14   .bss        
-     prevRPG                                    B58       1       1       2   .bss        
-     RPG                                        B59       1       1      19   .bss        
-     rpgleftflag                                B5A       1       1       1   .bss        
-     rpgrightflag                               B5B       1       1       1   .bss        
-     validInput                                 B5C       1       1      14   .bss        
-     i                                          B5D       2       2      40   .bss        
-     j                                          B5F       2       2      43   .bss        
-     getOut                                     B61       1       1      18   .bss        
-     tin                                        B62       1       1       4   .bss        
-     tout                                       B63       1       1       4   .bss        
+     date                                       B0B       9       9      35   .data       
+     time                                       B14       6       6      31   .data       
+     star                                       B1A       1       1       3   .data       
+     Menu                                       B1B       2       2      13   .data       
+     keyPadData                                 B1D      18      24      26   .bss        
+     prevkp                                     B35       C      12       3   .bss        
+     keypad                                     B41       C      12       7   .bss        
+     deltaKP                                    B4D       C      12      14   .bss        
+     prevRPG                                    B59       1       1       2   .bss        
+     RPG                                        B5A       1       1      23   .bss        
+     rpgleftflag                                B5B       1       1       1   .bss        
+     rpgrightflag                               B5C       1       1       1   .bss        
+     validInput                                 B5D       1       1      14   .bss        
+     i                                          B5E       2       2      40   .bss        
+     j                                          B60       2       2      45   .bss        
+     getOut                                     B62       1       1      18   .bss        
+     tin                                        B63       1       1       4   .bss        
+     tout                                       B64       1       1       4   .bss        
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
-     star                                       B64       1       1       3   .common     
      starList                                   B65      10      16      13   .common     
-     tbuf                                       B75      51      81       2   .common     
+     tbuf                                       B75      65     101       2   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -595,8 +595,8 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansisi.lib) --
 - PROCEDURES:
-     _BSHL                                     D4F3       8       8       3   RUNTIME     
-     _BDIVMODS                                 D4FB       B      11       2   RUNTIME     
+     _BSHL                                     D537       8       8       3   RUNTIME     
+     _BDIVMODS                                 D53F       B      11       2   RUNTIME     
 - VARIABLES:
 
 *********************************************************************************************
@@ -604,10 +604,10 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                   710   4659    651
+  main.c.o                                   730   4727    651
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansisi.lib)                     0     19      0
-  other                                      256     12    189
+  other                                      256     12    190
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
@@ -619,7 +619,7 @@ SECTION: ".text"
   printStarMenu wait prompt_for_star 
 SECTION: ".data"
   displayMap cursorX cursorY prevrpgA prevrpgB Latitude Longitude date time 
-  Menu 
+  star Menu 
 SECTION: ".bss"
   keyPadData prevkp keypad deltaKP prevRPG RPG rpgleftflag rpgrightflag 
   validInput i j getOut tin tout 
@@ -1082,7 +1082,7 @@ SECTION: ".abs_section_ffe0"
 SECTION: ".abs_section_ffd6"
   _Vector_20 
 SECTION: ".common"
-  star starList tbuf 
+  starList tbuf 
 SECTION: "RUNTIME"
   _BSHL _BDIVMODS 
 
@@ -1318,26 +1318,26 @@ OBJECT LIST SORTED BY ADDRESS
      prevrpgB                                   AFD       1       1       3   .data       
      Latitude                                   AFE       6       6      23   .data       
      Longitude                                  B04       7       7      29   .data       
-     date                                       B0B       9       9      33   .data       
-     time                                       B14       6       6      28   .data       
-     Menu                                       B1A       2       2      13   .data       
-     keyPadData                                 B1C      18      24      26   .bss        
-     prevkp                                     B34       C      12       3   .bss        
-     keypad                                     B40       C      12       7   .bss        
-     deltaKP                                    B4C       C      12      14   .bss        
-     prevRPG                                    B58       1       1       2   .bss        
-     RPG                                        B59       1       1      19   .bss        
-     rpgleftflag                                B5A       1       1       1   .bss        
-     rpgrightflag                               B5B       1       1       1   .bss        
-     validInput                                 B5C       1       1      14   .bss        
-     i                                          B5D       2       2      40   .bss        
-     j                                          B5F       2       2      43   .bss        
-     getOut                                     B61       1       1      18   .bss        
-     tin                                        B62       1       1       4   .bss        
-     tout                                       B63       1       1       4   .bss        
-     star                                       B64       1       1       3   .common     
+     date                                       B0B       9       9      35   .data       
+     time                                       B14       6       6      31   .data       
+     star                                       B1A       1       1       3   .data       
+     Menu                                       B1B       2       2      13   .data       
+     keyPadData                                 B1D      18      24      26   .bss        
+     prevkp                                     B35       C      12       3   .bss        
+     keypad                                     B41       C      12       7   .bss        
+     deltaKP                                    B4D       C      12      14   .bss        
+     prevRPG                                    B59       1       1       2   .bss        
+     RPG                                        B5A       1       1      23   .bss        
+     rpgleftflag                                B5B       1       1       1   .bss        
+     rpgrightflag                               B5C       1       1       1   .bss        
+     validInput                                 B5D       1       1      14   .bss        
+     i                                          B5E       2       2      40   .bss        
+     j                                          B60       2       2      45   .bss        
+     getOut                                     B62       1       1      18   .bss        
+     tin                                        B63       1       1       4   .bss        
+     tout                                       B64       1       1       4   .bss        
      starList                                   B65      10      16      13   .common     
-     tbuf                                       B75      51      81       2   .common     
+     tbuf                                       B75      65     101       2   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
      ASCII                                     C03B     1E0     480       1   .rodata     
@@ -1361,31 +1361,31 @@ OBJECT LIST SORTED BY ADDRESS
      STRING.Finding....22                      C2B1       B      11       1   .rodata1    
      STRING.....23                             C2BC       4       4       1   .rodata1    
      initializations                           C2C0      D2     210       1   .text       
-     main                                      C392     820    2080       9   .text       
-     RTI_ISR                                   CBB2     27F     639       1   .text       
-     TIM_ISR                                   CE31       4       4       1   .text       
-     SCI_ISR                                   CE35      25      37       1   .text       
-     bco                                       CE5A      2A      42      32   .text       
-     clearKeypad                               CE84       E      14       5   .text       
-     shiftout                                  CE92      14      20       2   .text       
-     LCD_command                               CEA6       B      11       9   .text       
-     updateDisplay                             CEB1      1F      31      23   .text       
-     gotoXY                                    CED0       F      15       1   .text       
-     drawLine                                  CEDF      E1     225       5   .text       
-     setPixel                                  CFC0      5D      93       4   .text       
-     drawRect                                  D01D      87     135       7   .text       
-     fillDisplay                               D0A4      25      37       1   .text       
-     setChar                                   D0C9      63      99      44   .text       
-     LCD_print                                 D12C      59      89       1   .text       
-     LCD_printWrap                             D185      60      96      14   .text       
-     LCD_moveCurGlob                           D1E5       B      11       7   .text       
-     updateDate                                D1F0      B2     178       3   .text       
-     updateTime                                D2A2      8E     142       3   .text       
-     printStarMenu                             D330      85     133       2   .text       
-     wait                                      D3B5      1E      30       3   .text       
-     prompt_for_star                           D3D3     120     288       2   .text       
-     _BSHL                                     D4F3       8       8       3   RUNTIME     
-     _BDIVMODS                                 D4FB       B      11       2   RUNTIME     
+     main                                      C392     860    2144       9   .text       
+     RTI_ISR                                   CBF2     27F     639       1   .text       
+     TIM_ISR                                   CE71       4       4       1   .text       
+     SCI_ISR                                   CE75      25      37       1   .text       
+     bco                                       CE9A      2A      42      32   .text       
+     clearKeypad                               CEC4       E      14       6   .text       
+     shiftout                                  CED2      14      20       2   .text       
+     LCD_command                               CEE6       B      11       9   .text       
+     updateDisplay                             CEF1      1F      31      22   .text       
+     gotoXY                                    CF10       F      15       1   .text       
+     drawLine                                  CF1F      E1     225       5   .text       
+     setPixel                                  D000      5D      93       4   .text       
+     drawRect                                  D05D      87     135       7   .text       
+     fillDisplay                               D0E4      25      37       1   .text       
+     setChar                                   D109      63      99      44   .text       
+     LCD_print                                 D16C      59      89       1   .text       
+     LCD_printWrap                             D1C5      60      96      14   .text       
+     LCD_moveCurGlob                           D225       B      11       7   .text       
+     updateDate                                D230      B2     178       3   .text       
+     updateTime                                D2E2      8E     142       3   .text       
+     printStarMenu                             D370      85     133       2   .text       
+     wait                                      D3F5      1E      30       3   .text       
+     prompt_for_star                           D413     124     292       3   .text       
+     _BSHL                                     D537       8       8       3   RUNTIME     
+     _BDIVMODS                                 D53F       B      11       2   RUNTIME     
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1412,93 +1412,99 @@ rtshc12.c.o (ansisi.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xD506 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD54A ---- SIZE       4 ---
 Filling bytes inserted
  000C0923
-------- ROM-ADDRESS: 0xD50A ---- RAM-ADDRESS: 0x923 ---- SIZE      12 ---
+------- ROM-ADDRESS: 0xD54E ---- RAM-ADDRESS: 0x923 ---- SIZE      12 ---
 Name of initialized Object : displayMap:35
  E0F0F8FCFC FEFEFEFE1E 0E02
-------- ROM-ADDRESS: 0xD516 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD55A ---- SIZE       4 ---
 Filling bytes inserted
  00150977
-------- ROM-ADDRESS: 0xD51A ---- RAM-ADDRESS: 0x977 ---- SIZE      21 ---
+------- ROM-ADDRESS: 0xD55E ---- RAM-ADDRESS: 0x977 ---- SIZE      21 ---
 Name of initialized Object : displayMap:119
  030F1F3F7F FFFFFFFFFF FEFCF8F8F0
  F8FEFEFCF8 E0
-------- ROM-ADDRESS: 0xD52F ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD573 ---- SIZE       4 ---
 Filling bytes inserted
  001F09C2
-------- ROM-ADDRESS: 0xD533 ---- RAM-ADDRESS: 0x9C2 ---- SIZE      31 ---
+------- ROM-ADDRESS: 0xD577 ---- RAM-ADDRESS: 0x9C2 ---- SIZE      31 ---
 Name of initialized Object : displayMap:194
  F8FCFEFEFF FFF3E0E0C0 C0C0E0E0F1
  FFFFFFFFFF FFFFFFFFFF FFFFFFFFFF
  3E
-------- ROM-ADDRESS: 0xD552 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD596 ---- SIZE       4 ---
 Filling bytes inserted
  001E0A16
-------- ROM-ADDRESS: 0xD556 ---- RAM-ADDRESS: 0xA16 ---- SIZE      30 ---
+------- ROM-ADDRESS: 0xD59A ---- RAM-ADDRESS: 0xA16 ---- SIZE      30 ---
 Name of initialized Object : displayMap:278
  FFFFFFFFFF FFFFFFFFFF FFFFFFFFFF
  FFFFFFFFFF FFFFFFFFFF 7F3F1F0701
-------- ROM-ADDRESS: 0xD574 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD5B8 ---- SIZE       4 ---
 Filling bytes inserted
  00180A6A
-------- ROM-ADDRESS: 0xD578 ---- RAM-ADDRESS: 0xA6A ---- SIZE      24 ---
+------- ROM-ADDRESS: 0xD5BC ---- RAM-ADDRESS: 0xA6A ---- SIZE      24 ---
 Name of initialized Object : displayMap:362
  FFFFFFFFFF FFFF7F3F1F 0F0F0F0707
  0707070707 03030101
-------- ROM-ADDRESS: 0xD590 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD5D4 ---- SIZE       4 ---
 Filling bytes inserted
  00060ABE
-------- ROM-ADDRESS: 0xD594 ---- RAM-ADDRESS: 0xABE ---- SIZE       6 ---
+------- ROM-ADDRESS: 0xD5D8 ---- RAM-ADDRESS: 0xABE ---- SIZE       6 ---
 Name of initialized Object : displayMap:446
  3F1F0F0703 01
-------- ROM-ADDRESS: 0xD59A ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD5DE ---- SIZE       4 ---
 Filling bytes inserted
- 00230AF9
-------- ROM-ADDRESS: 0xD59E ---- RAM-ADDRESS: 0xAF9 ---- SIZE       1 ---
+ 00240AF9
+------- ROM-ADDRESS: 0xD5E2 ---- RAM-ADDRESS: 0xAF9 ---- SIZE       1 ---
 Name of initialized Object : cursorX:1
  02
-------- ROM-ADDRESS: 0xD59F ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5E3 ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD5A0 ---- RAM-ADDRESS: 0xAFB ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5E4 ---- RAM-ADDRESS: 0xAFB ---- SIZE       1 ---
 Name of initialized Object : cursorY:1
  0C
-------- ROM-ADDRESS: 0xD5A1 ---- RAM-ADDRESS: 0xAFC ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5E5 ---- RAM-ADDRESS: 0xAFC ---- SIZE       1 ---
 Name of initialized Object : prevrpgA
  01
-------- ROM-ADDRESS: 0xD5A2 ---- RAM-ADDRESS: 0xAFD ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5E6 ---- RAM-ADDRESS: 0xAFD ---- SIZE       1 ---
 Name of initialized Object : prevrpgB
  01
-------- ROM-ADDRESS: 0xD5A3 ---- RAM-ADDRESS: 0xAFE ---- SIZE       5 ---
+------- ROM-ADDRESS: 0xD5E7 ---- RAM-ADDRESS: 0xAFE ---- SIZE       5 ---
 Name of initialized Object : Latitude
  2B5F5F5F5F
-------- ROM-ADDRESS: 0xD5A8 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5EC ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD5A9 ---- RAM-ADDRESS: 0xB04 ---- SIZE       6 ---
+------- ROM-ADDRESS: 0xD5ED ---- RAM-ADDRESS: 0xB04 ---- SIZE       6 ---
 Name of initialized Object : Longitude
  2B5F5F5F5F 5F
-------- ROM-ADDRESS: 0xD5AF ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5F3 ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD5B0 ---- RAM-ADDRESS: 0xB0B ---- SIZE       8 ---
+------- ROM-ADDRESS: 0xD5F4 ---- RAM-ADDRESS: 0xB0B ---- SIZE       8 ---
 Name of initialized Object : date
  325959594D 4D4444
-------- ROM-ADDRESS: 0xD5B8 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD5FC ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD5B9 ---- RAM-ADDRESS: 0xB14 ---- SIZE       5 ---
+------- ROM-ADDRESS: 0xD5FD ---- RAM-ADDRESS: 0xB14 ---- SIZE       5 ---
 Name of initialized Object : time
  48484D4D41
-------- ROM-ADDRESS: 0xD5BE ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD602 ---- SIZE       1 ---
 Filling bytes inserted
- 0000
-------- ROM-ADDRESS: 0xD5C0 ---- RAM-ADDRESS: 0xB1B ---- SIZE       1 ---
+ 00
+------- ROM-ADDRESS: 0xD603 ---- RAM-ADDRESS: 0xB1A ---- SIZE       1 ---
+Name of initialized Object : star
+ 31
+------- ROM-ADDRESS: 0xD604 ---- SIZE       1 ---
+Filling bytes inserted
+ 00
+------- ROM-ADDRESS: 0xD605 ---- RAM-ADDRESS: 0xB1C ---- SIZE       1 ---
 Name of initialized Object : Menu:1
  01
-------- ROM-ADDRESS: 0xD5C1 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD606 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1520,8 +1526,8 @@ main                      USES STRING.Betelgeuse.6 starList STRING.Canopus.7
                                 STRING.LONG..___.__...16 main i keypad getOut RPG Latitude validInput j 
                                 setChar updateDisplay clearKeypad Longitude wait 
                                 drawRect LCD_moveCurGlob STRING.Date....17 updateDate 
-                                date STRING.Time....18 updateTime time Menu bco 
-                                star prompt_for_star 
+                                date STRING.Time....18 updateTime time Menu 
+                                prompt_for_star bco star 
 RTI_ISR                   USES _CRGFLG _PTT prevRPG RPG prevrpgA prevrpgB 
                                 rpgrightflag rpgleftflag deltaKP _PTAD keyPadData prevkp 
                                 keypad 
@@ -1546,10 +1552,10 @@ updateTime                USES time setChar updateDisplay
 printStarMenu             USES drawRect updateDisplay LCD_moveCurGlob Menu 
                                 starList LCD_printWrap STRING......19 STRING....20 
 wait                      USES i j 
-prompt_for_star           USES star Menu drawRect updateDisplay 
+prompt_for_star           USES star Menu RPG clearKeypad drawRect 
                                 LCD_moveCurGlob STRING.Select.Star..21 LCD_printWrap getOut i 
                                 j validInput printStarMenu prompt_for_star 
-                                keypad RPG clearKeypad STRING.Finding....22 starList 
+                                keypad updateDisplay STRING.Finding....22 starList 
                                 STRING.....23 
 _Vector_20                USES SCI_ISR 
 _Vector_15                USES TIM_ISR 
@@ -1626,32 +1632,32 @@ DEPENDENCY TREE
  |  |  |  
  |  |  +- updateDisplay        (see above)
  |  |     
- |  +- bco                 
- |  |  | 
- |  |  +- _BDIVMODS           
- |  |       
  |  +- prompt_for_star     
+ |  |  | 
+ |  |  +- clearKeypad          (see above)
+ |  |  |  
+ |  |  +- drawRect             (see above)
+ |  |  |  
+ |  |  +- LCD_moveCurGlob      (see above)
+ |  |  |  
+ |  |  +- LCD_printWrap        (see above)
+ |  |  |  
+ |  |  +- printStarMenu       
+ |  |  |  | 
+ |  |  |  +- drawRect             (see above)
+ |  |  |  |  
+ |  |  |  +- updateDisplay        (see above)
+ |  |  |  |  
+ |  |  |  +- LCD_moveCurGlob      (see above)
+ |  |  |  |  
+ |  |  |  +- LCD_printWrap        (see above)
+ |  |  |     
+ |  |  +- updateDisplay        (see above)
+ |  |     
+ |  +- bco                 
  |     | 
- |     +- drawRect             (see above)
- |     |  
- |     +- updateDisplay        (see above)
- |     |  
- |     +- LCD_moveCurGlob      (see above)
- |     |  
- |     +- LCD_printWrap        (see above)
- |     |  
- |     +- printStarMenu       
- |     |  | 
- |     |  +- drawRect             (see above)
- |     |  |  
- |     |  +- updateDisplay        (see above)
- |     |  |  
- |     |  +- LCD_moveCurGlob      (see above)
- |     |  |  
- |     |  +- LCD_printWrap        (see above)
- |     |     
- |     +- clearKeypad          (see above)
- |        
+ |     +- _BDIVMODS           
+ |          
  +- _Startup            
     | 
     +- Init                
@@ -1679,5 +1685,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 10
-Total size of all blocks to be downloaded: 5579
+Total size of all blocks to be downloaded: 5648
 
