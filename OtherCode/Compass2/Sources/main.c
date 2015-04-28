@@ -72,21 +72,23 @@ void outchar(char x);
 
 //SPI Utility Functions
 void transmit(char x);
-char receive();
+char receive(void);
 char transfer(char x);
 
 //Compass Utility Functions
 char compassReadByte(char x);
 void compassWriteByte(char address, char data);
 void compassReadBytes(char address, char * dest, char count);
-void readMag();
-double getHeading(double xMag, double yMag);
+void readMag(void);
+void getHeading(double xMag, double yMag);
 
 
 /* Variable declarations */
 double mRes = 2.0 / 32768.0;
 char mx; char my; char mz;
 char check;
+double heading; double headingSum = 0; double avgHeading = 0;
+int i = 0;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -186,13 +188,16 @@ void main(void) {
 	initializations(); 		  			 		  		
 	EnableInterrupts;
   check = compassReadByte(WHO_AM_I_XM);
-  readMag();
-  getHeading((double) mx, (double) my);
- for(;;) {
+  for(;;){
+   
+  for(i = 0; i < 1000; i++){
+    readMag();
+    getHeading((double) mx, (double) my);
+    headingSum += heading;
+  }
   
-/* < start of your main loop > */ 
-  
-  
+  avgHeading = headingSum / 1000.0;
+  headingSum = 0; 
 
   
    } /* loop forever */
@@ -248,14 +253,14 @@ void compassWriteByte(char address, char data){
 }
 
 void compassReadBytes(char address, char * dest, char count){
-  int i;
+  int compassByte;
   COMPCS = 0;
   SPICR1 |= 0x40; //Enables SPI
   address &= 0x3F; //Only last six bits are valid address
   address |= 0xC0; //First two bits on for read and multibyte
   transfer(address); //First two bits on
-  for(i = 0; i < count; i++){
-    dest[i] = transfer(0x00); //Read into destination array
+  for(compassByte = 0; compassByte < count; compassByte++){
+    dest[compassByte] = transfer(0x00); //Read into destination array
   }
   SPICR1 &= 0xBF; //Disables SPI
   COMPCS = 1;
@@ -269,8 +274,7 @@ void readMag(){
   mz = (temp[5] << 8) | temp[4];
 }
 
-double getHeading(double xMag, double yMag){
-  double heading;
+void getHeading(double xMag, double yMag){
   if(yMag > 0){
     heading = 90.0 - (atan(xMag/yMag) * (180/PI));
   } else if(yMag < 0){
@@ -279,7 +283,6 @@ double getHeading(double xMag, double yMag){
     if(xMag < 0) heading = 180;
     else heading = 0;
   }
-  return heading;
 }
   
 
