@@ -79,6 +79,7 @@ void stepDegrees(double degrees);
 
 
 /* Variable declarations */
+char currentStepSize = 0;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -114,8 +115,8 @@ void stepDegrees(double degrees);
 #define EIGHTHSTEP 3
 
 /* MOTOR DIRECTION */
-#define CW 1
-#define CCW 0
+#define CW 0
+#define CCW 1
 #define TOGGLEDIR 2
 
 	 	   		
@@ -159,7 +160,7 @@ DDRM_DDRM0 = 1;    // Motor Step
 DDRT_DDRT0 = 1;    // Motor Sleep
 
 MOTOREN = 0;
-setStep(HALFSTEP);
+setStep(QUARTERSTEP);
 MOTORRST = 1;
 MOTORSLP = 1;
 setDir(CW);
@@ -213,6 +214,7 @@ void setDir(char dir){
 }
 
 void setStep(char stepSize){
+  currentStepSize = stepSize;
   if(stepSize == FULLSTEP || stepSize == HALFSTEP){
     MOTORMS2 = 0;
   } else{
@@ -235,7 +237,20 @@ void stepMotorMult(int steps){
 }
 
 void stepDegrees(double degrees){
-  int steps = degrees/0.9;
+  double degreesPerStep; int steps;
+  if(currentStepSize == FULLSTEP) {
+    degreesPerStep = 1.8;
+  }
+  else if(currentStepSize == HALFSTEP) {
+    degreesPerStep = 0.9;
+  }
+  else if(currentStepSize == QUARTERSTEP) {
+    degreesPerStep = 0.45;
+  }
+  else {
+    degreesPerStep = 0.225;
+  }
+  steps = degrees/degreesPerStep;
   stepMotorMult(steps);
 }
 
