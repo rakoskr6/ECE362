@@ -9,14 +9,10 @@
 
  Team Members:
 
-   - Team/Doc Leader: < ? >      Signature: ______________________
-   
-   - Software Leader: < ? >      Signature: ______________________
-
-   - Interface Leader: < ? >     Signature: ______________________
-
-   - Peripheral Leader: < ? >    Signature: Christopher Chow______
-
+   - Team/Doc Leader: < ? >      Signature: Allison Gruninger________
+   - Software Leader: < ? >      Signature: Alexander Marcellus______
+   - Interface Leader: < ? >     Signature: Kyle Rakos / Nicole laGue
+   - Peripheral Leader: < ? >    Signature: Christopher Chow_________
 
  Academic Honesty Statement:  In signing above, we hereby certify that we 
  are the individuals who created this HC(S)12 source file and that we have
@@ -26,9 +22,19 @@
 
 ***********************************************************************
 
- The objective of this Mini-Project is to .... < ? >
-
-
+ The objective of this board is to allow for user input for transmission
+ to the second board. A keypad via the AN1-7 pins are interfaced and used
+ as digital inputs. A custom Nokia 48x84 LCD display is used via the SPI
+ interface, so that it is not necessary to use a shift register to send
+ commands to the LCD. The TX/RX pins are connected to a RS232->5V level
+ translator, then a 5V->3V level translator, then to the XBee wireless
+ communicator that will communicate with another XBee on the other board,
+ sending the following data:
+   Latitude, Longitude
+   Year, Month, Day
+   Hour, Minute
+   Star Index
+   
 ***********************************************************************
 
  List of project-specific success criteria (functionality that will be
@@ -46,16 +52,16 @@
 
 ***********************************************************************
 
-  Date code started: < ? >
+  Date code started: 4/24
 
   Update history (add an entry every time a significant change is made):
 
   Date: 4/25   Name: Christopher Chow   Update: Created: LCD, Keypad code
-
-  Date: < ? >  Name: < ? >   Update: < ? >
-
-  Date: < ? >  Name: < ? >   Update: < ? >
-
+  Date: 4/26   Name: Christopher Chow   Update: Merged RPG code from Alex
+  Date: 4/26   Name: Christopher Chow   Update: Added input prompts
+  Date: 4/27   Name: Christopher Chow   Update: Error trapping for input prompts
+  Date: 4/27   Name: Nicole LaGue       Update: Merged XBee code
+  Date: 4/29   Name: Christopher Chow   Update: more Error Trapping
 
 ***********************************************************************
 */
@@ -68,8 +74,6 @@
 /* DEBUG DECLARATION */
 // for protoboard use only
 #define DEBUG
-
-
 
 // LCD DECLARATION
 #define LCD_WIDTH 84
@@ -110,6 +114,7 @@ static const byte ASCII[][5] = {
   ,{0x14, 0x14, 0x14, 0x14, 0x14} // 0x3d =
   ,{0x00, 0x41, 0x22, 0x14, 0x08} // 0x3e >
   //,{0x02, 0x01, 0x51, 0x09, 0x06} // 0x3f ?
+  // Replace question mark with a checkmark
     ,{0b00110000, 0b01100000, 0b00110000, 0b00011000, 0b00001100}
   ,{0x32, 0x49, 0x79, 0x41, 0x3e} // 0x40 @
   ,{0x7e, 0x11, 0x11, 0x11, 0x7e} // 0x41 A
@@ -242,14 +247,18 @@ void fillDisplay(char bw);
 void setChar(char character, int x, int y, char bw);
 void LCD_print(char * message, int x, int y, char bw);
 void LCD_printWrap(char * message, char bw);
-int getKeypadPressed(void);
 void LCD_moveCurGlob(int x, int y);
+void updateLatitude(void);
+void updateLongitude(void);
 void updateDate(void);
 void updateTime(void);
-void clearKeypad(void);
 void printStarMenu(void);
 void wait(void);
 void prompt_for_star(void);
+
+// Keypad Commands
+void clearKeypad(void);
+int getKeypadPressed(void);
 
 /* Variable declarations */
 int keyPadData[3][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0}}; 
@@ -257,22 +266,27 @@ int keyPadData[3][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
 char prevkp[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 char keypad[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 char deltaKP[3][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+
+// LCD variables
 int cursorX = 2;
 int cursorY = 12;
+
+// TIM 
 char tencnt = 0;
 char onecnt = 0;
 char cursorToggle = 0;
-char prevRPG = 0;
-char RPG = 0;
 
+// RPG Variables
 #define RPGA PTT_PTT6
 #define RPGB PTT_PTT5
 #define RPGBUTTON PTT_PTT4
-
+char prevRPG = 0;
+char RPG = 0;
 char rpgleftflag = 0;
 char rpgrightflag = 0;
 char prevrpgA = 1;
 char prevrpgB = 1;
+
 char validInput = 0;
 char Latitude[6] = "+____";
 char Longitude[7] = "+_____";
@@ -333,6 +347,8 @@ void  initializations(void) {
   DDRT_DDRT1 = 1;                    
   #endif        
   
+  
+// TIM isn't necessary
 /* 
    Initialize TIM Ch 7 (TC7) for periodic interrupts every 10.0 ms  
     - Enable timer subsystem                         
@@ -340,7 +356,8 @@ void  initializations(void) {
     - Set appropriate pre-scale factor and enable counter reset after OC7
     - Set up channel 7 to generate 10 ms interrupt rate
     - Initially disable TIM Ch 7 interrupts	 	   			 		  			 		  		
-*/	 	   			 		  			 		  		
+*/	 	   	
+/*		 		  			 		  		
   TSCR1_TEN = 1; // enable timer subsystem
   TIOS_IOS7 = 1; // 7 as output compare
   //TSCR2_PR2 = 1; // prescale to 16
@@ -349,7 +366,7 @@ void  initializations(void) {
   TIE_C7I = 0;   // disable channel 7 interrupts
   
   TC7 = 15000;     // 10ms interrupt rate = tc7 15000
-  
+  */
     
   // Initialize SPI for LCD
   //
@@ -403,10 +420,7 @@ Main
 */
 void main(void) {
 /*#############################
-
-
 STAR DECLARATIONS
-
 #############################*/
 
 starList[0] = "Betelgeuse";
@@ -418,19 +432,24 @@ starList[5] = "Sirius";
 starList[6] = "Sun";
 starList[7] = "Vega";
 
-  DisableInterrupts
+   DisableInterrupts;
 	initializations(); 		  			 		  		
 	EnableInterrupts;
+   
 // Begin Prompt Section
-// Prompt for Things
+ // Position
+ //////////////////////////////////
+ //Latitude
+ //////////////////////////////////
  LCD_printWrap("Position:\r\n", 1);
  LCD_printWrap(" LAT:+ __.__\r\n",1);
  LCD_printWrap("LONG:+___.__\r\n",1);
- //LAT
+ 
  while(!validInput)
  {
   while(RPG == 0 && !getOut)
   {
+  /*
     for(i = 0; i < 12; i++)
     {
       if(keypad[i] == 1)
@@ -439,6 +458,8 @@ starList[7] = "Vega";
         break;
       }
     }
+   */
+   i = getKeypadPressed();
   }
   getOut = 0;
   if(RPG == 1)
@@ -456,36 +477,32 @@ starList[7] = "Vega";
   }
   else
   { 
+   // reset input if you input too much
    if(j == 0 && Latitude[4] != '_' && i != 9)
     {
        for(j=1; j<5; j++)
        {
        Latitude[j] = '_'; 
        }
-      setChar(Latitude[1], 44, 22, 1);
-      setChar(Latitude[2], 50, 22, 1);
-      setChar(Latitude[3], 62, 22, 1);
-      setChar(Latitude[4], 68, 22, 1);
-      updateDisplay();
+      updateLatitude();
         j=0;
     }
+    // Zero pressed
     if(i == 10)
     {
       Latitude[1+j] = '0';
     }
+    // Change sign
     else if(i == 9 || i == 11)
-    //else if(rpgrightflag||rpgleftflag)
     {
-      //rpgrightflag = 0;
-      //rpgleftflag = 0;
       if(Latitude[0] == '+')
         Latitude[0] = '-';
       else
         Latitude[0] = '+';
-    setChar(Latitude[0], 32, 22, 1);
-    updateDisplay(); 
+    updateLatitude();
     j = (j-1)%5;
     }
+    // Error trap for |latitude| > 90.00
     else 
     {
       if(i != 10 && Latitude[1] == '9' && (j == 1 || j == 2 || j == 3)) {
@@ -497,11 +514,7 @@ starList[7] = "Vega";
     }
     j = (j+1)%4;    
   }
-  setChar(Latitude[1], 44, 22, 1);
-  setChar(Latitude[2], 50, 22, 1);
-  setChar(Latitude[3], 62, 22, 1);
-  setChar(Latitude[4], 68, 22, 1);
-  updateDisplay();
+  updateLatitude();
   clearKeypad();
  }
  setChar('?', 74, 22, 1);
@@ -509,7 +522,10 @@ starList[7] = "Vega";
  validInput = 0;
  RPG = 0;
  j = 0;
- //LONG
+ /////////////////////////////
+ // Get Longitude
+ /////////////////////////////
+ 
  while(!validInput)
  {
   while(RPG == 0 && !getOut)
@@ -547,12 +563,7 @@ starList[7] = "Vega";
        {
        Longitude[j] = '_'; 
        }   
-        setChar(Longitude[1], 38, 32, 1);
-        setChar(Longitude[2], 44, 32, 1);
-        setChar(Longitude[3], 50, 32, 1);
-        setChar(Longitude[4], 62, 32, 1);
-        setChar(Longitude[5], 68, 32, 1);
-        updateDisplay();
+        updateLongitude();
         j=0;
     }
     if(i == 10)
@@ -565,8 +576,7 @@ starList[7] = "Vega";
         Longitude[0] = '-';
       else
         Longitude[0] = '+';
-    setChar(Longitude[0], 32, 32, 1);
-    updateDisplay();
+        updateLongitude();
     j = (j-1)%5;
     }
     else 
@@ -582,12 +592,7 @@ starList[7] = "Vega";
     }
     j = (j+1)%5;    
   }
-  setChar(Longitude[1], 38, 32, 1);
-  setChar(Longitude[2], 44, 32, 1);
-  setChar(Longitude[3], 50, 32, 1);
-  setChar(Longitude[4], 62, 32, 1);
-  setChar(Longitude[5], 68, 32, 1);
-  updateDisplay();
+  updateLongitude();
   clearKeypad();
  }
  setChar('?', 74, 32, 1);
@@ -663,7 +668,7 @@ starList[7] = "Vega";
     }
     // valid dates
     if(((i != 0 && i != 10 && i != 1 && i != 2) && j == 5) ||
-       (i > 1 && i != 10 && j == 6 && date[6] == '3') ||
+       (i > 0 && i != 10 && j == 6 && date[6] == '3') ||
        (i == 10 && date[6] == '0' && j==6)
     )
     {                   
@@ -1101,7 +1106,7 @@ int getKeypadPressed(void)
   {
      if(keypad[i])
      {     
-        //keypad[i] = 0;
+        getOut = 1;
         return i;
      }
   }
@@ -1352,6 +1357,27 @@ void LCD_moveCurGlob(int x, int y)
 /////////////////////////////////////////////////////
 // LCD / INPUT FUNCTIONS
 /////////////////////////////////////////////////////
+
+void updateLatitude(void)
+{
+      setChar(Latitude[0], 32, 22, 1);
+      setChar(Latitude[1], 44, 22, 1);
+      setChar(Latitude[2], 50, 22, 1);
+      setChar(Latitude[3], 62, 22, 1);
+      setChar(Latitude[4], 68, 22, 1);
+      updateDisplay();
+}
+
+void updateLongitude(void)
+{
+   setChar(Longitude[0], 32, 32, 1);
+   setChar(Longitude[1], 38, 32, 1);
+   setChar(Longitude[2], 44, 32, 1);
+   setChar(Longitude[3], 50, 32, 1);
+   setChar(Longitude[4], 62, 32, 1);
+   setChar(Longitude[5], 68, 32, 1);
+   updateDisplay();
+}
 
 void updateDate(void)
 {
