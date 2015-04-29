@@ -64,6 +64,7 @@
 #include "derivative.h"      /* derivative-specific definitions */
 #include <mc9s12c32.h>
 #include <float.h>
+#include <math.h>
 
 /* All functions after main should be initialized here */
 char inchar(void);
@@ -72,14 +73,17 @@ void outchar(char x);
 /* Stepper Motor Utility Functions */
 void stepMotor();
 void delay();
-void setDir(char dir);
+void bigDelay();
+void setStepperDir(char dir);
 void setStep(char stepSize);
 void stepMotorMult(int steps);
 void stepDegrees(double degrees);
-void rotateToDegree(double destination);
+void stepToDegree(double destination);
 
 
 /* Variable declarations */
+
+// Stepper Motor Status Variables
 char currentStepSize = 0;
 double currentPosition = 0;
    	   			 		  			 		       
@@ -166,7 +170,7 @@ MOTOREN = 0;
 setStep(QUARTERSTEP);
 MOTORRST = 1;
 MOTORSLP = 1;
-setDir(CW);
+setStepperDir(CW);
 MOTORSTEP = 0;   
 /* Initialize interrupts */
 	      
@@ -184,7 +188,13 @@ void main(void) {
 	initializations(); 		  			 		  		
 	EnableInterrupts;
 	
-	  stepDegrees(90); 
+	  stepToDegree(180.45);
+	  bigDelay();
+	  stepToDegree(0);
+	  bigDelay();
+	  stepToDegree(90);
+	  bigDelay();
+	  stepToDegree(0); 
   
 
  for(;;) {
@@ -198,8 +208,16 @@ STEPPER UTILITY FUNCTIONS
 ******************
 */
 void delay(){
-  int i;
-  for(i = 0; i < 10000; i++){}
+  int count;
+  for(count = 0; count < 10000; count++){}
+}
+
+void bigDelay(){
+  int outer; int inner;
+  for(outer = 0; outer < 1000; outer++){
+    for(inner = 0; inner < 500; inner++){
+    }
+  }
 }
 
 void stepMotor(){ // Pulses the step pin
@@ -210,7 +228,7 @@ void stepMotor(){ // Pulses the step pin
   delay();
 }
 
-void setDir(char dir){
+void setStepperDir(char dir){
   if(dir == CW || dir == CCW) MOTORDIR = dir;
   else MOTORDIR ^= 1; //Toggles direction if dir invalid
   delay();
@@ -233,32 +251,52 @@ void setStep(char stepSize){
 }
 
 void stepMotorMult(int steps){
-  int i;
-  for(i = 0; i < steps; i++){
+  int count;
+  for(count = 0; count < steps; count++){
     stepMotor();
   }
 }
 
 void stepDegrees(double degrees){
   double degreesPerStep; int steps; 
+  
   // A full step moves the motor 1.8 degrees
-  if(currentStepSize == FULLSTEP) {
-    degreesPerStep = 1.8;
-  }
-  else if(currentStepSize == HALFSTEP) {
-    degreesPerStep = 0.9;
-  }
-  else if(currentStepSize == QUARTERSTEP) {
-    degreesPerStep = 0.45;
-  }
-  else {
-    degreesPerStep = 0.225;
-  }
+  if(currentStepSize == FULLSTEP) degreesPerStep = 1.8;
+  else if(currentStepSize == HALFSTEP) degreesPerStep = 0.9;
+  else if(currentStepSize == QUARTERSTEP) degreesPerStep = 0.45;
+  else degreesPerStep = 0.225;
   steps = degrees/degreesPerStep;
   stepMotorMult(steps);
+  
+  // Update current Position after rotation
+  if(MOTORDIR == CW) currentPosition += (steps * degreesPerStep);
+  else currentPosition -= (steps * degreesPerStep);
+  
+  // Brings current position into the 0 <= degrees < 360.0 range
+  while(currentPosition >= 360.0 || currentPosition < 0.0){
+    currentPosition = currentPosition >= 360.0 ? currentPosition - 360.0:currentPosition + 360.0;
+  }
 }
 
-void rotateToDegree(double destination){
+void stepToDegree(double destination){
+  /* WARNING: ASSUMES THAT A CLOCKWISE OR COUNTERCLOCKWISE ROTATION THROUGH 0
+   * WILL NEVER OCCUR */
+   
+  // Calculate difference in angle
+  double difference;
+  difference = destination - currentPosition; // Calculates degrees to move
+  
+  // Determine direction to move
+  if(difference > 0.0){
+    setStepperDir(CW);
+  } else{
+    setStepperDir(CCW);
+  }
+  difference = fabs(difference);
+  
+  // Moves required degrees
+  stepDegrees(difference);
+  
 }
 
 
