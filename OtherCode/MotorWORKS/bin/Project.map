@@ -15,6 +15,11 @@ FILE SECTION
 mc9s12c32.c.o                           Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 Start12.c.o                             Model: SMALL,         Lang: ANSI-C
+DCONV.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
+DMUL.C.o (ansisf.lib)                   Model: SMALL,         Lang: ANSI-C
+DREGS.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
+rtshc12.c.o (ansisf.lib)                Model: SMALL,         Lang: ANSI-C
+VREGS.C.o (ansisf.lib)                  Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
 STARTUP SECTION
@@ -23,7 +28,7 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     0
-  _Copy    *toCopyDownBeg 0xC128
+  _Copy    *toCopyDownBeg 0xC3F5
 } _startupData;
 
 *********************************************************************************************
@@ -32,8 +37,8 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                            237     R     0xC03B     0xC127   ROM_C000
-.copy                              2     R     0xC128     0xC129   ROM_C000
+.text                            293     R     0xC03B     0xC15F   ROM_C000
+.copy                              2     R     0xC3F5     0xC3F6   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -259,10 +264,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
+RUNTIME                          661     R     0xC160     0xC3F4   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):         132 (dec:      306)
+READ_ONLY (R):         3FF (dec:     1023)
 READ_WRITE (R/W):      100 (dec:      256)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -502,16 +508,17 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C03B      61      97       1   .text       
-     main                                      C09C       E      14       1   .text       
-     delay                                     C0AA       A      10       5   .text       
-     stepMotor                                 C0B4       F      15       1   .text       
-     setDir                                    C0C3      24      36       1   .text       
-     setStep                                   C0E7      27      39       1   .text       
-     stepMotorMult                             C10E      11      17       1   .text       
-     RTI_ISR                                   C11F       4       4       1   .text       
-     TIM_ISR                                   C123       4       4       1   .text       
-     SCI_ISR                                   C127       1       1       1   .text       
+     initializations                           C03B      62      98       1   .text       
+     main                                      C09D      18      24       1   .text       
+     delay                                     C0B5       A      10       5   .text       
+     stepMotor                                 C0BF       F      15       1   .text       
+     setDir                                    C0CE      24      36       1   .text       
+     setStep                                   C0F2      27      39       1   .text       
+     stepMotorMult                             C119      11      17       1   .text       
+     stepDegrees                               C12A      2D      45       1   .text       
+     RTI_ISR                                   C157       4       4       1   .text       
+     TIM_ISR                                   C15B       4       4       1   .text       
+     SCI_ISR                                   C15F       1       1       1   .text       
 - VARIABLES:
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
@@ -524,22 +531,56 @@ MODULE:                 -- Start12.c.o --
      _startupData                              C031       6       6       3   .startData  
 - LABELS:
      __SEG_END_SSTACK                           900       0       0       1               
+MODULE:                 -- DCONV.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_TOLONGK                                 C160      33      51       1   RUNTIME     
+     _DSTRUNC                                  C193      19      25       1   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DMUL.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_DIVKL                                   C1AC      F5     245       2   RUNTIME     
+     _DDIV                                     C2A1      11      17       1   RUNTIME     
+- VARIABLES:
+MODULE:                 -- DREGS.C.o (ansisf.lib) --
+- PROCEDURES:
+     D_PULK                                    C2B2      29      41       1   RUNTIME     
+     D_PULL                                    C2DB      25      37       2   RUNTIME     
+     D_PSHK                                    C300      23      35       1   RUNTIME     
+     D_CLRK                                    C323      13      19       2   RUNTIME     
+     D_MAXK                                    C336       A      10       2   RUNTIME     
+     D_NORMK                                   C340      8F     143       1   RUNTIME     
+- VARIABLES:
+MODULE:                 -- rtshc12.c.o (ansisf.lib) --
+- PROCEDURES:
+     _NEG_P                                    C3CF       F      15       1   RUNTIME     
+     _COPY                                     C3DE       8       8       1   RUNTIME     
+- VARIABLES:
+MODULE:                 -- VREGS.C.o (ansisf.lib) --
+- PROCEDURES:
+     L_NEGK                                    C3E6       7       7       1   RUNTIME     
+     L_PSHK                                    C3ED       8       8       1   RUNTIME     
+- VARIABLES:
 
 *********************************************************************************************
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                     0    237      6
+  main.c.o                                     0    293      6
   Start12.c.o                                  0     49      0
+  DCONV.C.o (ansisf.lib)                       0     76      0
+  DMUL.C.o (ansisf.lib)                        0    262      0
+  DREGS.C.o (ansisf.lib)                       0    285      0
+  rtshc12.c.o (ansisf.lib)                     0     23      0
+  VREGS.C.o (ansisf.lib)                       0     15      0
   other                                      256     12      2
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  initializations main delay stepMotor setDir setStep stepMotorMult RTI_ISR 
-  TIM_ISR SCI_ISR 
+  initializations main delay stepMotor setDir setStep stepMotorMult 
+  stepDegrees RTI_ISR TIM_ISR SCI_ISR 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".abs_section_8"
@@ -990,6 +1031,9 @@ SECTION: ".abs_section_ffe0"
   _Vector_15 
 SECTION: ".abs_section_ffd6"
   _Vector_20 
+SECTION: "RUNTIME"
+  D_TOLONGK _DSTRUNC D_DIVKL _DDIV D_PULK D_PULL D_PSHK D_CLRK D_MAXK D_NORMK 
+  _NEG_P _COPY L_NEGK L_PSHK 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1218,16 +1262,31 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSAD                                     275       1       1       0   .abs_section_275
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     initializations                           C03B      61      97       1   .text       
-     main                                      C09C       E      14       1   .text       
-     delay                                     C0AA       A      10       5   .text       
-     stepMotor                                 C0B4       F      15       1   .text       
-     setDir                                    C0C3      24      36       1   .text       
-     setStep                                   C0E7      27      39       1   .text       
-     stepMotorMult                             C10E      11      17       1   .text       
-     RTI_ISR                                   C11F       4       4       1   .text       
-     TIM_ISR                                   C123       4       4       1   .text       
-     SCI_ISR                                   C127       1       1       1   .text       
+     initializations                           C03B      62      98       1   .text       
+     main                                      C09D      18      24       1   .text       
+     delay                                     C0B5       A      10       5   .text       
+     stepMotor                                 C0BF       F      15       1   .text       
+     setDir                                    C0CE      24      36       1   .text       
+     setStep                                   C0F2      27      39       1   .text       
+     stepMotorMult                             C119      11      17       1   .text       
+     stepDegrees                               C12A      2D      45       1   .text       
+     RTI_ISR                                   C157       4       4       1   .text       
+     TIM_ISR                                   C15B       4       4       1   .text       
+     SCI_ISR                                   C15F       1       1       1   .text       
+     D_TOLONGK                                 C160      33      51       1   RUNTIME     
+     _DSTRUNC                                  C193      19      25       1   RUNTIME     
+     D_DIVKL                                   C1AC      F5     245       2   RUNTIME     
+     _DDIV                                     C2A1      11      17       1   RUNTIME     
+     D_PULK                                    C2B2      29      41       1   RUNTIME     
+     D_PULL                                    C2DB      25      37       2   RUNTIME     
+     D_PSHK                                    C300      23      35       1   RUNTIME     
+     D_CLRK                                    C323      13      19       2   RUNTIME     
+     D_MAXK                                    C336       A      10       2   RUNTIME     
+     D_NORMK                                   C340      8F     143       1   RUNTIME     
+     _NEG_P                                    C3CF       F      15       1   RUNTIME     
+     _COPY                                     C3DE       8       8       1   RUNTIME     
+     L_NEGK                                    C3E6       7       7       1   RUNTIME     
+     L_PSHK                                    C3ED       8       8       1   RUNTIME     
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1238,14 +1297,30 @@ UNUSED-OBJECTS SECTION
 NOT USED PROCEDURES
 main.c.o:
   inchar outchar 
+DCONV.C.o (ansisf.lib):
+  D_FRLONGK _DSFLOAT _DUFLOAT _DUTRUNC D_PSHK_UNARY D_CLRK_UNARY D_MAXK_UNARY 
+  D_NORMK_UNARY 
+DMUL.C.o (ansisf.lib):
+  D_MULKL _DMUL 
+DREGS.C.o (ansisf.lib):
+  D_STAL D_TLK D_TKL D_XGKL D_CLRL 
+rtshc12.c.o (ansisf.lib):
+  _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
+  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LINC 
+  _LDEC _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
+  _ILSEXT _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE 
+  _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
+  _FPCMP 
+VREGS.C.o (ansisf.lib):
+  UL_PULK SL_PULK 
 NOT USED VARIABLES
-main.c.o:
-  flag 
+rtshc12.c.o (ansisf.lib):
+  _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC128 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC3F5 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1257,13 +1332,21 @@ _Startup                  USES __SEG_END_SSTACK Init main
 initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL 
                                 _SCIBD _SCICR1 _SCICR2 _DDRAB _PORTAB _DDRAD _DDRM 
                                 _DDRT _PTAD setStep _PTT setDir _PTM 
-main                      USES initializations stepMotorMult 
+main                      USES initializations stepDegrees 
 stepMotor                 USES delay _PTM 
 setDir                    USES _PTM delay 
 setStep                   USES _PTAD delay 
 stepMotorMult             USES stepMotor 
+stepDegrees               USES _COPY _DDIV _DSTRUNC stepMotorMult 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 
+_DSTRUNC                  USES D_PULL D_TOLONGK L_PSHK 
+D_DIVKL                   USES D_MAXK D_DIVKL D_NORMK 
+_DDIV                     USES D_PULL D_PULK D_DIVKL D_PSHK 
+D_MAXK                    USES D_CLRK 
+D_NORMK                   USES D_CLRK D_MAXK 
+L_NEGK                    USES _NEG_P 
+L_PSHK                    USES L_NEGK 
 _Vector_20                USES SCI_ISR 
 _Vector_15                USES TIM_ISR 
 _Vector_7                 USES RTI_ISR 
@@ -1285,12 +1368,48 @@ DEPENDENCY TREE
  |  |     | 
  |  |     +- delay                (see above)
  |  |        
- |  +- stepMotorMult       
+ |  +- stepDegrees         
  |     | 
- |     +- stepMotor           
+ |     +- _COPY               
+ |     |    
+ |     +- _DDIV               
+ |     |  | 
+ |     |  +- D_PULL              
+ |     |  |    
+ |     |  +- D_PULK              
+ |     |  |    
+ |     |  +- D_DIVKL             
+ |     |  |  | 
+ |     |  |  +- D_MAXK              
+ |     |  |  |  | 
+ |     |  |  |  +- D_CLRK              
+ |     |  |  |       
+ |     |  |  +- D_NORMK             
+ |     |  |     | 
+ |     |  |     +- D_CLRK               (see above)
+ |     |  |     |  
+ |     |  |     +- D_MAXK               (see above)
+ |     |  |        
+ |     |  +- D_PSHK              
+ |     |       
+ |     +- _DSTRUNC            
+ |     |  | 
+ |     |  +- D_PULL               (see above)
+ |     |  |  
+ |     |  +- D_TOLONGK           
+ |     |  |    
+ |     |  +- L_PSHK              
+ |     |     | 
+ |     |     +- L_NEGK              
+ |     |        | 
+ |     |        +- _NEG_P              
+ |     |             
+ |     +- stepMotorMult       
  |        | 
- |        +- delay                (see above)
- |           
+ |        +- stepMotor           
+ |           | 
+ |           +- delay                (see above)
+ |              
  +- _Startup            
     | 
     +- Init                
@@ -1315,6 +1434,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 306
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 1023
 

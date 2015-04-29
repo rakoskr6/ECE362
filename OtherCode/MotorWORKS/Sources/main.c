@@ -75,10 +75,10 @@ void delay();
 void setDir(char dir);
 void setStep(char stepSize);
 void stepMotorMult(int steps);
+void stepDegrees(double degrees);
 
 
 /* Variable declarations */
-int flag = 0;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -159,7 +159,7 @@ DDRM_DDRM0 = 1;    // Motor Step
 DDRT_DDRT0 = 1;    // Motor Sleep
 
 MOTOREN = 0;
-setStep(FULLSTEP);
+setStep(HALFSTEP);
 MOTORRST = 1;
 MOTORSLP = 1;
 setDir(CW);
@@ -180,7 +180,7 @@ void main(void) {
 	initializations(); 		  			 		  		
 	EnableInterrupts;
 	
-	  stepMotorMult(100); 
+	  stepDegrees(90); 
   
 
  for(;;) {
@@ -232,6 +232,11 @@ void stepMotorMult(int steps){
   for(i = 0; i < steps; i++){
     stepMotor();
   }
+}
+
+void stepDegrees(double degrees){
+  int steps = degrees/0.9;
+  stepMotorMult(steps);
 }
 
 
