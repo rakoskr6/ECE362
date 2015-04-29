@@ -289,6 +289,7 @@ void  initializations(void) {
   TC7 = 15000;
   TIE_C7I = 0;
   
+  /* Intialize the PWM to drive the servo */
   MODRR = 0x02; //PT1 used as output
   PWME = 0x02;  //enable Ch 01
   PWMPOL = 0xFF; //Active low polarity
@@ -301,7 +302,7 @@ void  initializations(void) {
   PWMPRCLK = 0x03; //Clock A =  3 MHz
   DDRT_DDRT0 = 1;
   
-  // Data Direction Register
+  // Data Direction Register and set for XBEE Reset Pin
   DDRAD_DDRAD2 = 1;
   PTAD_PTAD2 = 1;
   
@@ -318,7 +319,7 @@ void  initializations(void) {
   MOTOREN = 0;
   setStep(QUARTERSTEP);
   MOTORRST = 1;
-  MOTORSLP = 1;
+  MOTORSLP = 0; //Motor is originally asleep
   setStepperDir(CW);
   MOTORSTEP = 0;
 
@@ -386,7 +387,7 @@ void main(void) {
               
       #ifdef NORECEIVE        
       ALT = 40.87;
-      AZ = 359.24;
+      AZ = 200;
       #endif
       
       if(star_Calculate_Complete && !azimuth_Complete) 
@@ -831,6 +832,7 @@ void bigDelay(void){
 }
 
 void stepMotor(void){ // Pulses the step pin
+  /* WARNING: Assumes the motor is already awake. */
   delay();
   MOTORSTEP = 1;
   delay();
@@ -862,9 +864,11 @@ void setStep(char stepSize){
 
 void stepMotorMult(int steps){
   int count;
+  MOTORSLP = 1; // Wakes up the motor
   for(count = 0; count < steps; count++){
     stepMotor();
   }
+  MOTORSLP = 0; //Puts the motor back to sleep
 }
 
 void stepDegrees(double degrees){
