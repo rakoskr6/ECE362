@@ -110,7 +110,16 @@ int Min_Found = 0;
 int Star_Found = 0;
 int Recieve_Complete = 0;
 
+// Motor pin declarations
 
+#define stp PTM_PTM0
+#define dir PTM_PTM1
+#define MS1 PORTAD0_PTAD6
+#define MS2 PORTAD0_PTAD5
+#define EN  PORTAD0_PTAD7
+#define RST PORTAD0_PTAD4
+#define SLEEP PTT_PTT0
+  
 // Star Algorithm
 #define PI 3.14159265
 #define RAD2DEG 180.0/PI
@@ -230,24 +239,20 @@ void  initializations(void) {
   DDRT_DDRT0 = 1;
   
   // Motor pin declarations
-  
-  #define stp PM0
-  #define dir STEPPER
-  #define MS1 PORTAD0_PTAD6
-  #define MS2 PORTAD0_PTAD5
-  #define EN  PORTAD0_PTAD7
-  #define RST PORTAD0_PTAD4
-  #define SLEEP PTT_PTT0
-  int num_steps = 0;
-  int curr_angle = 0;
+ // int num_steps = 0;
+//  int curr_angle = 0;
   
   // Set pins to output
+     // Motor pin declarations
+
   
-  DDRT_AN7 = 1;
-  DDRT_AN5 = 1;
-  DDRT_AN6 = 1;
-  DDRT_STEPPER = 1;
-  DDRT_PM0 = 1;  
+  DDRM_DDRM0 = 1;
+  DDRM_DDRM1 = 1;
+  DDRAD_DDRAD4 = 1;
+  DDRAD_DDRAD5 = 1;
+  DDRAD_DDRAD6 = 1;
+  DDRAD_DDRAD7 = 1;
+
   
             
 /* Initialize interrupts */
@@ -263,6 +268,7 @@ Main
 */
 void main(void) {
 int i = 0;
+int x = 0;
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
@@ -283,22 +289,23 @@ int i = 0;
 /* < start of your main loop > */ 
 
     dir = 1;
-    for (i = 0; i < 100; i++) 
+    for (i = 0; i < 1000; i++) 
     {
-       step = 1;
+       stp = 1;
        for (x = 0; x < 100; x++) {}
-       step = 0;
+       stp = 0;
     }
    
-    for (i = 0; i < 19999; i++) {}
+    for (i = 0; i < 5000; i++) {}
     
     dir = 0;
-    for (i = 0; i < 100; i++) 
+    for (i = 0; i < 1000; i++) 
     {
-       step = 1;
+       stp = 1;
        for (x = 0; x < 100; x++) {}
-       step = 0;
+       stp = 0;
     }
+    for (i = 0; i < 5000; i++) {}
    
    
    
