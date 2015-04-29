@@ -227,7 +227,7 @@ void  initializations(void) {
   TIE_C7I = 0;
   
   MODRR = 0x02; //PT1 used as output
-  PWME = 0x00;  //enable Ch 01
+  PWME = 0x02;  //enable Ch 01
   PWMPOL = 0xFF; //Active low polarity
   PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
@@ -290,7 +290,7 @@ int x = 0;
   
 /* < start of your main loop > */ 
 
-    
+    /*
     dir = 1;
     for (i = 0; i < 1000; i++) 
     {
@@ -302,7 +302,7 @@ int x = 0;
     }
    
     for (i = 0; i < 5000; i++) {}
-    
+     */
     
     
     /*dir = 0;
@@ -325,21 +325,21 @@ int x = 0;
     //PWMDTY1 = ((1 + ALT/180.0)*12);
     
   
-    //PWMDTY1 = Z_00; // go to 0 degrees
-    //PTT_PTT0 = 0;
+    PWMDTY1 = Z_00; // go to 0 degrees
+    PTT_PTT0 = 0;
 
-    //for (i = 0; i < 19999; i++) {} 
+    for (i = 0; i < 19999; i++) {} 
     
     
    
-    //PWMDTY1 = final_ALT; //final_ALT;
-    //PTT_PTT0 = 1;
+    PWMDTY1 = final_ALT; //final_ALT;
+    PTT_PTT0 = 1;
     
-    //for (i = 0; i < 19999; i++) {}
+    for (i = 0; i < 19999; i++) {}
     
     //new_Data = 0;
     //}
-    //*/
+    
     
     
     

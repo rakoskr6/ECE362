@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\Kyle\Documents\GitHub\ECE362\OtherCode\Motors\bin\Project.abs"
+PROGRAM "C:\Users\alexm_000\Documents\GitHub\ECE362\OtherCode\Motors\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -32,7 +32,7 @@ _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x900     26
-  _Copy    *toCopyDownBeg 0xC7CE
+  _Copy    *toCopyDownBeg 0xC77D
 } _startupData;
 
 *********************************************************************************************
@@ -41,8 +41,8 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                            588     R     0xC03B     0xC286   ROM_C000
-.copy                              8     R     0xC7CE     0xC7D5   ROM_C000
+.text                            539     R     0xC03B     0xC255   ROM_C000
+.copy                              8     R     0xC77D     0xC784   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
 .data                              8   R/W      0x900      0x907   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -271,11 +271,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
 .bss                               8   R/W      0x908      0x90F   RAM
 .common                           10   R/W      0x910      0x919   RAM
-RUNTIME                         1351     R     0xC287     0xC7CD   ROM_C000
+RUNTIME                         1319     R     0xC256     0xC77C   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):         7DE (dec:     2014)
+READ_ONLY (R):         78D (dec:     1933)
 READ_WRITE (R/W):      11A (dec:      282)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -431,7 +431,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXDSR7                                 17B       1       1       0   .abs_section_17b
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
-     _PTT                                       240       1       1       1   .abs_section_240
+     _PTT                                       240       1       1       3   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
      _DDRT                                      242       1       1       2   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
@@ -445,7 +445,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       3   .abs_section_250
+     _PTM                                       250       1       1       0   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
      _DDRM                                      252       1       1       2   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
@@ -508,7 +508,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _CANRXTSR                                  16E       2       2       0   .abs_section_16e
@@ -516,10 +516,10 @@ MODULE:                 -- mc9s12c32.c.o --
 MODULE:                 -- main.c.o --
 - PROCEDURES:
      initializations                           C03B      82     130       1   .text       
-     main                                      C0BD     112     274       3   .text       
-     RTI_ISR                                   C1CF       4       4       1   .text       
-     TIM_ISR                                   C1D3      2D      45       1   .text       
-     SCI_ISR                                   C200       1       1       1   .text       
+     main                                      C0BD      E1     225       2   .text       
+     RTI_ISR                                   C19E       4       4       1   .text       
+     TIM_ISR                                   C1A2      2D      45       1   .text       
+     SCI_ISR                                   C1CF       1       1       1   .text       
 - VARIABLES:
      ALT                                        900       8       8       1   .data       
      mincnt                                     908       2       2       3   .bss        
@@ -530,7 +530,7 @@ MODULE:                 -- main.c.o --
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      adjusted_ALT                               910       8       8       5   .common     
-     final_ALT                                  918       2       2       1   .common     
+     final_ALT                                  918       2       2       2   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -541,55 +541,53 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- MATH.C.o (ansisf.lib) --
 - PROCEDURES:
-     floor                                     C201      86     134       1   .text       
+     floor                                     C1D0      86     134       1   .text       
 - VARIABLES:
 MODULE:                 -- DADD.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_ADDKL                                   C287      BC     188       1   RUNTIME     
-     _DADD                                     C343      11      17       3   RUNTIME     
-     _DSUB                                     C354      19      25       1   RUNTIME     
+     D_ADDKL                                   C256      BC     188       1   RUNTIME     
+     _DADD                                     C312      11      17       3   RUNTIME     
+     _DSUB                                     C323      19      25       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DANSI.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_MODF                                    C36D      5D      93       1   RUNTIME     
-     modf                                      C3CA      1F      31       1   RUNTIME     
+     D_MODF                                    C33C      5D      93       1   RUNTIME     
+     modf                                      C399      1F      31       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DCONV.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_TOLONGK                                 C3E9      33      51       1   RUNTIME     
-     _DSTRUNC                                  C41C      19      25       1   RUNTIME     
+     D_TOLONGK                                 C3B8      33      51       1   RUNTIME     
+     _DSTRUNC                                  C3EB      19      25       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DMUL.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_DIVKL                                   C435      F5     245       2   RUNTIME     
-     D_MULKL                                   C52A      90     144       1   RUNTIME     
-     _DMUL                                     C5BA      11      17       1   RUNTIME     
-     _DDIV                                     C5CB      11      17       1   RUNTIME     
+     D_DIVKL                                   C404      F5     245       2   RUNTIME     
+     D_MULKL                                   C4F9      90     144       1   RUNTIME     
+     _DMUL                                     C589      11      17       1   RUNTIME     
+     _DDIV                                     C59A      11      17       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_PULK                                    C5DC      29      41       4   RUNTIME     
-     D_PULL                                    C605      25      37       4   RUNTIME     
-     D_PSHK                                    C62A      23      35       3   RUNTIME     
-     D_STAL                                    C64D      2A      42       2   RUNTIME     
-     D_TKL                                     C677      1C      28       2   RUNTIME     
-     D_XGKL                                    C693      39      57       2   RUNTIME     
-     D_CLRK                                    C6CC      13      19       4   RUNTIME     
-     D_CLRL                                    C6DF      10      16       1   RUNTIME     
-     D_MAXK                                    C6EF       A      10       2   RUNTIME     
-     D_NORMK                                   C6F9      8F     143       5   RUNTIME     
+     D_PULK                                    C5AB      29      41       4   RUNTIME     
+     D_PULL                                    C5D4      25      37       4   RUNTIME     
+     D_PSHK                                    C5F9      23      35       3   RUNTIME     
+     D_STAL                                    C61C      2A      42       2   RUNTIME     
+     D_TKL                                     C646      1C      28       2   RUNTIME     
+     D_XGKL                                    C662      39      57       2   RUNTIME     
+     D_CLRK                                    C69B      13      19       4   RUNTIME     
+     D_CLRL                                    C6AE      10      16       1   RUNTIME     
+     D_MAXK                                    C6BE       A      10       2   RUNTIME     
+     D_NORMK                                   C6C8      8F     143       5   RUNTIME     
 - VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP                                     C788      19      25       1   RUNTIME     
-     _NEG_P                                    C7A1       F      15       1   RUNTIME     
-     _ILSEXT                                   C7B0       7       7       1   RUNTIME     
-     _COPY                                     C7B7       8       8       2   RUNTIME     
+     _NEG_P                                    C757       F      15       1   RUNTIME     
+     _COPY                                     C766       8       8       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- VREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     L_NEGK                                    C7BF       7       7       1   RUNTIME     
-     L_PSHK                                    C7C6       8       8       1   RUNTIME     
+     L_NEGK                                    C76E       7       7       1   RUNTIME     
+     L_PSHK                                    C775       8       8       1   RUNTIME     
 - VARIABLES:
 
 *********************************************************************************************
@@ -597,7 +595,7 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                    26    454      6
+  main.c.o                                    26    405      6
   Start12.c.o                                  0     49      0
   MATH.C.o (ansisf.lib)                        0    134      0
   DADD.C.o (ansisf.lib)                        0    230      0
@@ -605,7 +603,7 @@ MODULE STATISTIC
   DCONV.C.o (ansisf.lib)                       0     76      0
   DMUL.C.o (ansisf.lib)                        0    423      0
   DREGS.C.o (ansisf.lib)                       0    428      0
-  rtshc12.c.o (ansisf.lib)                     0     55      0
+  rtshc12.c.o (ansisf.lib)                     0     23      0
   VREGS.C.o (ansisf.lib)                       0     15      0
   other                                      256     12      8
 
@@ -1073,7 +1071,7 @@ SECTION: ".common"
 SECTION: "RUNTIME"
   D_ADDKL _DADD _DSUB D_MODF modf D_TOLONGK _DSTRUNC D_DIVKL D_MULKL _DMUL 
   _DDIV D_PULK D_PULL D_PSHK D_STAL D_TKL D_XGKL D_CLRK D_CLRL D_MAXK D_NORMK 
-  _LCMP _NEG_P _ILSEXT _COPY L_NEGK L_PSHK 
+  _NEG_P _COPY L_NEGK L_PSHK 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1188,7 +1186,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PWMPER01                                   F2       2       2       1   .abs_section_f2
      _PWMPER23                                   F4       2       2       0   .abs_section_f4
      _PWMPER45                                   F6       2       2       0   .abs_section_f6
-     _PWMDTY01                                   F8       2       2       1   .abs_section_f8
+     _PWMDTY01                                   F8       2       2       3   .abs_section_f8
      _PWMDTY23                                   FA       2       2       0   .abs_section_fa
      _PWMDTY45                                   FC       2       2       0   .abs_section_fc
      _PWMSDN                                     FE       1       1       0   .abs_section_fe
@@ -1257,7 +1255,7 @@ OBJECT LIST SORTED BY ADDRESS
      _CANTXDLR                                  17C       1       1       0   .abs_section_17c
      _CANTXTBPR                                 17D       1       1       0   .abs_section_17d
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
-     _PTT                                       240       1       1       1   .abs_section_240
+     _PTT                                       240       1       1       3   .abs_section_240
      _PTIT                                      241       1       1       0   .abs_section_241
      _DDRT                                      242       1       1       2   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
@@ -1271,7 +1269,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       3   .abs_section_250
+     _PTM                                       250       1       1       0   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
      _DDRM                                      252       1       1       2   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
@@ -1306,42 +1304,40 @@ OBJECT LIST SORTED BY ADDRESS
      ten_min                                    90C       2       2       3   .bss        
      ten_min_flag                               90E       2       2       1   .bss        
      adjusted_ALT                               910       8       8       5   .common     
-     final_ALT                                  918       2       2       1   .common     
+     final_ALT                                  918       2       2       2   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
      initializations                           C03B      82     130       1   .text       
-     main                                      C0BD     112     274       3   .text       
-     RTI_ISR                                   C1CF       4       4       1   .text       
-     TIM_ISR                                   C1D3      2D      45       1   .text       
-     SCI_ISR                                   C200       1       1       1   .text       
-     floor                                     C201      86     134       1   .text       
-     D_ADDKL                                   C287      BC     188       1   RUNTIME     
-     _DADD                                     C343      11      17       3   RUNTIME     
-     _DSUB                                     C354      19      25       1   RUNTIME     
-     D_MODF                                    C36D      5D      93       1   RUNTIME     
-     modf                                      C3CA      1F      31       1   RUNTIME     
-     D_TOLONGK                                 C3E9      33      51       1   RUNTIME     
-     _DSTRUNC                                  C41C      19      25       1   RUNTIME     
-     D_DIVKL                                   C435      F5     245       2   RUNTIME     
-     D_MULKL                                   C52A      90     144       1   RUNTIME     
-     _DMUL                                     C5BA      11      17       1   RUNTIME     
-     _DDIV                                     C5CB      11      17       1   RUNTIME     
-     D_PULK                                    C5DC      29      41       4   RUNTIME     
-     D_PULL                                    C605      25      37       4   RUNTIME     
-     D_PSHK                                    C62A      23      35       3   RUNTIME     
-     D_STAL                                    C64D      2A      42       2   RUNTIME     
-     D_TKL                                     C677      1C      28       2   RUNTIME     
-     D_XGKL                                    C693      39      57       2   RUNTIME     
-     D_CLRK                                    C6CC      13      19       4   RUNTIME     
-     D_CLRL                                    C6DF      10      16       1   RUNTIME     
-     D_MAXK                                    C6EF       A      10       2   RUNTIME     
-     D_NORMK                                   C6F9      8F     143       5   RUNTIME     
-     _LCMP                                     C788      19      25       1   RUNTIME     
-     _NEG_P                                    C7A1       F      15       1   RUNTIME     
-     _ILSEXT                                   C7B0       7       7       1   RUNTIME     
-     _COPY                                     C7B7       8       8       2   RUNTIME     
-     L_NEGK                                    C7BF       7       7       1   RUNTIME     
-     L_PSHK                                    C7C6       8       8       1   RUNTIME     
+     main                                      C0BD      E1     225       2   .text       
+     RTI_ISR                                   C19E       4       4       1   .text       
+     TIM_ISR                                   C1A2      2D      45       1   .text       
+     SCI_ISR                                   C1CF       1       1       1   .text       
+     floor                                     C1D0      86     134       1   .text       
+     D_ADDKL                                   C256      BC     188       1   RUNTIME     
+     _DADD                                     C312      11      17       3   RUNTIME     
+     _DSUB                                     C323      19      25       1   RUNTIME     
+     D_MODF                                    C33C      5D      93       1   RUNTIME     
+     modf                                      C399      1F      31       1   RUNTIME     
+     D_TOLONGK                                 C3B8      33      51       1   RUNTIME     
+     _DSTRUNC                                  C3EB      19      25       1   RUNTIME     
+     D_DIVKL                                   C404      F5     245       2   RUNTIME     
+     D_MULKL                                   C4F9      90     144       1   RUNTIME     
+     _DMUL                                     C589      11      17       1   RUNTIME     
+     _DDIV                                     C59A      11      17       1   RUNTIME     
+     D_PULK                                    C5AB      29      41       4   RUNTIME     
+     D_PULL                                    C5D4      25      37       4   RUNTIME     
+     D_PSHK                                    C5F9      23      35       3   RUNTIME     
+     D_STAL                                    C61C      2A      42       2   RUNTIME     
+     D_TKL                                     C646      1C      28       2   RUNTIME     
+     D_XGKL                                    C662      39      57       2   RUNTIME     
+     D_CLRK                                    C69B      13      19       4   RUNTIME     
+     D_CLRL                                    C6AE      10      16       1   RUNTIME     
+     D_MAXK                                    C6BE       A      10       2   RUNTIME     
+     D_NORMK                                   C6C8      8F     143       5   RUNTIME     
+     _NEG_P                                    C757       F      15       1   RUNTIME     
+     _COPY                                     C766       8       8       2   RUNTIME     
+     L_NEGK                                    C76E       7       7       1   RUNTIME     
+     L_PSHK                                    C775       8       8       1   RUNTIME     
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1367,10 +1363,11 @@ DREGS.C.o (ansisf.lib):
   D_TLK 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
-  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LINC _LDEC 
-  _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
-  _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE _CASE_SEARCH 
-  _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LINC 
+  _LDEC _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
+  _ILSEXT _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE 
+  _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL 
+  _FPCMP 
 VREGS.C.o (ansisf.lib):
   UL_PULK SL_PULK 
 NOT USED VARIABLES
@@ -1391,13 +1388,13 @@ rtshc12.c.o (ansisf.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC7CE ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC77D ---- SIZE       4 ---
 Filling bytes inserted
  00020900
-------- ROM-ADDRESS: 0xC7D2 ---- RAM-ADDRESS: 0x900 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC781 ---- RAM-ADDRESS: 0x900 ---- SIZE       2 ---
 Name of initialized Object : ALT
  403E
-------- ROM-ADDRESS: 0xC7D4 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC783 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1413,7 +1410,7 @@ initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL
                                 _DDRM _DDRAD 
 main                      USES initializations ALT main _DMUL _DDIV _DSUB 
                                 adjusted_ALT _DADD floor _DSTRUNC final_ALT _PORTAD0 _PTAD 
-                                _PTT _PTM _ILSEXT _LCMP _COPY 
+                                _PTT _PWMDTY01 _COPY 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 mincnt minute_flag ten_min ten_min_flag 
 floor                     USES modf _DADD _COPY 
@@ -1530,10 +1527,6 @@ DEPENDENCY TREE
  |  |        | 
  |  |        +- _NEG_P              
  |  |             
- |  +- _ILSEXT             
- |  |    
- |  +- _LCMP               
- |  |    
  |  +- _COPY                (see above)
  |     
  +- _Startup            
@@ -1560,6 +1553,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 2014
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 1933
 

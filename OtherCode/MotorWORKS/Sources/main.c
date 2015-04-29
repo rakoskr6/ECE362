@@ -69,9 +69,15 @@
 char inchar(void);
 void outchar(char x);
 
+/* Stepper Motor Utility Functions */
+void stepMotor();
+void delay();
+void setDir(char dir);
+void setStep(char stepSize);
+void stepMotorMult(int steps);
+
 
 /* Variable declarations */
-int i = 0;
 int flag = 0;
    	   			 		  			 		       
 
@@ -101,7 +107,16 @@ int flag = 0;
 #define MOTORDIR PTM_PTM1
 #define MOTORSTEP PTM_PTM0
 
-/* MOTOR MATHEMATICAL CONSTANTS */
+/* MOTOR STEPS */
+#define FULLSTEP 0
+#define HALFSTEP 1
+#define QUARTERSTEP 2
+#define EIGHTHSTEP 3
+
+/* MOTOR DIRECTION */
+#define CW 1
+#define CCW 0
+#define TOGGLEDIR 2
 
 	 	   		
 /*	 	   		
@@ -144,11 +159,10 @@ DDRM_DDRM0 = 1;    // Motor Step
 DDRT_DDRT0 = 1;    // Motor Sleep
 
 MOTOREN = 0;
-MOTORMS1 = 0;
-MOTORMS2 = 0;
+setStep(FULLSTEP);
 MOTORRST = 1;
 MOTORSLP = 1;
-MOTORDIR = 1;
+setDir(CW);
 MOTORSTEP = 0;   
 /* Initialize interrupts */
 	      
@@ -167,23 +181,57 @@ void main(void) {
 	EnableInterrupts;
 
  for(;;) {
-  
-/* < start of your main loop > */
-while(flag < 100){
-  for(i = 0; i < 10000; i++){
-  }
-  MOTORSTEP = 1;
-  for(i = 0; i < 10000; i++){
-  }
-  MOTORSTEP = 0;
-  flag++;
-}
+  stepMotorMult(100); 
   
    } /* loop forever */
    
 }   /* do not leave main */
 
+/*
+******************
+STEPPER UTILITY FUNCTIONS
+******************
+*/
+void delay(){
+  int i;
+  for(i = 0; i < 10000; i++){}
+}
 
+void stepMotor(){
+  delay();
+  MOTORSTEP = 1;
+  delay();
+  MOTORSTEP = 0;
+  delay();
+}
+
+void setDir(char dir){
+  if(dir == CW || dir == CCW) MOTORDIR = dir;
+  else MOTORDIR ^= 1; //Toggles direction if dir invalid
+  delay();
+}
+
+void setStep(char stepSize){
+  if(stepSize == FULLSTEP || stepSize == HALFSTEP){
+    MOTORMS2 = 0;
+  } else{
+    MOTORMS2 = 1;
+  }
+  
+  if(stepSize == FULLSTEP || stepSize == QUARTERSTEP){
+    MOTORMS1 = 0;
+  } else{
+    MOTORMS1 = 1;
+  }
+  delay();
+}
+
+void stepMotorMult(int steps){
+  int i;
+  for(i = 0; i < steps; i++){
+    stepMotor();
+  }
+}
 
 
 /*
