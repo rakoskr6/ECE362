@@ -76,10 +76,12 @@ void setDir(char dir);
 void setStep(char stepSize);
 void stepMotorMult(int steps);
 void stepDegrees(double degrees);
+void rotateToDegree(double destination);
 
 
 /* Variable declarations */
 char currentStepSize = 0;
+double currentPosition = 0;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -99,7 +101,7 @@ char currentStepSize = 0;
 #define LINE1 = 0x80	// LCD line 1 cursor position
 #define LINE2 = 0xC0	// LCD line 2 cursor position
 
-/* MOTOR CONTROL PINS */
+/* STEPPER MOTOR CONTROL PINS */
 #define MOTOREN PTAD_PTAD7
 #define MOTORMS1 PTAD_PTAD6
 #define MOTORMS2 PTAD_PTAD5
@@ -108,13 +110,13 @@ char currentStepSize = 0;
 #define MOTORDIR PTM_PTM1
 #define MOTORSTEP PTM_PTM0
 
-/* MOTOR STEPS */
+/* STEPPER MOTOR STEPS */
 #define FULLSTEP 0
 #define HALFSTEP 1
 #define QUARTERSTEP 2
 #define EIGHTHSTEP 3
 
-/* MOTOR DIRECTION */
+/* STEPPER MOTOR DIRECTION */
 #define CW 0
 #define CCW 1
 #define TOGGLEDIR 2
@@ -150,7 +152,7 @@ void  initializations(void) {
 /* Initialize peripherals */
 
 
-// Initialize Data Direction Registers for Motors
+// Initialize Data Direction Registers for Stepper Motor
 DDRAD_DDRAD4 = 1;  // Motor Reset
 DDRAD_DDRAD5 = 1;  // Motor MS2
 DDRAD_DDRAD6 = 1;  // Motor MS1
@@ -159,6 +161,7 @@ DDRM_DDRM1 = 1;    // Motor Dir
 DDRM_DDRM0 = 1;    // Motor Step
 DDRT_DDRT0 = 1;    // Motor Sleep
 
+// Initial Pin Values for Stepper Motor
 MOTOREN = 0;
 setStep(QUARTERSTEP);
 MOTORRST = 1;
@@ -199,7 +202,7 @@ void delay(){
   for(i = 0; i < 10000; i++){}
 }
 
-void stepMotor(){
+void stepMotor(){ // Pulses the step pin
   delay();
   MOTORSTEP = 1;
   delay();
@@ -237,7 +240,8 @@ void stepMotorMult(int steps){
 }
 
 void stepDegrees(double degrees){
-  double degreesPerStep; int steps;
+  double degreesPerStep; int steps; 
+  // A full step moves the motor 1.8 degrees
   if(currentStepSize == FULLSTEP) {
     degreesPerStep = 1.8;
   }
@@ -252,6 +256,9 @@ void stepDegrees(double degrees){
   }
   steps = degrees/degreesPerStep;
   stepMotorMult(steps);
+}
+
+void rotateToDegree(double destination){
 }
 
 

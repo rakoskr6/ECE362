@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\alexm_000\Documents\GitHub\ECE362\OtherCode\MOTORWORKS\bin\Project.abs"
+PROGRAM "C:\Users\alexm_000\Documents\GitHub\ECE362\OtherCode\Stepper Motor\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -1302,7 +1302,7 @@ UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
 main.c.o:
-  inchar outchar 
+  rotateToDegree inchar outchar 
 DCONV.C.o (ansisf.lib):
   D_FRLONGK _DSFLOAT _DUFLOAT _DUTRUNC D_PSHK_UNARY D_CLRK_UNARY D_MAXK_UNARY 
   D_NORMK_UNARY 
@@ -1320,6 +1320,8 @@ rtshc12.c.o (ansisf.lib):
 VREGS.C.o (ansisf.lib):
   UL_PULK SL_PULK 
 NOT USED VARIABLES
+main.c.o:
+  currentPosition 
 rtshc12.c.o (ansisf.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 
