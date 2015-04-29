@@ -74,14 +74,26 @@ void get_Data(void);
 void star_Calculate(void);
 
 /* Stepper Motor Utility Functions */
-void stepMotor();
-void delay();
-void bigDelay();
+void stepMotor(void);
+void delay(void);
+void bigDelay(void);
 void setStepperDir(char dir);
 void setStep(char stepSize);
 void stepMotorMult(int steps);
 void stepDegrees(double degrees);
 void stepToDegree(double destination);
+
+/* SPI Utility Functions */
+void transmit(char x);
+char receive(void);
+char transfer(char x);
+
+/* Compass Utility Functions */
+char compassReadByte(char x);
+void compassWriteByte(char address, char data);
+void compassReadBytes(char address, char * dest, char count);
+void readMag(void);
+void getHeading(double xMag, double yMag);
 
 
 /* Transmission variable declarations */
@@ -175,6 +187,11 @@ int final_ALT;
 char currentStepSize = 0;
 double currentPosition = 0;
 
+// Compass Calculation Variables
+int mx; int my; int mz;
+char check;
+double heading;
+
 /* Special ASCII characters */
 #define CR 0x0D		// ASCII return 
 #define LF 0x0A		// ASCII new line 
@@ -211,6 +228,20 @@ double currentPosition = 0;
 #define CW 0
 #define CCW 1
 #define TOGGLEDIR 2
+
+/* COMPASS REGISTERS */
+#define COMPCS PTT_PTT2
+#define WHO_AM_I_XM 0x0F //Check register
+#define CTRL_REG0_XM 0x1F
+#define CTRL_REG1_XM 0x20
+#define CTRL_REG2_XM 0x21
+#define CTRL_REG3_XM 0x22
+#define CTRL_REG4_XM 0x23
+#define CTRL_REG5_XM 0x24
+#define CTRL_REG6_XM 0x25
+#define CTRL_REG7_XM 0x26
+#define INT_CTRL_REG_M 0x12
+#define OUT_X_L_M 0x08
 
 	 	   		
 /*	 	   		
@@ -274,21 +305,37 @@ void  initializations(void) {
   PTAD_PTAD2 = 1;
   
   // Initialize Data Direction Registers for Stepper Motor
-DDRAD_DDRAD4 = 1;  // Motor Reset
-DDRAD_DDRAD5 = 1;  // Motor MS2
-DDRAD_DDRAD6 = 1;  // Motor MS1
-DDRAD_DDRAD7 = 1;  // Motor Enable
-DDRM_DDRM1 = 1;    // Motor Dir
-DDRM_DDRM0 = 1;    // Motor Step
-DDRT_DDRT0 = 1;    // Motor Sleep
+  DDRAD_DDRAD4 = 1;  // Motor Reset
+  DDRAD_DDRAD5 = 1;  // Motor MS2
+  DDRAD_DDRAD6 = 1;  // Motor MS1
+  DDRAD_DDRAD7 = 1;  // Motor Enable
+  DDRM_DDRM1 = 1;    // Motor Dir
+  DDRM_DDRM0 = 1;    // Motor Step
+  DDRT_DDRT0 = 1;    // Motor Sleep
 
-// Initial Pin Values for Stepper Motor
-MOTOREN = 0;
-setStep(QUARTERSTEP);
-MOTORRST = 1;
-MOTORSLP = 1;
-setStepperDir(CW);
-MOTORSTEP = 0; 
+  // Initial Pin Values for Stepper Motor
+  MOTOREN = 0;
+  setStep(QUARTERSTEP);
+  MOTORRST = 1;
+  MOTORSLP = 1;
+  setStepperDir(CW);
+  MOTORSTEP = 0;
+
+  // SPI Initialization
+  SPICR1 = 0x1C; //master, no interrupt, idle high, sample at even edges, off initially
+  SPICR2 = 0; //normal, non-bidirection
+  SPIBR = 0x10; //Baud rate to 6.0 Megabits/second
+  
+  // Compass Initialization
+  DDRT_DDRT2 = 1;
+  COMPCS = 1;
+  compassWriteByte(CTRL_REG0_XM, 0x00);
+  compassWriteByte(CTRL_REG1_XM, 0x00);
+  compassWriteByte(CTRL_REG5_XM, 0xE0);
+  compassWriteByte(CTRL_REG6_XM, 0x00);
+  compassWriteByte(CTRL_REG7_XM, 0x00);
+  compassWriteByte(CTRL_REG4_XM, 0x04);
+  compassWriteByte(INT_CTRL_REG_M, 0x09); 
             
 /* Initialize interrupts */
 	      
@@ -373,7 +420,7 @@ void main(void) {
           year++; // HAPPY NEW YEAR!
         }
 
-         star_Calculate_Complete = 0;
+         new_Data = 1;
       }
 
   
@@ -754,12 +801,12 @@ STEPPER UTILITY FUNCTIONS
 ***********************************************************************
 */
 
-void delay(){
+void delay(void){
   int count;
   for(count = 0; count < 10000; count++){}
 }
 
-void bigDelay(){
+void bigDelay(void){
   int outer; int inner;
   for(outer = 0; outer < 1000; outer++){
     for(inner = 0; inner < 500; inner++){
@@ -767,7 +814,7 @@ void bigDelay(){
   }
 }
 
-void stepMotor(){ // Pulses the step pin
+void stepMotor(void){ // Pulses the step pin
   delay();
   MOTORSTEP = 1;
   delay();
@@ -844,6 +891,88 @@ void stepToDegree(double destination){
   // Moves required degrees
   stepDegrees(difference);
   
+}
+
+/*
+**********************************************************************
+SPI UTILITY FUNCTIONS
+**********************************************************************
+*/
+
+void transmit(char x){
+  while(SPISR_SPTEF == 0);
+  SPIDR = x;
+}
+
+char receive(void){
+  while(SPISR_SPIF == 0);
+  return SPIDR;
+}
+
+char transfer(char x){
+  transmit(x);
+  return receive();
+}
+
+/*
+**********************************************************************
+COMPASS UTILITY FUNCTIONS
+**********************************************************************
+*/
+
+char compassReadByte(char x){
+  char returnChar;
+  x |= 0x80; //MSB for compass reads is 1
+  COMPCS = 0;
+  SPICR1 |= 0x40; //Enables SPI
+  transfer(x); //Sends the instruction to compass
+  returnChar = transfer(0x00); //Reads the result of instruction
+  SPICR1 &= 0xBF; //Disables SPI
+  COMPCS = 1;
+  return returnChar;
+}
+
+void compassWriteByte(char address, char data){
+  address &= 0x3F; //Only the last six bits are valid for write
+  COMPCS = 0;
+  SPICR1 |= 0x40; //Enables SPI
+  transfer(address); //Gives the compass the address
+  transfer(data); //Gives the compass the data to write
+  SPICR1 &= 0xBF; //Disables SPI
+  COMPCS = 1;
+}
+
+void compassReadBytes(char address, char * dest, char count){
+  int compassByte;
+  COMPCS = 0;
+  SPICR1 |= 0x40; //Enables SPI
+  address &= 0x3F; //Only last six bits are valid address
+  address |= 0xC0; //First two bits on for read and multibyte
+  transfer(address); //First two bits on
+  for(compassByte = 0; compassByte < count; compassByte++){
+    dest[compassByte] = transfer(0x00); //Read into destination array
+  }
+  SPICR1 &= 0xBF; //Disables SPI
+  COMPCS = 1;
+}
+
+void readMag(void){
+  char temp[6];
+  compassReadBytes(OUT_X_L_M, temp, 6);
+  mx = (temp[1] << 8) | temp[0];
+  my = (temp[3] << 8) | temp[2];
+  mz = (temp[5] << 8) | temp[4];
+}
+
+void getHeading(double xMag, double yMag){
+  if(yMag > 0){
+    heading = 90.0 - (atan(xMag/yMag) * (180/PI));
+  } else if(yMag < 0){
+    heading = 270-(atan(xMag/yMag) * (180/PI));
+  } else{
+    if(xMag < 0) heading = 180;
+    else heading = 0;
+  }
 }
 
 /*
