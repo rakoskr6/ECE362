@@ -1,3 +1,4 @@
+//#define NORECEIVE
 /*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
@@ -356,7 +357,16 @@ void main(void) {
  for(;;) {
   
 /* < start of your main loop > */
+      #ifndef NORECEIVE
       get_Data();
+      #endif
+      
+      #ifdef NORECEIVE
+      new_Data = 0;
+      star_Calculate_Complete = 1;
+      azimuth_Complete = 0;
+      altitude_Complete = 0;
+      #endif
      
       if(new_Data == 1)
       {
@@ -372,6 +382,11 @@ void main(void) {
          //Change PWM Duty Cycle Here (I think...)
          TIE_C7I = 1;
       }
+              
+      #ifdef NORECEIVE        
+      ALT = 45;
+      AZ = 90;
+      #endif
       
       if(star_Calculate_Complete && !azimuth_Complete) 
       {
