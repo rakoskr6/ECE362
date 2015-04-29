@@ -32,8 +32,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     328
-  _Copy    *toCopyDownBeg 0xF19F
+  _Range   pZeroOut       0x900     85
+  _Copy    *toCopyDownBeg 0xCC4C
 } _startupData;
 
 *********************************************************************************************
@@ -42,11 +42,10 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata                           16     R     0xC03B     0xC04A   ROM_C000
-.text                          10762     R     0xC04B     0xEA54   ROM_C000
-.copy                            157     R     0xF19F     0xF23B   ROM_C000
+.text                           1515     R     0xC03B     0xC625   ROM_C000
+.copy                             29     R     0xCC4C     0xCC68   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
-.data                            152   R/W      0x900      0x997   RAM
+.data                             24   R/W      0x900      0x917   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_a                     1   N/I        0xA        0xA   .absSeg2
@@ -271,14 +270,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
-.bss                             112   R/W      0x998      0xA07   RAM
-.common                           64   R/W      0xA08      0xA47   RAM
-RUNTIME                         1866     R     0xEA55     0xF19E   ROM_C000
+.bss                              35   R/W      0x918      0x93A   RAM
+.common                           26   R/W      0x93B      0x954   RAM
+RUNTIME                         1574     R     0xC626     0xCC4B   ROM_C000
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):        3244 (dec:    12868)
-READ_WRITE (R/W):      248 (dec:      584)
+READ_ONLY (R):         C71 (dec:     3185)
+READ_WRITE (R/W):      155 (dec:      341)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -339,7 +338,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       0   .abs_section_4b
-     _TIE                                        4C       1       1       2   .abs_section_4c
+     _TIE                                        4C       1       1       1   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       1   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
@@ -352,10 +351,10 @@ MODULE:                 -- mc9s12c32.c.o --
      _PORTAD0                                    8F       1       1       0   .abs_section_8f
      _SCICR1                                     CA       1       1       1   .abs_section_ca
      _SCICR2                                     CB       1       1       1   .abs_section_cb
-     _SCISR1                                     CC       1       1       1   .abs_section_cc
+     _SCISR1                                     CC       1       1       0   .abs_section_cc
      _SCISR2                                     CD       1       1       0   .abs_section_cd
      _SCIDRH                                     CE       1       1       0   .abs_section_ce
-     _SCIDRL                                     CF       1       1       1   .abs_section_cf
+     _SCIDRL                                     CF       1       1       0   .abs_section_cf
      _SPICR1                                     D8       1       1       3   .abs_section_d8
      _SPICR2                                     D9       1       1       1   .abs_section_d9
      _SPIBR                                      DA       1       1       1   .abs_section_da
@@ -517,98 +516,46 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C04B      E8     232       1   .text       
-     main                                      C133     17E     382       7   .text       
-     RTI_ISR                                   C2B1       4       4       1   .text       
-     TIM_ISR                                   C2B5      2D      45       1   .text       
-     SCI_ISR                                   C2E2       1       1       1   .text       
-     get_Data                                  C2E3     1D8     472      28   .text       
-     Conversion                                C4BB     334     820      40   .text       
-     star_Calculate                            C7EF     92D    2349      65   .text       
-     delay                                     D11C       A      10       5   .text       
-     stepMotor                                 D126       F      15       1   .text       
-     setStepperDir                             D135      23      35       2   .text       
-     setStep                                   D158      29      41       1   .text       
-     stepMotorMult                             D181      11      17       1   .text       
-     stepDegrees                               D192     17B     379      13   .text       
-     stepToDegree                              D30D      66     102       1   .text       
-     transmit                                  D373       9       9       1   .text       
-     receive                                   D37C       7       7       1   .text       
-     transfer                                  D383       5       5       2   .text       
-     compassWriteByte                          D388      1C      28       4   .text       
-     inchar                                    D3A4       7       7       2   .text       
+     initializations                           C03B      E8     232       1   .text       
+     main                                      C123     197     407       6   .text       
+     RTI_ISR                                   C2BA       4       4       1   .text       
+     TIM_ISR                                   C2BE      2D      45       1   .text       
+     SCI_ISR                                   C2EB       1       1       1   .text       
+     delay                                     C2EC       A      10       5   .text       
+     stepMotor                                 C2F6       F      15       1   .text       
+     setStepperDir                             C305      23      35       2   .text       
+     setStep                                   C328      29      41       1   .text       
+     stepMotorMult                             C351      11      17       1   .text       
+     stepDegrees                               C362     17B     379      13   .text       
+     stepToDegree                              C4DD      66     102       1   .text       
+     transmit                                  C543       9       9       1   .text       
+     receive                                   C54C       7       7       1   .text       
+     transfer                                  C553       5       5       2   .text       
+     compassWriteByte                          C558      1C      28       4   .text       
 - VARIABLES:
-     daysInMonth                                900      18      24       2   .data       
-     RA_hours                                   918      40      64       4   .data       
-     DEC_degrees                                958      40      64       4   .data       
-     Received                                   998       1       1       9   .bss        
-     Receive_Check                              999       1       1       1   .bss        
-     Lat_Sgn                                    99A       1       1       3   .bss        
-     Lat0                                       99B       1       1       3   .bss        
-     Lat1                                       99C       1       1       3   .bss        
-     Lat2                                       99D       1       1       3   .bss        
-     Lat3                                       99E       1       1       3   .bss        
-     Long_Sgn                                   99F       1       1       3   .bss        
-     Long0                                      9A0       1       1       3   .bss        
-     Long1                                      9A1       1       1       3   .bss        
-     Long2                                      9A2       1       1       3   .bss        
-     Long3                                      9A3       1       1       3   .bss        
-     Long4                                      9A4       1       1       3   .bss        
-     Month0                                     9A5       1       1       3   .bss        
-     Month1                                     9A6       1       1       3   .bss        
-     Day0                                       9A7       1       1       3   .bss        
-     Day1                                       9A8       1       1       3   .bss        
-     Year0                                      9A9       1       1       3   .bss        
-     Year1                                      9AA       1       1       3   .bss        
-     Year2                                      9AB       1       1       3   .bss        
-     Year3                                      9AC       1       1       3   .bss        
-     Hours0                                     9AD       1       1       3   .bss        
-     Hours1                                     9AE       1       1       3   .bss        
-     Min0                                       9AF       1       1       3   .bss        
-     Min1                                       9B0       1       1       3   .bss        
-     Star                                       9B1       1       1       3   .bss        
-     Junk                                       9B2       1       1       1   .bss        
-     Lat_Found                                  9B3       2       2       2   .bss        
-     Long_Found                                 9B5       2       2       2   .bss        
-     Month_Found                                9B7       2       2       2   .bss        
-     Day_Found                                  9B9       2       2       2   .bss        
-     Year_Found                                 9BB       2       2       2   .bss        
-     Hours_Found                                9BD       2       2       2   .bss        
-     Min_Found                                  9BF       2       2       2   .bss        
-     Star_Found                                 9C1       2       2       1   .bss        
-     Receive_Complete                           9C3       2       2       2   .bss        
-     LAT                                        9C5       8       8      10   .bss        
-     LONG                                       9CD       8       8       7   .bss        
-     year                                       9D5       2       2       4   .bss        
-     day                                        9D7       2       2       8   .bss        
-     month                                      9D9       2       2       7   .bss        
-     hour                                       9DB       2       2       7   .bss        
-     minute                                     9DD       2       2       5   .bss        
-     RA                                         9DF       8       8       5   .bss        
-     DEC                                        9E7       8       8       7   .bss        
-     new_Data                                   9EF       2       2       4   .bss        
-     star_Calculate_Complete                    9F1       2       2       5   .bss        
-     azimuth_Complete                           9F3       2       2       4   .bss        
-     altitude_Complete                          9F5       2       2       3   .bss        
-     mincnt                                     9F7       2       2       3   .bss        
-     minute_flag                                9F9       2       2       1   .bss        
-     ten_min                                    9FB       2       2       3   .bss        
-     ten_min_flag                               9FD       2       2       3   .bss        
-     currentStepSize                            9FF       1       1       2   .bss        
-     currentPosition                            A00       8       8      14   .bss        
+     daysInMonth                                900      18      24       1   .data       
+     year                                       918       2       2       2   .bss        
+     day                                        91A       2       2       4   .bss        
+     month                                      91C       2       2       5   .bss        
+     hour                                       91E       2       2       4   .bss        
+     minute                                     920       2       2       3   .bss        
+     new_Data                                   922       2       2       2   .bss        
+     star_Calculate_Complete                    924       2       2       3   .bss        
+     azimuth_Complete                           926       2       2       4   .bss        
+     altitude_Complete                          928       2       2       3   .bss        
+     mincnt                                     92A       2       2       3   .bss        
+     minute_flag                                92C       2       2       1   .bss        
+     ten_min                                    92E       2       2       3   .bss        
+     ten_min_flag                               930       2       2       3   .bss        
+     currentStepSize                            932       1       1       2   .bss        
+     currentPosition                            933       8       8      14   .bss        
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
-     i                                          A08       2       2       9   .common     
-     UTC                                        A0A       8       8       5   .common     
-     JDays                                      A12       8       8      15   .common     
-     yearsSince2000                             A1A       2       2       2   .common     
-     GMSTHours                                  A1C       8       8       7   .common     
-     LHA                                        A24       8       8      11   .common     
-     ALT                                        A2C       8       8       8   .common     
-     AZ                                         A34       8       8       7   .common     
-     adjusted_ALT                               A3C       8       8       5   .common     
-     final_ALT                                  A44       2       2       2   .common     
+     ALT                                        93B       8       8       5   .common     
+     AZ                                         943       8       8       5   .common     
+     adjusted_ALT                               94B       8       8       5   .common     
+     final_ALT                                  953       2       2       2   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -619,91 +566,66 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- MATH.C.o (ansisf.lib) --
 - PROCEDURES:
-     logb                                      D3AB      20      32       2   .text       
-     fabs                                      D3CB      2C      44       8   .text       
-     is_special                                D3F7      59      89       8   .text       
-     sincos                                    D450     3AE     942      28   .text       
-     sin                                       D7FE      C1     193       7   .text       
-     cos                                       D8BF      A9     169       6   .text       
-     sqrt_r                                    D968     1F0     496      13   .text       
-     sqrt                                      DB58      A0     160       3   .text       
-     SetSign                                   DBF8      4A      74       7   .text       
-     atan2                                     DC42     B01    2817     120   .text       
-     asin                                      E743     10C     268       7   .text       
-     acos                                      E84F     180     384       4   .text       
-     floor                                     E9CF      86     134       1   .text       
+     fabs                                      C574      2C      44       1   .text       
+     floor                                     C5A0      86     134       1   .text       
 - VARIABLES:
-     infinity                                  C03B       8       8       8   .rodata     
-     nan_union                                 C043       8       8      12   .rodata     
 MODULE:                 -- DADD.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_ADDKL                                   EA55      BC     188       1   RUNTIME     
-     _DADD                                     EB11      11      17      68   RUNTIME     
-     _DSUB                                     EB22      19      25      16   RUNTIME     
-     _DINC                                     EB3B      35      53       3   RUNTIME     
-     _DNEG                                     EB70      17      23       4   RUNTIME     
+     D_ADDKL                                   C626      BC     188       1   RUNTIME     
+     _DADD                                     C6E2      11      17       5   RUNTIME     
+     _DSUB                                     C6F3      19      25       3   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DANSI.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_MODF                                    EB87      5D      93       1   RUNTIME     
-     D_FREXP                                   EBE4      20      32       1   RUNTIME     
-     D_LDEXP                                   EC04      18      24       1   RUNTIME     
-     modf                                      EC1C      1F      31       2   RUNTIME     
-     frexp                                     EC3B      1F      31       2   RUNTIME     
-     RetErrDom                                 EC5A      1F      31       1   RUNTIME     
-     ldexp                                     EC79      27      39       5   RUNTIME     
+     D_MODF                                    C70C      5D      93       1   RUNTIME     
+     modf                                      C769      1F      31       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DCMP.C.o (ansisf.lib) --
 - PROCEDURES:
-     _DCMP                                     ECA0      30      48      13   RUNTIME     
+     _DCMP                                     C788      30      48       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DCONV.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_TOLONGK                                 ECD0      33      51       1   RUNTIME     
-     D_FRLONGK                                 ED03      19      25       1   RUNTIME     
-     _DSFLOAT                                  ED1C      14      20      16   RUNTIME     
-     _DSTRUNC                                  ED30      19      25       4   RUNTIME     
-     _DUTRUNC                                  ED49       3       3       1   RUNTIME     
-     D_PSHK_UNARY                              ED4C      1E      30       1   RUNTIME     
-     D_CLRK_UNARY                              ED6A       D      13       2   RUNTIME     
-     D_MAXK_UNARY                              ED77       A      10       1   RUNTIME     
-     D_NORMK_UNARY                             ED81      5C      92       1   RUNTIME     
+     D_TOLONGK                                 C7B8      33      51       1   RUNTIME     
+     D_FRLONGK                                 C7EB      19      25       1   RUNTIME     
+     _DSFLOAT                                  C804      14      20       2   RUNTIME     
+     _DSTRUNC                                  C818      19      25       2   RUNTIME     
+     D_PSHK_UNARY                              C831      1E      30       1   RUNTIME     
+     D_CLRK_UNARY                              C84F       D      13       2   RUNTIME     
+     D_MAXK_UNARY                              C85C       A      10       1   RUNTIME     
+     D_NORMK_UNARY                             C866      5C      92       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DMUL.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_DIVKL                                   EDDD      F5     245       2   RUNTIME     
-     D_MULKL                                   EED2      90     144       1   RUNTIME     
-     _DMUL                                     EF62      11      17      44   RUNTIME     
-     _DDIV                                     EF73      11      17      26   RUNTIME     
+     D_DIVKL                                   C8C2      F5     245       2   RUNTIME     
+     D_MULKL                                   C9B7      90     144       1   RUNTIME     
+     _DMUL                                     CA47      11      17       2   RUNTIME     
+     _DDIV                                     CA58      11      17       2   RUNTIME     
 - VARIABLES:
 MODULE:                 -- DREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     D_PULK                                    EF84      29      41       6   RUNTIME     
-     D_PULL                                    EFAD      25      37       4   RUNTIME     
-     D_PSHK                                    EFD2      23      35       3   RUNTIME     
-     D_STAL                                    EFF5      2A      42       4   RUNTIME     
-     D_TKL                                     F01F      1C      28       2   RUNTIME     
-     D_XGKL                                    F03B      39      57       2   RUNTIME     
-     D_CLRK                                    F074      13      19       4   RUNTIME     
-     D_CLRL                                    F087      10      16       1   RUNTIME     
-     D_MAXK                                    F097       A      10       2   RUNTIME     
-     D_NORMK                                   F0A1      8F     143       6   RUNTIME     
+     D_PULK                                    CA69      29      41       4   RUNTIME     
+     D_PULL                                    CA92      25      37       4   RUNTIME     
+     D_PSHK                                    CAB7      23      35       3   RUNTIME     
+     D_STAL                                    CADA      2A      42       2   RUNTIME     
+     D_TKL                                     CB04      1C      28       2   RUNTIME     
+     D_XGKL                                    CB20      39      57       2   RUNTIME     
+     D_CLRK                                    CB59      13      19       4   RUNTIME     
+     D_CLRL                                    CB6C      10      16       1   RUNTIME     
+     D_MAXK                                    CB7C       A      10       2   RUNTIME     
+     D_NORMK                                   CB86      8F     143       5   RUNTIME     
 - VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansisf.lib) --
 - PROCEDURES:
-     _LCMP                                     F130      19      25       1   RUNTIME     
-     _NEG_P                                    F149       F      15       1   RUNTIME     
-     _ILSEXT                                   F158       7       7      14   RUNTIME     
-     _COPY                                     F15F       8       8      32   RUNTIME     
-     _CASE_CHECKED                             F167       B      11       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        F172      14      20       7   RUNTIME     
+     _NEG_P                                    CC15       F      15       1   RUNTIME     
+     _ILSEXT                                   CC24       7       7       2   RUNTIME     
+     _COPY                                     CC2B       8       8       7   RUNTIME     
 - VARIABLES:
-     errno                                      A46       2       2       5   .common     
 MODULE:                 -- VREGS.C.o (ansisf.lib) --
 - PROCEDURES:
-     L_NEGK                                    F186       7       7       2   RUNTIME     
-     L_PSHK                                    F18D       8       8       1   RUNTIME     
-     SL_PULK                                   F195       A      10       1   RUNTIME     
+     L_NEGK                                    CC33       7       7       2   RUNTIME     
+     L_PSHK                                    CC3A       8       8       1   RUNTIME     
+     SL_PULK                                   CC42       A      10       1   RUNTIME     
 - VARIABLES:
 
 *********************************************************************************************
@@ -711,41 +633,34 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                   326   4960      6
+  main.c.o                                    85   1337      6
   Start12.c.o                                  0     49      0
-  MATH.C.o (ansisf.lib)                        0   5802     16
-  DADD.C.o (ansisf.lib)                        0    306      0
-  DANSI.C.o (ansisf.lib)                       0    281      0
+  MATH.C.o (ansisf.lib)                        0    178      0
+  DADD.C.o (ansisf.lib)                        0    230      0
+  DANSI.C.o (ansisf.lib)                       0    124      0
   DCMP.C.o (ansisf.lib)                        0     48      0
-  DCONV.C.o (ansisf.lib)                       0    269      0
+  DCONV.C.o (ansisf.lib)                       0    266      0
   DMUL.C.o (ansisf.lib)                        0    423      0
   DREGS.C.o (ansisf.lib)                       0    428      0
-  rtshc12.c.o (ansisf.lib)                     2     86      0
+  rtshc12.c.o (ansisf.lib)                     0     30      0
   VREGS.C.o (ansisf.lib)                       0     25      0
-  other                                      256     12    157
+  other                                      256     12     29
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  initializations main RTI_ISR TIM_ISR SCI_ISR get_Data Conversion 
-  star_Calculate delay stepMotor setStepperDir setStep stepMotorMult 
-  stepDegrees stepToDegree transmit receive transfer compassWriteByte inchar 
-  logb fabs is_special sincos sin cos sqrt_r sqrt SetSign atan2 asin acos floor 
+  initializations main RTI_ISR TIM_ISR SCI_ISR delay stepMotor setStepperDir 
+  setStep stepMotorMult stepDegrees stepToDegree transmit receive transfer 
+  compassWriteByte fabs floor 
 SECTION: ".data"
-  daysInMonth RA_hours DEC_degrees 
+  daysInMonth 
 SECTION: ".bss"
-  Received Receive_Check Lat_Sgn Lat0 Lat1 Lat2 Lat3 Long_Sgn Long0 Long1 
-  Long2 Long3 Long4 Month0 Month1 Day0 Day1 Year0 Year1 Year2 Year3 Hours0 
-  Hours1 Min0 Min1 Star Junk Lat_Found Long_Found Month_Found Day_Found 
-  Year_Found Hours_Found Min_Found Star_Found Receive_Complete LAT LONG year 
-  day month hour minute RA DEC new_Data star_Calculate_Complete 
-  azimuth_Complete altitude_Complete mincnt minute_flag ten_min ten_min_flag 
-  currentStepSize currentPosition 
+  year day month hour minute new_Data star_Calculate_Complete azimuth_Complete 
+  altitude_Complete mincnt minute_flag ten_min ten_min_flag currentStepSize 
+  currentPosition 
 SECTION: ".init"
   Init _Startup 
-SECTION: ".rodata"
-  infinity nan_union 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1195,13 +1110,12 @@ SECTION: ".abs_section_ffe0"
 SECTION: ".abs_section_ffd6"
   _Vector_20 
 SECTION: ".common"
-  i UTC JDays yearsSince2000 GMSTHours LHA ALT AZ adjusted_ALT final_ALT errno 
+  ALT AZ adjusted_ALT final_ALT 
 SECTION: "RUNTIME"
-  D_ADDKL _DADD _DSUB _DINC _DNEG D_MODF D_FREXP D_LDEXP modf frexp RetErrDom 
-  ldexp _DCMP D_TOLONGK D_FRLONGK _DSFLOAT _DSTRUNC _DUTRUNC D_PSHK_UNARY 
-  D_CLRK_UNARY D_MAXK_UNARY D_NORMK_UNARY D_DIVKL D_MULKL _DMUL _DDIV D_PULK 
-  D_PULL D_PSHK D_STAL D_TKL D_XGKL D_CLRK D_CLRL D_MAXK D_NORMK _LCMP _NEG_P 
-  _ILSEXT _COPY _CASE_CHECKED _CASE_CHECKED_BYTE L_NEGK L_PSHK SL_PULK 
+  D_ADDKL _DADD _DSUB D_MODF modf _DCMP D_TOLONGK D_FRLONGK _DSFLOAT _DSTRUNC 
+  D_PSHK_UNARY D_CLRK_UNARY D_MAXK_UNARY D_NORMK_UNARY D_DIVKL D_MULKL _DMUL 
+  _DDIV D_PULK D_PULL D_PSHK D_STAL D_TKL D_XGKL D_CLRK D_CLRL D_MAXK D_NORMK 
+  _NEG_P _ILSEXT _COPY L_NEGK L_PSHK SL_PULK 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1260,7 +1174,7 @@ OBJECT LIST SORTED BY ADDRESS
      _TCTL2                                      49       1       1       0   .abs_section_49
      _TCTL3                                      4A       1       1       0   .abs_section_4a
      _TCTL4                                      4B       1       1       0   .abs_section_4b
-     _TIE                                        4C       1       1       2   .abs_section_4c
+     _TIE                                        4C       1       1       1   .abs_section_4c
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       1   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
@@ -1293,10 +1207,10 @@ OBJECT LIST SORTED BY ADDRESS
      _SCIBD                                      C8       2       2       2   .abs_section_c8
      _SCICR1                                     CA       1       1       1   .abs_section_ca
      _SCICR2                                     CB       1       1       1   .abs_section_cb
-     _SCISR1                                     CC       1       1       1   .abs_section_cc
+     _SCISR1                                     CC       1       1       0   .abs_section_cc
      _SCISR2                                     CD       1       1       0   .abs_section_cd
      _SCIDRH                                     CE       1       1       0   .abs_section_ce
-     _SCIDRL                                     CF       1       1       1   .abs_section_cf
+     _SCIDRL                                     CF       1       1       0   .abs_section_cf
      _SPICR1                                     D8       1       1       3   .abs_section_d8
      _SPICR2                                     D9       1       1       1   .abs_section_d9
      _SPIBR                                      DA       1       1       1   .abs_section_da
@@ -1428,157 +1342,80 @@ OBJECT LIST SORTED BY ADDRESS
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     daysInMonth                                900      18      24       2   .data       
-     RA_hours                                   918      40      64       4   .data       
-     DEC_degrees                                958      40      64       4   .data       
-     Received                                   998       1       1       9   .bss        
-     Receive_Check                              999       1       1       1   .bss        
-     Lat_Sgn                                    99A       1       1       3   .bss        
-     Lat0                                       99B       1       1       3   .bss        
-     Lat1                                       99C       1       1       3   .bss        
-     Lat2                                       99D       1       1       3   .bss        
-     Lat3                                       99E       1       1       3   .bss        
-     Long_Sgn                                   99F       1       1       3   .bss        
-     Long0                                      9A0       1       1       3   .bss        
-     Long1                                      9A1       1       1       3   .bss        
-     Long2                                      9A2       1       1       3   .bss        
-     Long3                                      9A3       1       1       3   .bss        
-     Long4                                      9A4       1       1       3   .bss        
-     Month0                                     9A5       1       1       3   .bss        
-     Month1                                     9A6       1       1       3   .bss        
-     Day0                                       9A7       1       1       3   .bss        
-     Day1                                       9A8       1       1       3   .bss        
-     Year0                                      9A9       1       1       3   .bss        
-     Year1                                      9AA       1       1       3   .bss        
-     Year2                                      9AB       1       1       3   .bss        
-     Year3                                      9AC       1       1       3   .bss        
-     Hours0                                     9AD       1       1       3   .bss        
-     Hours1                                     9AE       1       1       3   .bss        
-     Min0                                       9AF       1       1       3   .bss        
-     Min1                                       9B0       1       1       3   .bss        
-     Star                                       9B1       1       1       3   .bss        
-     Junk                                       9B2       1       1       1   .bss        
-     Lat_Found                                  9B3       2       2       2   .bss        
-     Long_Found                                 9B5       2       2       2   .bss        
-     Month_Found                                9B7       2       2       2   .bss        
-     Day_Found                                  9B9       2       2       2   .bss        
-     Year_Found                                 9BB       2       2       2   .bss        
-     Hours_Found                                9BD       2       2       2   .bss        
-     Min_Found                                  9BF       2       2       2   .bss        
-     Star_Found                                 9C1       2       2       1   .bss        
-     Receive_Complete                           9C3       2       2       2   .bss        
-     LAT                                        9C5       8       8      10   .bss        
-     LONG                                       9CD       8       8       7   .bss        
-     year                                       9D5       2       2       4   .bss        
-     day                                        9D7       2       2       8   .bss        
-     month                                      9D9       2       2       7   .bss        
-     hour                                       9DB       2       2       7   .bss        
-     minute                                     9DD       2       2       5   .bss        
-     RA                                         9DF       8       8       5   .bss        
-     DEC                                        9E7       8       8       7   .bss        
-     new_Data                                   9EF       2       2       4   .bss        
-     star_Calculate_Complete                    9F1       2       2       5   .bss        
-     azimuth_Complete                           9F3       2       2       4   .bss        
-     altitude_Complete                          9F5       2       2       3   .bss        
-     mincnt                                     9F7       2       2       3   .bss        
-     minute_flag                                9F9       2       2       1   .bss        
-     ten_min                                    9FB       2       2       3   .bss        
-     ten_min_flag                               9FD       2       2       3   .bss        
-     currentStepSize                            9FF       1       1       2   .bss        
-     currentPosition                            A00       8       8      14   .bss        
-     i                                          A08       2       2       9   .common     
-     UTC                                        A0A       8       8       5   .common     
-     JDays                                      A12       8       8      15   .common     
-     yearsSince2000                             A1A       2       2       2   .common     
-     GMSTHours                                  A1C       8       8       7   .common     
-     LHA                                        A24       8       8      11   .common     
-     ALT                                        A2C       8       8       8   .common     
-     AZ                                         A34       8       8       7   .common     
-     adjusted_ALT                               A3C       8       8       5   .common     
-     final_ALT                                  A44       2       2       2   .common     
-     errno                                      A46       2       2       5   .common     
+     daysInMonth                                900      18      24       1   .data       
+     year                                       918       2       2       2   .bss        
+     day                                        91A       2       2       4   .bss        
+     month                                      91C       2       2       5   .bss        
+     hour                                       91E       2       2       4   .bss        
+     minute                                     920       2       2       3   .bss        
+     new_Data                                   922       2       2       2   .bss        
+     star_Calculate_Complete                    924       2       2       3   .bss        
+     azimuth_Complete                           926       2       2       4   .bss        
+     altitude_Complete                          928       2       2       3   .bss        
+     mincnt                                     92A       2       2       3   .bss        
+     minute_flag                                92C       2       2       1   .bss        
+     ten_min                                    92E       2       2       3   .bss        
+     ten_min_flag                               930       2       2       3   .bss        
+     currentStepSize                            932       1       1       2   .bss        
+     currentPosition                            933       8       8      14   .bss        
+     ALT                                        93B       8       8       5   .common     
+     AZ                                         943       8       8       5   .common     
+     adjusted_ALT                               94B       8       8       5   .common     
+     final_ALT                                  953       2       2       2   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     infinity                                  C03B       8       8       8   .rodata     
-     nan_union                                 C043       8       8      12   .rodata     
-     initializations                           C04B      E8     232       1   .text       
-     main                                      C133     17E     382       7   .text       
-     RTI_ISR                                   C2B1       4       4       1   .text       
-     TIM_ISR                                   C2B5      2D      45       1   .text       
-     SCI_ISR                                   C2E2       1       1       1   .text       
-     get_Data                                  C2E3     1D8     472      28   .text       
-     Conversion                                C4BB     334     820      40   .text       
-     star_Calculate                            C7EF     92D    2349      65   .text       
-     delay                                     D11C       A      10       5   .text       
-     stepMotor                                 D126       F      15       1   .text       
-     setStepperDir                             D135      23      35       2   .text       
-     setStep                                   D158      29      41       1   .text       
-     stepMotorMult                             D181      11      17       1   .text       
-     stepDegrees                               D192     17B     379      13   .text       
-     stepToDegree                              D30D      66     102       1   .text       
-     transmit                                  D373       9       9       1   .text       
-     receive                                   D37C       7       7       1   .text       
-     transfer                                  D383       5       5       2   .text       
-     compassWriteByte                          D388      1C      28       4   .text       
-     inchar                                    D3A4       7       7       2   .text       
-     logb                                      D3AB      20      32       2   .text       
-     fabs                                      D3CB      2C      44       8   .text       
-     is_special                                D3F7      59      89       8   .text       
-     sincos                                    D450     3AE     942      28   .text       
-     sin                                       D7FE      C1     193       7   .text       
-     cos                                       D8BF      A9     169       6   .text       
-     sqrt_r                                    D968     1F0     496      13   .text       
-     sqrt                                      DB58      A0     160       3   .text       
-     SetSign                                   DBF8      4A      74       7   .text       
-     atan2                                     DC42     B01    2817     120   .text       
-     asin                                      E743     10C     268       7   .text       
-     acos                                      E84F     180     384       4   .text       
-     floor                                     E9CF      86     134       1   .text       
-     D_ADDKL                                   EA55      BC     188       1   RUNTIME     
-     _DADD                                     EB11      11      17      68   RUNTIME     
-     _DSUB                                     EB22      19      25      16   RUNTIME     
-     _DINC                                     EB3B      35      53       3   RUNTIME     
-     _DNEG                                     EB70      17      23       4   RUNTIME     
-     D_MODF                                    EB87      5D      93       1   RUNTIME     
-     D_FREXP                                   EBE4      20      32       1   RUNTIME     
-     D_LDEXP                                   EC04      18      24       1   RUNTIME     
-     modf                                      EC1C      1F      31       2   RUNTIME     
-     frexp                                     EC3B      1F      31       2   RUNTIME     
-     RetErrDom                                 EC5A      1F      31       1   RUNTIME     
-     ldexp                                     EC79      27      39       5   RUNTIME     
-     _DCMP                                     ECA0      30      48      13   RUNTIME     
-     D_TOLONGK                                 ECD0      33      51       1   RUNTIME     
-     D_FRLONGK                                 ED03      19      25       1   RUNTIME     
-     _DSFLOAT                                  ED1C      14      20      16   RUNTIME     
-     _DSTRUNC                                  ED30      19      25       4   RUNTIME     
-     _DUTRUNC                                  ED49       3       3       1   RUNTIME     
-     D_PSHK_UNARY                              ED4C      1E      30       1   RUNTIME     
-     D_CLRK_UNARY                              ED6A       D      13       2   RUNTIME     
-     D_MAXK_UNARY                              ED77       A      10       1   RUNTIME     
-     D_NORMK_UNARY                             ED81      5C      92       1   RUNTIME     
-     D_DIVKL                                   EDDD      F5     245       2   RUNTIME     
-     D_MULKL                                   EED2      90     144       1   RUNTIME     
-     _DMUL                                     EF62      11      17      44   RUNTIME     
-     _DDIV                                     EF73      11      17      26   RUNTIME     
-     D_PULK                                    EF84      29      41       6   RUNTIME     
-     D_PULL                                    EFAD      25      37       4   RUNTIME     
-     D_PSHK                                    EFD2      23      35       3   RUNTIME     
-     D_STAL                                    EFF5      2A      42       4   RUNTIME     
-     D_TKL                                     F01F      1C      28       2   RUNTIME     
-     D_XGKL                                    F03B      39      57       2   RUNTIME     
-     D_CLRK                                    F074      13      19       4   RUNTIME     
-     D_CLRL                                    F087      10      16       1   RUNTIME     
-     D_MAXK                                    F097       A      10       2   RUNTIME     
-     D_NORMK                                   F0A1      8F     143       6   RUNTIME     
-     _LCMP                                     F130      19      25       1   RUNTIME     
-     _NEG_P                                    F149       F      15       1   RUNTIME     
-     _ILSEXT                                   F158       7       7      14   RUNTIME     
-     _COPY                                     F15F       8       8      32   RUNTIME     
-     _CASE_CHECKED                             F167       B      11       1   RUNTIME     
-     _CASE_CHECKED_BYTE                        F172      14      20       7   RUNTIME     
-     L_NEGK                                    F186       7       7       2   RUNTIME     
-     L_PSHK                                    F18D       8       8       1   RUNTIME     
-     SL_PULK                                   F195       A      10       1   RUNTIME     
+     initializations                           C03B      E8     232       1   .text       
+     main                                      C123     197     407       6   .text       
+     RTI_ISR                                   C2BA       4       4       1   .text       
+     TIM_ISR                                   C2BE      2D      45       1   .text       
+     SCI_ISR                                   C2EB       1       1       1   .text       
+     delay                                     C2EC       A      10       5   .text       
+     stepMotor                                 C2F6       F      15       1   .text       
+     setStepperDir                             C305      23      35       2   .text       
+     setStep                                   C328      29      41       1   .text       
+     stepMotorMult                             C351      11      17       1   .text       
+     stepDegrees                               C362     17B     379      13   .text       
+     stepToDegree                              C4DD      66     102       1   .text       
+     transmit                                  C543       9       9       1   .text       
+     receive                                   C54C       7       7       1   .text       
+     transfer                                  C553       5       5       2   .text       
+     compassWriteByte                          C558      1C      28       4   .text       
+     fabs                                      C574      2C      44       1   .text       
+     floor                                     C5A0      86     134       1   .text       
+     D_ADDKL                                   C626      BC     188       1   RUNTIME     
+     _DADD                                     C6E2      11      17       5   RUNTIME     
+     _DSUB                                     C6F3      19      25       3   RUNTIME     
+     D_MODF                                    C70C      5D      93       1   RUNTIME     
+     modf                                      C769      1F      31       1   RUNTIME     
+     _DCMP                                     C788      30      48       2   RUNTIME     
+     D_TOLONGK                                 C7B8      33      51       1   RUNTIME     
+     D_FRLONGK                                 C7EB      19      25       1   RUNTIME     
+     _DSFLOAT                                  C804      14      20       2   RUNTIME     
+     _DSTRUNC                                  C818      19      25       2   RUNTIME     
+     D_PSHK_UNARY                              C831      1E      30       1   RUNTIME     
+     D_CLRK_UNARY                              C84F       D      13       2   RUNTIME     
+     D_MAXK_UNARY                              C85C       A      10       1   RUNTIME     
+     D_NORMK_UNARY                             C866      5C      92       1   RUNTIME     
+     D_DIVKL                                   C8C2      F5     245       2   RUNTIME     
+     D_MULKL                                   C9B7      90     144       1   RUNTIME     
+     _DMUL                                     CA47      11      17       2   RUNTIME     
+     _DDIV                                     CA58      11      17       2   RUNTIME     
+     D_PULK                                    CA69      29      41       4   RUNTIME     
+     D_PULL                                    CA92      25      37       4   RUNTIME     
+     D_PSHK                                    CAB7      23      35       3   RUNTIME     
+     D_STAL                                    CADA      2A      42       2   RUNTIME     
+     D_TKL                                     CB04      1C      28       2   RUNTIME     
+     D_XGKL                                    CB20      39      57       2   RUNTIME     
+     D_CLRK                                    CB59      13      19       4   RUNTIME     
+     D_CLRL                                    CB6C      10      16       1   RUNTIME     
+     D_MAXK                                    CB7C       A      10       2   RUNTIME     
+     D_NORMK                                   CB86      8F     143       5   RUNTIME     
+     _NEG_P                                    CC15       F      15       1   RUNTIME     
+     _ILSEXT                                   CC24       7       7       2   RUNTIME     
+     _COPY                                     CC2B       8       8       7   RUNTIME     
+     L_NEGK                                    CC33       7       7       2   RUNTIME     
+     L_PSHK                                    CC3A       8       8       1   RUNTIME     
+     SL_PULK                                   CC42       A      10       1   RUNTIME     
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1588,62 +1425,54 @@ UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
 main.c.o:
-  bigDelay compassReadByte compassReadBytes readMag getHeading outchar 
+  get_Data Conversion star_Calculate bigDelay compassReadByte compassReadBytes 
+  readMag getHeading inchar outchar 
 MATH.C.o (ansisf.lib):
-  copysign isint pow_i exp_r exp log_r log log10 pow tan atan sncsh sinh cosh 
-  tanh ceil fmod 
+  copysign logb isint is_special pow_i exp_r exp log_r log log10 pow sincos 
+  tan sin cos sqrt_r sqrt SetSign atan2 asin acos atan sncsh sinh cosh tanh 
+  ceil fmod 
 DADD.C.o (ansisf.lib):
-  _DDEC _DABS 
+  _DINC _DDEC _DNEG _DABS 
+DANSI.C.o (ansisf.lib):
+  D_FREXP D_LDEXP frexp RetErrDom ldexp 
 DCONV.C.o (ansisf.lib):
-  _DUFLOAT 
+  _DUFLOAT _DUTRUNC 
 DREGS.C.o (ansisf.lib):
   D_TLK 
 rtshc12.c.o (ansisf.lib):
   _BSHL _BSHRS _BSHRU _BDIVMODU _BDIVMODS _ISHL _ISHRU _ISHRS _LSHL _LSHRU 
-  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP_P _LCMP_PP _LNEG _LCOM _LINC _LDEC 
-  _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
-  _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_SEARCH _CASE_SEARCH_BYTE _CASE_SEARCH_8 
-  _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+  _LSHRS _LADD _LSUB _LAND _LOR _LXOR _LCMP _LCMP_P _LCMP_PP _LNEG _LCOM _LINC 
+  _LDEC _LMUL _LMULU16x32 _LMULS16x32 _lDivMod _LDIVU _LDIVS _LMODU _LMODS 
+  _CASE_DIRECT _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE _CASE_SEARCH 
+  _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
 VREGS.C.o (ansisf.lib):
   UL_PULK 
 NOT USED VARIABLES
 main.c.o:
-  mx my mz check heading 
+  RA_hours DEC_degrees Received Receive_Check Lat_Sgn Lat0 Lat1 Lat2 Lat3 
+  Long_Sgn Long0 Long1 Long2 Long3 Long4 Month0 Month1 Day0 Day1 Year0 Year1 
+  Year2 Year3 Hours0 Hours1 Min0 Min1 Star Junk Lat_Found Long_Found 
+  Month_Found Day_Found Year_Found Hours_Found Min_Found Star_Found 
+  Receive_Complete LAT LONG RA DEC i UTC JDays yearsSince2000 GMSTHours LHA mx 
+  my mz check heading 
 MATH.C.o (ansisf.lib):
-  small.1 big.2 
+  infinity nan_union small.1 big.2 errno 
+DANSI.C.o (ansisf.lib):
+  infinity errno 
 rtshc12.c.o (ansisf.lib):
-  _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 
+  _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xF19F ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xCC4C ---- SIZE       4 ---
 Filling bytes inserted
- 00970901
-------- ROM-ADDRESS: 0xF1A3 ---- RAM-ADDRESS: 0x901 ---- SIZE      23 ---
+ 00170901
+------- ROM-ADDRESS: 0xCC50 ---- RAM-ADDRESS: 0x901 ---- SIZE      23 ---
 Name of initialized Object : daysInMonth:1
  1F001C001F 001E001F00 1E001F001F
  001E001F00 1E001F
-------- ROM-ADDRESS: 0xF1BA ---- RAM-ADDRESS: 0x918 ---- SIZE      42 ---
-Name of initialized Object : RA_hours
- 4017AE147A E147AE4019 9999999999
- 9A400E51EB 851EB85240 043D70A3D7
- 0A3E4014F5 C28F5C28F6 401B
-------- ROM-ADDRESS: 0xF1E4 ---- SIZE       6 ---
-Filling bytes inserted
- 0000000000 00
-------- ROM-ADDRESS: 0xF1EA ---- RAM-ADDRESS: 0x948 ---- SIZE      16 ---
-Name of initialized Object : RA_hours:48
- 4033147AE1 47AE144032 9EB851EB85
- 1F
-------- ROM-ADDRESS: 0xF1FA ---- RAM-ADDRESS: 0x958 ---- SIZE      64 ---
-Name of initialized Object : DEC_degrees
- 401DA3D70A 3D70A4C04A 5999999999
- 9A40381EB8 51EB851F40 5650A3D70A
- 3D71C02066 6666666666 C030B851EB
- 851EB8404F EF5C28F5C2 8F404363D7
- 0A3D70A4
-------- ROM-ADDRESS: 0xF23A ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xCC67 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1658,30 +1487,13 @@ initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL
                                 _PWMPER01 _PWMDTY01 _PWMSCLA _PWMCLK _PWMPRCLK _DDRT 
                                 _DDRAD _PTAD _DDRM setStep _PTT setStepperDir _PTM 
                                 _SPICR1 _SPICR2 _SPIBR compassWriteByte 
-main                      USES initializations main get_Data new_Data 
-                                star_Calculate_Complete azimuth_Complete altitude_Complete 
-                                Receive_Complete star_Calculate _TIE AZ stepToDegree ALT _DMUL 
-                                _DDIV _DSUB adjusted_ALT _DADD floor _DSTRUNC 
-                                final_ALT _PWMDTY01 ten_min_flag minute hour day month 
-                                daysInMonth year _COPY 
+main                      USES initializations main new_Data 
+                                star_Calculate_Complete azimuth_Complete altitude_Complete ALT AZ 
+                                _COPY stepToDegree _DMUL _DDIV _DSUB adjusted_ALT 
+                                _DADD floor _DSTRUNC final_ALT _PWMDTY01 
+                                ten_min_flag minute hour day month daysInMonth year 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 mincnt minute_flag ten_min ten_min_flag 
-get_Data                  USES get_Data Received Lat_Sgn Lat0 Lat1 Lat2 Lat3 
-                                Lat_Found Long_Sgn Long0 Long1 Long2 Long3 Long4 
-                                Long_Found Month0 Month1 Month_Found Day0 Day1 Day_Found 
-                                Year0 Year1 Year2 Year3 Year_Found Hours0 Hours1 
-                                Hours_Found Min0 Min1 Min_Found Star new_Data Star_Found 
-                                Conversion Receive_Complete Junk inchar Receive_Check 
-Conversion                USES Lat0 Conversion _ILSEXT _DSFLOAT _DMUL Lat1 
-                                Lat2 _DADD Lat3 _DDIV LAT Lat_Sgn Long0 Long1 Long2 
-                                Long3 Long4 LONG Long_Sgn Month0 Month1 month Day0 
-                                Day1 day Year0 Year1 Year2 Year3 year Hours0 Hours1 
-                                hour Min0 Min1 minute _COPY 
-star_Calculate            USES Star RA_hours star_Calculate RA DEC_degrees DEC 
-                                minute _ILSEXT _DSFLOAT _DDIV hour _DADD UTC JDays 
-                                year yearsSince2000 i _DINC daysInMonth month day 
-                                _DMUL GMSTHours _DCMP _DSUB LONG LHA LAT cos sin ALT 
-                                asin AZ acos star_Calculate_Complete _COPY 
 stepMotor                 USES delay _PTM 
 setStepperDir             USES _PTM delay 
 setStep                   USES currentStepSize _PTAD delay 
@@ -1695,42 +1507,15 @@ transmit                  USES _SPISR _SPIDR
 receive                   USES _SPISR _SPIDR 
 transfer                  USES transmit receive 
 compassWriteByte          USES _PTT _SPICR1 transfer 
-inchar                    USES _SCISR1 _SCIDRL 
-logb                      USES _COPY frexp 
-is_special                USES _LCMP 
-sincos                    USES sincos _DADD _DMUL modf _DCMP _DINC _DUTRUNC 
-                                _COPY _DSUB fabs _DNEG 
-sin                       USES sin is_special _CASE_CHECKED_BYTE _COPY _DNEG 
-                                sincos 
-cos                       USES cos is_special _CASE_CHECKED_BYTE fabs sincos 
-                                _COPY 
-sqrt_r                    USES sqrt_r frexp _DMUL _DADD _DDIV ldexp _COPY 
-                                _ILSEXT 
-sqrt                      USES sqrt is_special _CASE_CHECKED_BYTE infinity 
-                                sqrt_r errno nan_union _COPY 
-SetSign                   USES fabs _DNEG _COPY 
-atan2                     USES errno atan2 is_special _CASE_CHECKED_BYTE 
-                                SetSign fabs logb _DDIV ldexp _DCMP _DADD _DMUL 
-                                _DSTRUNC _CASE_CHECKED _COPY _DSUB _DNEG 
-asin                      USES asin is_special _CASE_CHECKED_BYTE fabs _COPY 
-                                _DCMP _DMUL _DSUB sqrt atan2 errno nan_union 
-acos                      USES acos is_special _CASE_CHECKED_BYTE fabs _COPY 
-                                _DCMP errno nan_union _DSUB _DADD _DDIV sqrt atan2 
 floor                     USES modf _DADD _COPY 
 D_ADDKL                   USES D_XGKL D_NORMK 
 _DADD                     USES D_PULK D_PULL D_ADDKL D_PSHK 
 _DSUB                     USES _DADD 
-_DINC                     USES _DADD 
 D_MODF                    USES D_TKL D_NORMK D_CLRL D_CLRK 
-D_FREXP                   USES D_NORMK 
 modf                      USES D_PULK D_MODF D_STAL 
-frexp                     USES D_PULK D_FREXP D_STAL 
-RetErrDom                 USES errno infinity 
-ldexp                     USES D_PULK D_LDEXP D_STAL RetErrDom 
 D_FRLONGK                 USES D_NORMK_UNARY 
 _DSFLOAT                  USES SL_PULK D_FRLONGK D_PSHK_UNARY 
 _DSTRUNC                  USES D_PULL D_TOLONGK L_PSHK 
-_DUTRUNC                  USES _DSTRUNC 
 D_MAXK_UNARY              USES D_CLRK_UNARY 
 D_NORMK_UNARY             USES D_CLRK_UNARY D_MAXK_UNARY 
 D_DIVKL                   USES D_MAXK D_DIVKL D_NORMK 
@@ -1771,334 +1556,114 @@ DEPENDENCY TREE
  |  |        |    
  |  |        +- receive             
  |  |             
- |  +- get_Data            
+ |  +- _COPY               
+ |  |    
+ |  +- stepToDegree        
  |  |  | 
- |  |  +- Conversion          
+ |  |  +- _DSUB               
  |  |  |  | 
- |  |  |  +- _ILSEXT             
- |  |  |  |    
- |  |  |  +- _DSFLOAT            
- |  |  |  |  | 
- |  |  |  |  +- SL_PULK             
- |  |  |  |  |  | 
- |  |  |  |  |  +- L_NEGK              
- |  |  |  |  |     | 
- |  |  |  |  |     +- _NEG_P              
- |  |  |  |  |          
- |  |  |  |  +- D_FRLONGK           
- |  |  |  |  |  | 
- |  |  |  |  |  +- D_NORMK_UNARY       
- |  |  |  |  |     | 
- |  |  |  |  |     +- D_CLRK_UNARY        
- |  |  |  |  |     |    
- |  |  |  |  |     +- D_MAXK_UNARY        
- |  |  |  |  |        | 
- |  |  |  |  |        +- D_CLRK_UNARY         (see above)
- |  |  |  |  |           
- |  |  |  |  +- D_PSHK_UNARY        
- |  |  |  |       
- |  |  |  +- _DMUL               
- |  |  |  |  | 
- |  |  |  |  +- D_PULK              
- |  |  |  |  |    
- |  |  |  |  +- D_PULL              
- |  |  |  |  |    
- |  |  |  |  +- D_MULKL             
- |  |  |  |  |  | 
- |  |  |  |  |  +- D_CLRK              
- |  |  |  |  |  |    
- |  |  |  |  |  +- D_NORMK             
- |  |  |  |  |     | 
- |  |  |  |  |     +- D_CLRK               (see above)
- |  |  |  |  |     |  
- |  |  |  |  |     +- D_MAXK              
- |  |  |  |  |        | 
- |  |  |  |  |        +- D_CLRK               (see above)
- |  |  |  |  |           
- |  |  |  |  +- D_PSHK              
- |  |  |  |       
  |  |  |  +- _DADD               
- |  |  |  |  | 
- |  |  |  |  +- D_PULK               (see above)
- |  |  |  |  |  
- |  |  |  |  +- D_PULL               (see above)
- |  |  |  |  |  
- |  |  |  |  +- D_ADDKL             
- |  |  |  |  |  | 
- |  |  |  |  |  +- D_XGKL              
- |  |  |  |  |  |    
- |  |  |  |  |  +- D_NORMK              (see above)
- |  |  |  |  |     
- |  |  |  |  +- D_PSHK               (see above)
- |  |  |  |     
- |  |  |  +- _DDIV               
- |  |  |  |  | 
- |  |  |  |  +- D_PULL               (see above)
- |  |  |  |  |  
- |  |  |  |  +- D_PULK               (see above)
- |  |  |  |  |  
- |  |  |  |  +- D_DIVKL             
- |  |  |  |  |  | 
- |  |  |  |  |  +- D_MAXK               (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- D_NORMK              (see above)
- |  |  |  |  |     
- |  |  |  |  +- D_PSHK               (see above)
- |  |  |  |     
- |  |  |  +- _COPY               
- |  |  |       
- |  |  +- inchar              
- |  |       
- |  +- star_Calculate      
- |  |  | 
- |  |  +- _ILSEXT              (see above)
- |  |  |  
- |  |  +- _DSFLOAT             (see above)
- |  |  |  
- |  |  +- _DDIV                (see above)
- |  |  |  
- |  |  +- _DADD                (see above)
- |  |  |  
- |  |  +- _DINC               
- |  |  |  | 
- |  |  |  +- _DADD                (see above)
- |  |  |     
- |  |  +- _DMUL                (see above)
+ |  |  |     | 
+ |  |  |     +- D_PULK              
+ |  |  |     |    
+ |  |  |     +- D_PULL              
+ |  |  |     |    
+ |  |  |     +- D_ADDKL             
+ |  |  |     |  | 
+ |  |  |     |  +- D_XGKL              
+ |  |  |     |  |    
+ |  |  |     |  +- D_NORMK             
+ |  |  |     |     | 
+ |  |  |     |     +- D_CLRK              
+ |  |  |     |     |    
+ |  |  |     |     +- D_MAXK              
+ |  |  |     |        | 
+ |  |  |     |        +- D_CLRK               (see above)
+ |  |  |     |           
+ |  |  |     +- D_PSHK              
+ |  |  |          
+ |  |  +- _COPY                (see above)
  |  |  |  
  |  |  +- _DCMP               
  |  |  |    
- |  |  +- _DSUB               
- |  |  |  | 
- |  |  |  +- _DADD                (see above)
- |  |  |     
- |  |  +- cos                 
- |  |  |  | 
- |  |  |  +- is_special          
- |  |  |  |  | 
- |  |  |  |  +- _LCMP               
- |  |  |  |       
- |  |  |  +- _CASE_CHECKED_BYTE  
- |  |  |  |    
- |  |  |  +- fabs                
- |  |  |  |    
- |  |  |  +- sincos              
- |  |  |  |  | 
- |  |  |  |  +- _DADD                (see above)
- |  |  |  |  |  
- |  |  |  |  +- _DMUL                (see above)
- |  |  |  |  |  
- |  |  |  |  +- modf                
- |  |  |  |  |  | 
- |  |  |  |  |  +- D_PULK               (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- D_MODF              
- |  |  |  |  |  |  | 
- |  |  |  |  |  |  +- D_TKL               
- |  |  |  |  |  |  |    
- |  |  |  |  |  |  +- D_NORMK              (see above)
- |  |  |  |  |  |  |  
- |  |  |  |  |  |  +- D_CLRL              
- |  |  |  |  |  |  |    
- |  |  |  |  |  |  +- D_CLRK               (see above)
- |  |  |  |  |  |     
- |  |  |  |  |  +- D_STAL              
- |  |  |  |  |       
- |  |  |  |  +- _DCMP                (see above)
- |  |  |  |  |  
- |  |  |  |  +- _DINC                (see above)
- |  |  |  |  |  
- |  |  |  |  +- _DUTRUNC            
- |  |  |  |  |  | 
- |  |  |  |  |  +- _DSTRUNC            
- |  |  |  |  |     | 
- |  |  |  |  |     +- D_PULL               (see above)
- |  |  |  |  |     |  
- |  |  |  |  |     +- D_TOLONGK           
- |  |  |  |  |     |    
- |  |  |  |  |     +- L_PSHK              
- |  |  |  |  |        | 
- |  |  |  |  |        +- L_NEGK               (see above)
- |  |  |  |  |           
- |  |  |  |  +- _COPY                (see above)
- |  |  |  |  |  
- |  |  |  |  +- _DSUB                (see above)
- |  |  |  |  |  
- |  |  |  |  +- fabs                 (see above)
- |  |  |  |  |  
- |  |  |  |  +- _DNEG               
- |  |  |  |       
- |  |  |  +- _COPY                (see above)
- |  |  |     
- |  |  +- sin                 
- |  |  |  | 
- |  |  |  +- is_special           (see above)
- |  |  |  |  
- |  |  |  +- _CASE_CHECKED_BYTE   (see above)
- |  |  |  |  
- |  |  |  +- _COPY                (see above)
- |  |  |  |  
- |  |  |  +- _DNEG                (see above)
- |  |  |  |  
- |  |  |  +- sincos               (see above)
- |  |  |     
- |  |  +- asin                
- |  |  |  | 
- |  |  |  +- is_special           (see above)
- |  |  |  |  
- |  |  |  +- _CASE_CHECKED_BYTE   (see above)
- |  |  |  |  
- |  |  |  +- fabs                 (see above)
- |  |  |  |  
- |  |  |  +- _COPY                (see above)
- |  |  |  |  
- |  |  |  +- _DCMP                (see above)
- |  |  |  |  
- |  |  |  +- _DMUL                (see above)
- |  |  |  |  
- |  |  |  +- _DSUB                (see above)
- |  |  |  |  
- |  |  |  +- sqrt                
- |  |  |  |  | 
- |  |  |  |  +- is_special           (see above)
- |  |  |  |  |  
- |  |  |  |  +- _CASE_CHECKED_BYTE   (see above)
- |  |  |  |  |  
- |  |  |  |  +- sqrt_r              
- |  |  |  |  |  | 
- |  |  |  |  |  +- frexp               
- |  |  |  |  |  |  | 
- |  |  |  |  |  |  +- D_PULK               (see above)
- |  |  |  |  |  |  |  
- |  |  |  |  |  |  +- D_FREXP             
- |  |  |  |  |  |  |  | 
- |  |  |  |  |  |  |  +- D_NORMK              (see above)
- |  |  |  |  |  |  |     
- |  |  |  |  |  |  +- D_STAL               (see above)
- |  |  |  |  |  |     
- |  |  |  |  |  +- _DMUL                (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- _DADD                (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- _DDIV                (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- ldexp               
- |  |  |  |  |  |  | 
- |  |  |  |  |  |  +- D_PULK               (see above)
- |  |  |  |  |  |  |  
- |  |  |  |  |  |  +- D_LDEXP             
- |  |  |  |  |  |  |    
- |  |  |  |  |  |  +- D_STAL               (see above)
- |  |  |  |  |  |  |  
- |  |  |  |  |  |  +- RetErrDom           
- |  |  |  |  |  |       
- |  |  |  |  |  +- _COPY                (see above)
- |  |  |  |  |  |  
- |  |  |  |  |  +- _ILSEXT              (see above)
- |  |  |  |  |     
- |  |  |  |  +- _COPY                (see above)
- |  |  |  |     
- |  |  |  +- atan2               
- |  |  |     | 
- |  |  |     +- is_special           (see above)
- |  |  |     |  
- |  |  |     +- _CASE_CHECKED_BYTE   (see above)
- |  |  |     |  
- |  |  |     +- SetSign             
- |  |  |     |  | 
- |  |  |     |  +- fabs                 (see above)
- |  |  |     |  |  
- |  |  |     |  +- _DNEG                (see above)
- |  |  |     |  |  
- |  |  |     |  +- _COPY                (see above)
- |  |  |     |     
- |  |  |     +- fabs                 (see above)
- |  |  |     |  
- |  |  |     +- logb                
- |  |  |     |  | 
- |  |  |     |  +- _COPY                (see above)
- |  |  |     |  |  
- |  |  |     |  +- frexp                (see above)
- |  |  |     |     
- |  |  |     +- _DDIV                (see above)
- |  |  |     |  
- |  |  |     +- ldexp                (see above)
- |  |  |     |  
- |  |  |     +- _DCMP                (see above)
- |  |  |     |  
- |  |  |     +- _DADD                (see above)
- |  |  |     |  
- |  |  |     +- _DMUL                (see above)
- |  |  |     |  
- |  |  |     +- _DSTRUNC             (see above)
- |  |  |     |  
- |  |  |     +- _CASE_CHECKED       
- |  |  |     |    
- |  |  |     +- _COPY                (see above)
- |  |  |     |  
- |  |  |     +- _DSUB                (see above)
- |  |  |     |  
- |  |  |     +- _DNEG                (see above)
- |  |  |        
- |  |  +- acos                
- |  |  |  | 
- |  |  |  +- is_special           (see above)
- |  |  |  |  
- |  |  |  +- _CASE_CHECKED_BYTE   (see above)
- |  |  |  |  
- |  |  |  +- fabs                 (see above)
- |  |  |  |  
- |  |  |  +- _COPY                (see above)
- |  |  |  |  
- |  |  |  +- _DCMP                (see above)
- |  |  |  |  
- |  |  |  +- _DSUB                (see above)
- |  |  |  |  
- |  |  |  +- _DADD                (see above)
- |  |  |  |  
- |  |  |  +- _DDIV                (see above)
- |  |  |  |  
- |  |  |  +- sqrt                 (see above)
- |  |  |  |  
- |  |  |  +- atan2                (see above)
- |  |  |     
- |  |  +- _COPY                (see above)
- |  |     
- |  +- stepToDegree        
- |  |  | 
- |  |  +- _DSUB                (see above)
- |  |  |  
- |  |  +- _COPY                (see above)
- |  |  |  
- |  |  +- _DCMP                (see above)
- |  |  |  
  |  |  +- setStepperDir        (see above)
  |  |  |  
- |  |  +- fabs                 (see above)
- |  |  |  
+ |  |  +- fabs                
+ |  |  |    
  |  |  +- stepDegrees         
  |  |     | 
- |  |     +- _DDIV                (see above)
- |  |     |  
- |  |     +- _DSTRUNC             (see above)
- |  |     |  
+ |  |     +- _DDIV               
+ |  |     |  | 
+ |  |     |  +- D_PULL               (see above)
+ |  |     |  |  
+ |  |     |  +- D_PULK               (see above)
+ |  |     |  |  
+ |  |     |  +- D_DIVKL             
+ |  |     |  |  | 
+ |  |     |  |  +- D_MAXK               (see above)
+ |  |     |  |  |  
+ |  |     |  |  +- D_NORMK              (see above)
+ |  |     |  |     
+ |  |     |  +- D_PSHK               (see above)
+ |  |     |     
+ |  |     +- _DSTRUNC            
+ |  |     |  | 
+ |  |     |  +- D_PULL               (see above)
+ |  |     |  |  
+ |  |     |  +- D_TOLONGK           
+ |  |     |  |    
+ |  |     |  +- L_PSHK              
+ |  |     |     | 
+ |  |     |     +- L_NEGK              
+ |  |     |        | 
+ |  |     |        +- _NEG_P              
+ |  |     |             
  |  |     +- stepMotorMult       
  |  |     |  | 
  |  |     |  +- stepMotor           
  |  |     |     | 
  |  |     |     +- delay                (see above)
  |  |     |        
- |  |     +- _ILSEXT              (see above)
- |  |     |  
- |  |     +- _DSFLOAT             (see above)
- |  |     |  
+ |  |     +- _ILSEXT             
+ |  |     |    
+ |  |     +- _DSFLOAT            
+ |  |     |  | 
+ |  |     |  +- SL_PULK             
+ |  |     |  |  | 
+ |  |     |  |  +- L_NEGK               (see above)
+ |  |     |  |     
+ |  |     |  +- D_FRLONGK           
+ |  |     |  |  | 
+ |  |     |  |  +- D_NORMK_UNARY       
+ |  |     |  |     | 
+ |  |     |  |     +- D_CLRK_UNARY        
+ |  |     |  |     |    
+ |  |     |  |     +- D_MAXK_UNARY        
+ |  |     |  |        | 
+ |  |     |  |        +- D_CLRK_UNARY         (see above)
+ |  |     |  |           
+ |  |     |  +- D_PSHK_UNARY        
+ |  |     |       
  |  |     +- _DADD                (see above)
  |  |     |  
  |  |     +- _COPY                (see above)
  |  |     |  
  |  |     +- _DSUB                (see above)
  |  |     |  
- |  |     +- _DMUL                (see above)
- |  |     |  
+ |  |     +- _DMUL               
+ |  |     |  | 
+ |  |     |  +- D_PULK               (see above)
+ |  |     |  |  
+ |  |     |  +- D_PULL               (see above)
+ |  |     |  |  
+ |  |     |  +- D_MULKL             
+ |  |     |  |  | 
+ |  |     |  |  +- D_CLRK               (see above)
+ |  |     |  |  |  
+ |  |     |  |  +- D_NORMK              (see above)
+ |  |     |  |     
+ |  |     |  +- D_PSHK               (see above)
+ |  |     |     
  |  |     +- _DCMP                (see above)
  |  |        
  |  +- _DMUL                (see above)
@@ -2111,15 +1676,27 @@ DEPENDENCY TREE
  |  |  
  |  +- floor               
  |  |  | 
- |  |  +- modf                 (see above)
- |  |  |  
+ |  |  +- modf                
+ |  |  |  | 
+ |  |  |  +- D_PULK               (see above)
+ |  |  |  |  
+ |  |  |  +- D_MODF              
+ |  |  |  |  | 
+ |  |  |  |  +- D_TKL               
+ |  |  |  |  |    
+ |  |  |  |  +- D_NORMK              (see above)
+ |  |  |  |  |  
+ |  |  |  |  +- D_CLRL              
+ |  |  |  |  |    
+ |  |  |  |  +- D_CLRK               (see above)
+ |  |  |  |     
+ |  |  |  +- D_STAL              
+ |  |  |       
  |  |  +- _DADD                (see above)
  |  |  |  
  |  |  +- _COPY                (see above)
  |  |     
  |  +- _DSTRUNC             (see above)
- |  |  
- |  +- _COPY                (see above)
  |     
  +- _Startup            
     | 
@@ -2146,5 +1723,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 9
-Total size of all blocks to be downloaded: 12868
+Total size of all blocks to be downloaded: 3185
 

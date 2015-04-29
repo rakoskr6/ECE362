@@ -163,8 +163,8 @@ double ALT;
 double AZ;
   
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-double RA_hours[8] = {5.92, 6.40, 3.79, 2.53, 5.24, 6.75, 19.08, 18.62};
-double DEC_degrees[8] = {7.41, -52.70, 24.12, 89.26, -8.20, -16.72, 63.87, 38.78};
+double RA_hours[8] = {5.92, 6.40, 3.79, 2.53, 5.24, 6.75, 2.51, 18.62};
+double DEC_degrees[8] = {7.41, -52.70, 24.12, 89.26, -8.20, -16.72, 14.83, 38.78};
 
 // Main Program Flags
 int new_Data = 0;
@@ -374,6 +374,7 @@ void main(void) {
          star_Calculate_Complete = 0;
          azimuth_Complete = 0;
          altitude_Complete = 0;
+         stepToDegree(0);
       }
       
       if(!star_Calculate_Complete&&Receive_Complete)
@@ -384,8 +385,8 @@ void main(void) {
       }
               
       #ifdef NORECEIVE        
-      ALT = 45;
-      AZ = 90;
+      ALT = 40.87;
+      AZ = 359.24;
       #endif
       
       if(star_Calculate_Complete && !azimuth_Complete) 
@@ -902,6 +903,10 @@ void stepToDegree(double destination){
     setStepperDir(CCW);
   }
   difference = fabs(difference);
+  if(difference > 180.0){
+    difference = 360.0 - difference;
+    setStepperDir(TOGGLEDIR);
+  }
   
   // Moves required degrees
   stepDegrees(difference);
