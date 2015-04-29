@@ -143,7 +143,7 @@ double JDays;
 int yearsSince2000;
 double GMSTHours;
 double LHA;
-double ALT = 31;
+double ALT = 30;
 double AZ;
   
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -159,8 +159,8 @@ int ten_min = 0;
 int ten_min_flag = 0;
 
 // Servo Calculation Variables
-#define R_90 39
-#define Z_00 16
+#define R_90 30
+#define Z_00 54
 double adjusted_ALT;
 int final_ALT;
 
@@ -272,10 +272,10 @@ int x = 0;
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
-	/*
-	    adjusted_ALT = (ALT * (R_90 - Z_00 + 1) / 90.0) + Z_00; // get value for pwm
+	
+	    adjusted_ALT = Z_00 - (ALT * (Z_00 - R_90 + 1) / 90.0); // get value for pwm
     final_ALT = floor(adjusted_ALT + 0.5); //rounding
-  */
+  
   
   EN = 1;
   MS1 = 0;
@@ -288,47 +288,53 @@ int x = 0;
   
 /* < start of your main loop > */ 
 
+    /*
     dir = 1;
     for (i = 0; i < 1000; i++) 
     {
        stp = 1;
-       for (x = 0; x < 100; x++) {}
+       for (x = 0; x < 10; x++) {}
        stp = 0;
     }
    
     for (i = 0; i < 5000; i++) {}
+    
+    
     
     dir = 0;
     for (i = 0; i < 1000; i++) 
     {
        stp = 1;
-       for (x = 0; x < 100; x++) {}
+       for (x = 0; x < 10; x++) {}
        stp = 0;
     }
+    
     for (i = 0; i < 5000; i++) {}
+    */
    
    
    
-   /* SERVO CODE 
+   // SERVO CODE 
    //if (new_Data) 
    //{ 
     //PWMDTY1 = ((1 + ALT/180.0)*12);
     
   
-    PWMDTY1 = Z_00; // go to 0 degrees
+    //PWMDTY1 = Z_00; // go to 0 degrees
     //PTT_PTT0 = 0;
 
     for (i = 0; i < 19999; i++) {} 
     
     
+   
     PWMDTY1 = final_ALT; //final_ALT;
     //PTT_PTT0 = 1;
     
     for (i = 0; i < 19999; i++) {}
     
     new_Data = 0;
-    }
-    */
+    //}
+    //*/
     
     
     
