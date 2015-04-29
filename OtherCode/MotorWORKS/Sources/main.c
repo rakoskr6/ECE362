@@ -63,6 +63,7 @@
 #include <hidef.h>      /* common defines and macros */
 #include "derivative.h"      /* derivative-specific definitions */
 #include <mc9s12c32.h>
+#include <float.h>
 
 /* All functions after main should be initialized here */
 char inchar(void);
@@ -71,7 +72,7 @@ void outchar(char x);
 
 /* Variable declarations */
 int i = 0;
-
+int flag = 0;
    	   			 		  			 		       
 
 /* Special ASCII characters */
@@ -90,6 +91,17 @@ int i = 0;
 #define CURMOV 0xFE	// LCD cursor move instruction
 #define LINE1 = 0x80	// LCD line 1 cursor position
 #define LINE2 = 0xC0	// LCD line 2 cursor position
+
+/* MOTOR CONTROL PINS */
+#define MOTOREN PTAD_PTAD7
+#define MOTORMS1 PTAD_PTAD6
+#define MOTORMS2 PTAD_PTAD5
+#define MOTORRST PTAD_PTAD4
+#define MOTORSLP PTT_PTT0
+#define MOTORDIR PTM_PTM1
+#define MOTORSTEP PTM_PTM0
+
+/* MOTOR MATHEMATICAL CONSTANTS */
 
 	 	   		
 /*	 	   		
@@ -120,25 +132,24 @@ void  initializations(void) {
   PORTB  =  0x10; //assert DTR pin on COM port
 
 /* Initialize peripherals */
-// Initialize Data Direction Registers
-DDRAD_DDRAD4 = 1;
-DDRAD_DDRAD5 = 1;
-DDRAD_DDRAD6 = 1;
-DDRAD_DDRAD7 = 1;
-DDRM_DDRM1 = 1;
-DDRM_DDRM0 = 1;
-DDRT_DDRT0 = 1;
-
-PTAD_PTAD7 = 0;
-PTAD_PTAD6 = 0;
-PTAD_PTAD5 = 0;
-PTAD_PTAD4 = 1;
-PTT_PTT0 = 1;
-PTM_PTM1 = 1;
-PTM_PTM0 = 0;
 
 
-            
+// Initialize Data Direction Registers for Motors
+DDRAD_DDRAD4 = 1;  // Motor Reset
+DDRAD_DDRAD5 = 1;  // Motor MS2
+DDRAD_DDRAD6 = 1;  // Motor MS1
+DDRAD_DDRAD7 = 1;  // Motor Enable
+DDRM_DDRM1 = 1;    // Motor Dir
+DDRM_DDRM0 = 1;    // Motor Step
+DDRT_DDRT0 = 1;    // Motor Sleep
+
+MOTOREN = 0;
+MOTORMS1 = 0;
+MOTORMS2 = 0;
+MOTORRST = 1;
+MOTORSLP = 1;
+MOTORDIR = 1;
+MOTORSTEP = 0;   
 /* Initialize interrupts */
 	      
 	      
@@ -158,15 +169,15 @@ void main(void) {
  for(;;) {
   
 /* < start of your main loop > */
+while(flag < 100){
   for(i = 0; i < 10000; i++){
   }
-  PTM_PTM0 = 1;
+  MOTORSTEP = 1;
   for(i = 0; i < 10000; i++){
   }
-  PTM_PTM0 = 0; 
-  
-  
-
+  MOTORSTEP = 0;
+  flag++;
+}
   
    } /* loop forever */
    
