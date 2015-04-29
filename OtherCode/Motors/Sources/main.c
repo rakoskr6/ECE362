@@ -227,7 +227,7 @@ void  initializations(void) {
   TIE_C7I = 0;
   
   MODRR = 0x02; //PT1 used as output
-  PWME = 0x02;  //enable Ch 01
+  PWME = 0x00;  //enable Ch 01
   PWMPOL = 0xFF; //Active low polarity
   PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
@@ -245,13 +245,15 @@ void  initializations(void) {
   // Set pins to output
      // Motor pin declarations
 
-  
   DDRM_DDRM0 = 1;
   DDRM_DDRM1 = 1;
   DDRAD_DDRAD4 = 1;
   DDRAD_DDRAD5 = 1;
   DDRAD_DDRAD6 = 1;
   DDRAD_DDRAD7 = 1;
+  DDRT_DDRT0 = 1;
+  
+
 
   
             
@@ -277,10 +279,10 @@ int x = 0;
     final_ALT = floor(adjusted_ALT + 0.5); //rounding
   
   
-  EN = 1;
+  EN = 0;
   MS1 = 0;
   MS2 = 0;
-  RST = 1;
+  PTAD_PTAD4 = 1;
   SLEEP = 1;
     
 
@@ -288,29 +290,32 @@ int x = 0;
   
 /* < start of your main loop > */ 
 
-    /*
+    
     dir = 1;
     for (i = 0; i < 1000; i++) 
     {
-       stp = 1;
-       for (x = 0; x < 10; x++) {}
-       stp = 0;
+       PTM_PTM0 = 1;
+       for (x = 0; x < 100000; x++) {}
+       PTM_PTM0 = 0;
+       for (x = 0; x < 100000; x++) {}
+       
     }
    
     for (i = 0; i < 5000; i++) {}
     
     
     
-    dir = 0;
+    /*dir = 0;
     for (i = 0; i < 1000; i++) 
     {
        stp = 1;
        for (x = 0; x < 10; x++) {}
        stp = 0;
+       for (x = 0; x < 10; x++) {}
     }
     
-    for (i = 0; i < 5000; i++) {}
-    */
+    for (i = 0; i < 5000; i++) {}*/
+    
    
    
    
@@ -323,16 +328,16 @@ int x = 0;
     //PWMDTY1 = Z_00; // go to 0 degrees
     //PTT_PTT0 = 0;
 
-    for (i = 0; i < 19999; i++) {} 
+    //for (i = 0; i < 19999; i++) {} 
     
     
    
-    PWMDTY1 = final_ALT; //final_ALT;
+    //PWMDTY1 = final_ALT; //final_ALT;
     //PTT_PTT0 = 1;
     
-    for (i = 0; i < 19999; i++) {}
+    //for (i = 0; i < 19999; i++) {}
     
-    new_Data = 0;
+    //new_Data = 0;
     //}
     //*/
     
