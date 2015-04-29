@@ -353,11 +353,14 @@ void  initializations(void) {
     
   // Initialize SPI for LCD
   //
-  DDRT = 0b00001110; // PTT 3, 2, 1 are outputs.
+  DDRT = 0b00001111; // PTT 3, 2, 1 are outputs.
   SPIBR = 0x10;
   SPICR1 = 0x50;
   SPICR2 = 0x00;
   PERT_PERT4 = 0;
+  PTT_PTT0 = 0;
+  DDRAD_DDRAD0 = 1;
+  PTAD_PTAD0 = 1;
   
             
 /* Initialize interrupts */
