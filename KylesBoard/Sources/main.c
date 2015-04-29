@@ -203,7 +203,7 @@ void  initializations(void) {
   SCICR1 =  0x00; //$9C = 156
   SCICR2 =  0x0C; //initialize SCI for program-driven operation
   DDRB   =  0x10; //set PB4 for output mode
-  PORTB  =  0x10; //assert DTR pin on COM port
+  PORTB  =  0x00; //assert DTR pin on COM port
 
 /* Initialize peripherals */
 
@@ -233,6 +233,10 @@ void  initializations(void) {
   PWMCLK = 0x02; //Clock SA for ch 1
   PWMPRCLK = 0x03; //Clock A =  3 MHz
   DDRT_DDRT0 = 1;
+  
+  // Data Direction Register
+  DDRAD_DDRAD2 = 1;
+  PTAD_PTAD2 = 1;
             
 /* Initialize interrupts */
 	      

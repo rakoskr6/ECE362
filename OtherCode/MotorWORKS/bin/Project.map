@@ -22,9 +22,8 @@ STARTUP SECTION
 Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
-  unsigned nofZeroOut     1
-  _Range   pZeroOut       0x900     2
-  _Copy    *toCopyDownBeg 0xC0DB
+  unsigned nofZeroOut     0
+  _Copy    *toCopyDownBeg 0xC128
 } _startupData;
 
 *********************************************************************************************
@@ -33,8 +32,8 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                            160     R     0xC03B     0xC0DA   ROM_C000
-.copy                              2     R     0xC0DB     0xC0DC   ROM_C000
+.text                            237     R     0xC03B     0xC127   ROM_C000
+.copy                              2     R     0xC128     0xC129   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -260,12 +259,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg221
 .abs_section_ffe0                  2     R     0xFFE0     0xFFE1   .absSeg222
 .abs_section_ffd6                  2     R     0xFFD6     0xFFD7   .absSeg223
-.bss                               2   R/W      0x900      0x901   RAM
 .vectSeg224_vect                   2     R     0xFFFE     0xFFFF   .vectSeg224
 
 Summary of section sizes per section type:
-READ_ONLY (R):          E5 (dec:      229)
-READ_WRITE (R/W):      102 (dec:      258)
+READ_ONLY (R):         132 (dec:      306)
+READ_WRITE (R/W):      100 (dec:      256)
 NO_INIT (N/I):         104 (dec:      260)
 
 *********************************************************************************************
@@ -434,7 +432,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       4   .abs_section_250
+     _PTM                                       250       1       1       7   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
      _DDRM                                      252       1       1       2   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
@@ -457,7 +455,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PPSJ                                      26D       1       1       0   .abs_section_26d
      _PIEJ                                      26E       1       1       0   .abs_section_26e
      _PIFJ                                      26F       1       1       0   .abs_section_26f
-     _PTAD                                      270       1       1       4   .abs_section_270
+     _PTAD                                      270       1       1       6   .abs_section_270
      _PTIAD                                     271       1       1       0   .abs_section_271
      _DDRAD                                     272       1       1       4   .abs_section_272
      _RDRAD                                     273       1       1       0   .abs_section_273
@@ -504,13 +502,17 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     initializations                           C03B      64     100       1   .text       
-     main                                      C09F      33      51       1   .text       
-     RTI_ISR                                   C0D2       4       4       1   .text       
-     TIM_ISR                                   C0D6       4       4       1   .text       
-     SCI_ISR                                   C0DA       1       1       1   .text       
+     initializations                           C03B      61      97       1   .text       
+     main                                      C09C       E      14       1   .text       
+     delay                                     C0AA       A      10       5   .text       
+     stepMotor                                 C0B4       F      15       1   .text       
+     setDir                                    C0C3      24      36       1   .text       
+     setStep                                   C0E7      27      39       1   .text       
+     stepMotorMult                             C10E      11      17       1   .text       
+     RTI_ISR                                   C11F       4       4       1   .text       
+     TIM_ISR                                   C123       4       4       1   .text       
+     SCI_ISR                                   C127       1       1       1   .text       
 - VARIABLES:
-     flag                                       900       2       2       3   .bss        
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
@@ -528,7 +530,7 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12c32.c.o                              260      0      0
-  main.c.o                                     2    160      6
+  main.c.o                                     0    237      6
   Start12.c.o                                  0     49      0
   other                                      256     12      2
 
@@ -536,9 +538,8 @@ MODULE STATISTIC
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  initializations main RTI_ISR TIM_ISR SCI_ISR 
-SECTION: ".bss"
-  flag 
+  initializations main delay stepMotor setDir setStep stepMotorMult RTI_ISR 
+  TIM_ISR SCI_ISR 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".abs_section_8"
@@ -1186,7 +1187,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       4   .abs_section_250
+     _PTM                                       250       1       1       7   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
      _DDRM                                      252       1       1       2   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
@@ -1209,20 +1210,24 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSJ                                      26D       1       1       0   .abs_section_26d
      _PIEJ                                      26E       1       1       0   .abs_section_26e
      _PIFJ                                      26F       1       1       0   .abs_section_26f
-     _PTAD                                      270       1       1       4   .abs_section_270
+     _PTAD                                      270       1       1       6   .abs_section_270
      _PTIAD                                     271       1       1       0   .abs_section_271
      _DDRAD                                     272       1       1       4   .abs_section_272
      _RDRAD                                     273       1       1       0   .abs_section_273
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
-     flag                                       900       2       2       3   .bss        
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     initializations                           C03B      64     100       1   .text       
-     main                                      C09F      33      51       1   .text       
-     RTI_ISR                                   C0D2       4       4       1   .text       
-     TIM_ISR                                   C0D6       4       4       1   .text       
-     SCI_ISR                                   C0DA       1       1       1   .text       
+     initializations                           C03B      61      97       1   .text       
+     main                                      C09C       E      14       1   .text       
+     delay                                     C0AA       A      10       5   .text       
+     stepMotor                                 C0B4       F      15       1   .text       
+     setDir                                    C0C3      24      36       1   .text       
+     setStep                                   C0E7      27      39       1   .text       
+     stepMotorMult                             C10E      11      17       1   .text       
+     RTI_ISR                                   C11F       4       4       1   .text       
+     TIM_ISR                                   C123       4       4       1   .text       
+     SCI_ISR                                   C127       1       1       1   .text       
      _Vector_20                                FFD6       2       2       0   .abs_section_ffd6
      _Vector_15                                FFE0       2       2       0   .abs_section_ffe0
      _Vector_7                                 FFF0       2       2       0   .abs_section_fff0
@@ -1232,12 +1237,15 @@ UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
 main.c.o:
-  delay StepMotor setDir setStep inchar outchar 
+  inchar outchar 
+NOT USED VARIABLES
+main.c.o:
+  flag 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC0DB ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC128 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1248,8 +1256,12 @@ Init                      USES _startupData
 _Startup                  USES __SEG_END_SSTACK Init main 
 initializations           USES _CLKSEL _PLLCTL _SYNR _REFDV _CRGFLG _COPCTL 
                                 _SCIBD _SCICR1 _SCICR2 _DDRAB _PORTAB _DDRAD _DDRM 
-                                _DDRT _PTAD _PTT _PTM 
-main                      USES initializations _PTM flag 
+                                _DDRT _PTAD setStep _PTT setDir _PTM 
+main                      USES initializations stepMotorMult 
+stepMotor                 USES delay _PTM 
+setDir                    USES _PTM delay 
+setStep                   USES _PTAD delay 
+stepMotorMult             USES stepMotor 
 RTI_ISR                   USES _CRGFLG 
 TIM_ISR                   USES _TFLG1 
 _Vector_20                USES SCI_ISR 
@@ -1264,7 +1276,21 @@ DEPENDENCY TREE
  +- main                
  |  | 
  |  +- initializations     
- |       
+ |  |  | 
+ |  |  +- setStep             
+ |  |  |  | 
+ |  |  |  +- delay               
+ |  |  |       
+ |  |  +- setDir              
+ |  |     | 
+ |  |     +- delay                (see above)
+ |  |        
+ |  +- stepMotorMult       
+ |     | 
+ |     +- stepMotor           
+ |        | 
+ |        +- delay                (see above)
+ |           
  +- _Startup            
     | 
     +- Init                
@@ -1289,6 +1315,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 7
-Total size of all blocks to be downloaded: 229
+Number of blocks to be downloaded: 8
+Total size of all blocks to be downloaded: 306
 

@@ -332,7 +332,7 @@ int x = 0;
     
     
    
-    PWMDTY1 = final_ALT; //final_ALT;
+    PWMDTY1 = R_90; //final_ALT;
     PTT_PTT0 = 1;
     
     for (i = 0; i < 19999; i++) {}

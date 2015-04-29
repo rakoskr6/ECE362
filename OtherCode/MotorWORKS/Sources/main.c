@@ -179,10 +179,11 @@ void main(void) {
   	DisableInterrupts
 	initializations(); 		  			 		  		
 	EnableInterrupts;
+	
+	  stepMotorMult(100); 
+  
 
  for(;;) {
-  stepMotorMult(100); 
-  
    } /* loop forever */
    
 }   /* do not leave main */
