@@ -73,6 +73,17 @@ void Conversion(void);
 void get_Data(void);
 void star_Calculate(void);
 
+/* Stepper Motor Utility Functions */
+void stepMotor();
+void delay();
+void bigDelay();
+void setStepperDir(char dir);
+void setStep(char stepSize);
+void stepMotorMult(int steps);
+void stepDegrees(double degrees);
+void stepToDegree(double destination);
+
+
 /* Transmission variable declarations */
 char Received = 0;
 char Receive_Check = 0;
@@ -160,6 +171,10 @@ int ten_min_flag = 0;
 double adjusted_ALT;
 int final_ALT;
 
+// Stepper Motor Status Variables
+char currentStepSize = 0;
+double currentPosition = 0;
+
 /* Special ASCII characters */
 #define CR 0x0D		// ASCII return 
 #define LF 0x0A		// ASCII new line 
@@ -176,6 +191,26 @@ int final_ALT;
 #define CURMOV 0xFE	// LCD cursor move instruction
 #define LINE1 0x80	// LCD line 1 cursor position
 #define LINE2 0xC0	// LCD line 2 cursor position
+
+/* STEPPER MOTOR CONTROL PINS */
+#define MOTOREN PTAD_PTAD7
+#define MOTORMS1 PTAD_PTAD6
+#define MOTORMS2 PTAD_PTAD5
+#define MOTORRST PTAD_PTAD4
+#define MOTORSLP PTT_PTT0
+#define MOTORDIR PTM_PTM1
+#define MOTORSTEP PTM_PTM0
+
+/* STEPPER MOTOR STEPS */
+#define FULLSTEP 0
+#define HALFSTEP 1
+#define QUARTERSTEP 2
+#define EIGHTHSTEP 3
+
+/* STEPPER MOTOR DIRECTION */
+#define CW 0
+#define CCW 1
+#define TOGGLEDIR 2
 
 	 	   		
 /*	 	   		
@@ -237,6 +272,23 @@ void  initializations(void) {
   // Data Direction Register
   DDRAD_DDRAD2 = 1;
   PTAD_PTAD2 = 1;
+  
+  // Initialize Data Direction Registers for Stepper Motor
+DDRAD_DDRAD4 = 1;  // Motor Reset
+DDRAD_DDRAD5 = 1;  // Motor MS2
+DDRAD_DDRAD6 = 1;  // Motor MS1
+DDRAD_DDRAD7 = 1;  // Motor Enable
+DDRM_DDRM1 = 1;    // Motor Dir
+DDRM_DDRM0 = 1;    // Motor Step
+DDRT_DDRT0 = 1;    // Motor Sleep
+
+// Initial Pin Values for Stepper Motor
+MOTOREN = 0;
+setStep(QUARTERSTEP);
+MOTORRST = 1;
+MOTORSLP = 1;
+setStepperDir(CW);
+MOTORSTEP = 0; 
             
 /* Initialize interrupts */
 	      
@@ -257,23 +309,7 @@ void main(void) {
  for(;;) {
   
 /* < start of your main loop > */
-      get_Data(); 
-     // if(!Receive_Complete||new_Data||Junk)
-     // {
-     //   if (new_Data)  
-     //   {
-     //     Lat_Found = 0;
-     //     Long_Found = 0;
-     //     Month_Found = 0;
-     //     Day_Found = 0;
-     //     Month_Found = 0;
-     //     Year_Found = 0;
-     //     Hours_Found = 0;
-     //     Min_Found = 0;
-     //    Star_Found = 0;
-     //   }
-     //    get_Data();
-     // }
+      get_Data();
      
       if(new_Data == 1)
       {
@@ -293,6 +329,7 @@ void main(void) {
       if(star_Calculate_Complete && !azimuth_Complete) 
       {
          // move azimuth with stepper code
+         stepToDegree(AZ);
          azimuth_Complete = 1; // put this in azimuth function
       }
       
@@ -710,6 +747,105 @@ void star_Calculate()
   if(sin(LHA * HRS2DEG * DEG2RAD) * RAD2DEG >= 0.0) AZ = 360.0 - AZ;  
   star_Calculate_Complete = 1;
 }
+
+/*
+***********************************************************************
+STEPPER UTILITY FUNCTIONS
+***********************************************************************
+*/
+
+void delay(){
+  int count;
+  for(count = 0; count < 10000; count++){}
+}
+
+void bigDelay(){
+  int outer; int inner;
+  for(outer = 0; outer < 1000; outer++){
+    for(inner = 0; inner < 500; inner++){
+    }
+  }
+}
+
+void stepMotor(){ // Pulses the step pin
+  delay();
+  MOTORSTEP = 1;
+  delay();
+  MOTORSTEP = 0;
+  delay();
+}
+
+void setStepperDir(char dir){
+  if(dir == CW || dir == CCW) MOTORDIR = dir;
+  else MOTORDIR ^= 1; //Toggles direction if dir invalid
+  delay();
+}
+
+void setStep(char stepSize){
+  currentStepSize = stepSize;
+  if(stepSize == FULLSTEP || stepSize == HALFSTEP){
+    MOTORMS2 = 0;
+  } else{
+    MOTORMS2 = 1;
+  }
+  
+  if(stepSize == FULLSTEP || stepSize == QUARTERSTEP){
+    MOTORMS1 = 0;
+  } else{
+    MOTORMS1 = 1;
+  }
+  delay();
+}
+
+void stepMotorMult(int steps){
+  int count;
+  for(count = 0; count < steps; count++){
+    stepMotor();
+  }
+}
+
+void stepDegrees(double degrees){
+  double degreesPerStep; int steps; 
+  
+  // A full step moves the motor 1.8 degrees
+  if(currentStepSize == FULLSTEP) degreesPerStep = 1.8;
+  else if(currentStepSize == HALFSTEP) degreesPerStep = 0.9;
+  else if(currentStepSize == QUARTERSTEP) degreesPerStep = 0.45;
+  else degreesPerStep = 0.225;
+  steps = degrees/degreesPerStep;
+  stepMotorMult(steps);
+  
+  // Update current Position after rotation
+  if(MOTORDIR == CW) currentPosition += (steps * degreesPerStep);
+  else currentPosition -= (steps * degreesPerStep);
+  
+  // Brings current position into the 0 <= degrees < 360.0 range
+  while(currentPosition >= 360.0 || currentPosition < 0.0){
+    currentPosition = currentPosition >= 360.0 ? currentPosition - 360.0:currentPosition + 360.0;
+  }
+}
+
+void stepToDegree(double destination){
+  /* WARNING: ASSUMES THAT A CLOCKWISE OR COUNTERCLOCKWISE ROTATION THROUGH 0
+   * WILL NEVER OCCUR */
+   
+  // Calculate difference in angle
+  double difference;
+  difference = destination - currentPosition; // Calculates degrees to move
+  
+  // Determine direction to move
+  if(difference > 0.0){
+    setStepperDir(CW);
+  } else{
+    setStepperDir(CCW);
+  }
+  difference = fabs(difference);
+  
+  // Moves required degrees
+  stepDegrees(difference);
+  
+}
+
 /*
 ***********************************************************************                             
 ***********************************************************************
