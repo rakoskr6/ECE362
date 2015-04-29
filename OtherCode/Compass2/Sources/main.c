@@ -84,10 +84,9 @@ void getHeading(double xMag, double yMag);
 
 
 /* Variable declarations */
-double mRes = 2.0 / 32768.0;
 int mx; int my; int mz;
 char check;
-double heading; double headingSum = 0; double avgHeading = 0;
+double heading;
 int i = 0;
    	   			 		  			 		       
 
@@ -156,7 +155,7 @@ void  initializations(void) {
 
 // SPI Initialization
 
-  SPICR1 = 0x1C; //master, no interrupt, idle high, sample at odd edges, off initially
+  SPICR1 = 0x1C; //master, no interrupt, idle high, sample at even edges, off initially
   SPICR2 = 0; //normal, non-bidirection
   SPIBR = 0x10; //Baud rate to 6.0 Megabits/second
   
@@ -164,19 +163,12 @@ void  initializations(void) {
   DDRT = 0x04;
   COMPCS = 1;
   compassWriteByte(CTRL_REG0_XM, 0x00);
-  check = compassReadByte(CTRL_REG0_XM);
   compassWriteByte(CTRL_REG1_XM, 0x00);
-  check = compassReadByte(CTRL_REG1_XM);
   compassWriteByte(CTRL_REG5_XM, 0xE0);
-  check = compassReadByte(CTRL_REG5_XM);
   compassWriteByte(CTRL_REG6_XM, 0x00);
-  check = compassReadByte(CTRL_REG6_XM);
   compassWriteByte(CTRL_REG7_XM, 0x00);
-  check = compassReadByte(CTRL_REG7_XM);
   compassWriteByte(CTRL_REG4_XM, 0x04);
-  check = compassReadByte(CTRL_REG4_XM);
   compassWriteByte(INT_CTRL_REG_M, 0x09);
-  check = compassReadByte(INT_CTRL_REG_M);
   
             
 /* Initialize interrupts */
