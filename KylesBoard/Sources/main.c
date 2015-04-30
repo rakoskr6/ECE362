@@ -95,6 +95,7 @@ void compassWriteByte(char address, char data);
 void compassReadBytes(char address, char * dest, char count);
 void readMag(void);
 void getHeading(double xMag, double yMag);
+double averageHeadings(int count);
 
 
 /* Transmission variable declarations */
@@ -243,6 +244,12 @@ double heading;
 #define CTRL_REG7_XM 0x26
 #define INT_CTRL_REG_M 0x12
 #define OUT_X_L_M 0x08
+#define WHOAMICHECKSUM 0x49
+
+/* GPS PINS */
+#define GPSEN PTT_PTT5
+#define GPSTX PTT_PTT6
+#define GPSRX PTT_PTT7
 
 	 	   		
 /*	 	   		
@@ -283,7 +290,7 @@ void  initializations(void) {
     - Initially disable TIM Ch 7 interrupts	 	   			 		  			 		  		
 */
 
-  TSCR1 = 0x80;
+  TSCR1 = 0x00;
   TIOS = 0x80;
   TSCR2 = 0x0C; //prescale is 16
   TC7 = 15000;
@@ -291,7 +298,7 @@ void  initializations(void) {
   
   /* Intialize the PWM to drive the servo */
   MODRR = 0x02; //PT1 used as output
-  PWME = 0x02;  //enable Ch 01
+  PWME = 0x00;  //off initially
   PWMPOL = 0xFF; //Active low polarity
   PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
@@ -304,7 +311,7 @@ void  initializations(void) {
   
   // Data Direction Register and set for XBEE Reset Pin
   DDRAD_DDRAD2 = 1;
-  PTAD_PTAD2 = 1;
+  PTAD_PTAD2 = 0; //XBEE off initially
   
   // Initialize Data Direction Registers for Stepper Motor
   DDRAD_DDRAD4 = 1;  // Motor Reset
@@ -328,6 +335,12 @@ void  initializations(void) {
   SPICR2 = 0; //normal, non-bidirection
   SPIBR = 0x10; //Baud rate to 6.0 Megabits/second
   
+  // GPS Initialization
+  DDRT_DDRT5 = 1;
+  DDRT_DDRT6 = 1;
+  DDRT_DDRT7 = 0;
+  GPSEN = 0;
+  
   // Compass Initialization
   DDRT_DDRT2 = 1;
   COMPCS = 1;
@@ -337,7 +350,21 @@ void  initializations(void) {
   compassWriteByte(CTRL_REG6_XM, 0x00);
   compassWriteByte(CTRL_REG7_XM, 0x00);
   compassWriteByte(CTRL_REG4_XM, 0x04);
-  compassWriteByte(INT_CTRL_REG_M, 0x09); 
+  compassWriteByte(INT_CTRL_REG_M, 0x09);
+  
+  // Get initial compass heading
+  if(compassReadByte(WHO_AM_I_XM)== WHOAMICHECKSUM){
+    bigDelay();
+    currentPosition = averageHeadings(1000);
+  
+    // Move stepper to position
+    stepToDegree(0);
+  }
+  
+  // Turn things back on
+  PWME = 0x02; //PWM
+  PTAD_PTAD2 = 1; //XBEE
+  TSCR1 = 0x80; //TIM
             
 /* Initialize interrupts */
 	      
@@ -847,6 +874,12 @@ void setStepperDir(char dir){
 }
 
 void setStep(char stepSize){
+  /*        MS1      MS2
+  FULL       0        0
+  HALF       1        0
+  QUARTER    0        1
+  EIGHTH     1        1
+  */
   currentStepSize = stepSize;
   if(stepSize == FULLSTEP || stepSize == HALFSTEP){
     MOTORMS2 = 0;
@@ -997,6 +1030,21 @@ void getHeading(double xMag, double yMag){
     if(xMag < 0) heading = 180;
     else heading = 0;
   }
+  while(heading >= 360 || heading < 0){
+    if(heading >= 360) heading -= 360;
+    else heading += 360;
+  }
+}
+
+double averageHeadings(int count){
+  int index;
+  double headingSum = 0;
+  for(index = 0; index < count; index++){
+    readMag();
+    getHeading((double) mx, (double) my);
+    headingSum += heading;
+  }
+  return headingSum / (double) count;
 }
 
 /*
