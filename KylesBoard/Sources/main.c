@@ -1,3 +1,4 @@
+///#define NORECEIVE
 /*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
@@ -94,6 +95,7 @@ void compassWriteByte(char address, char data);
 void compassReadBytes(char address, char * dest, char count);
 void readMag(void);
 void getHeading(double xMag, double yMag);
+double averageHeadings(int count);
 
 
 /* Transmission variable declarations */
@@ -162,8 +164,8 @@ double ALT;
 double AZ;
   
 int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-double RA_hours[8] = {5.92, 6.40, 3.79, 2.53, 5.24, 6.75, 19.08, 18.62};
-double DEC_degrees[8] = {7.41, -52.70, 24.12, 89.26, -8.20, -16.72, 63.87, 38.78};
+double RA_hours[8] = {5.92, 6.40, 3.79, 2.53, 5.24, 6.75, 2.51, 18.62};
+double DEC_degrees[8] = {7.41, -52.70, 24.12, 89.26, -8.20, -16.72, 14.83, 38.78};
 
 // Main Program Flags
 int new_Data = 0;
@@ -242,6 +244,12 @@ double heading;
 #define CTRL_REG7_XM 0x26
 #define INT_CTRL_REG_M 0x12
 #define OUT_X_L_M 0x08
+#define WHOAMICHECKSUM 0x49
+
+/* GPS PINS */
+#define GPSEN PTT_PTT5
+#define GPSTX PTT_PTT6
+#define GPSRX PTT_PTT7
 
 	 	   		
 /*	 	   		
@@ -282,14 +290,15 @@ void  initializations(void) {
     - Initially disable TIM Ch 7 interrupts	 	   			 		  			 		  		
 */
 
-  TSCR1 = 0x80;
+  TSCR1 = 0x00;
   TIOS = 0x80;
   TSCR2 = 0x0C; //prescale is 16
   TC7 = 15000;
   TIE_C7I = 0;
   
+  /* Intialize the PWM to drive the servo */
   MODRR = 0x02; //PT1 used as output
-  PWME = 0x02;  //enable Ch 01
+  PWME = 0x00;  //off initially
   PWMPOL = 0xFF; //Active low polarity
   PWMCTL = 0x08; // 8-bit
   PWMCAE = 0; // left-aligned
@@ -300,9 +309,9 @@ void  initializations(void) {
   PWMPRCLK = 0x03; //Clock A =  3 MHz
   DDRT_DDRT0 = 1;
   
-  // Data Direction Register
+  // Data Direction Register and set for XBEE Reset Pin
   DDRAD_DDRAD2 = 1;
-  PTAD_PTAD2 = 1;
+  PTAD_PTAD2 = 0; //XBEE off initially
   
   // Initialize Data Direction Registers for Stepper Motor
   DDRAD_DDRAD4 = 1;  // Motor Reset
@@ -317,7 +326,7 @@ void  initializations(void) {
   MOTOREN = 0;
   setStep(QUARTERSTEP);
   MOTORRST = 1;
-  MOTORSLP = 1;
+  MOTORSLP = 0; //Motor is originally asleep
   setStepperDir(CW);
   MOTORSTEP = 0;
 
@@ -325,6 +334,12 @@ void  initializations(void) {
   SPICR1 = 0x1C; //master, no interrupt, idle high, sample at even edges, off initially
   SPICR2 = 0; //normal, non-bidirection
   SPIBR = 0x10; //Baud rate to 6.0 Megabits/second
+  
+  // GPS Initialization
+  DDRT_DDRT5 = 1;
+  DDRT_DDRT6 = 1;
+  DDRT_DDRT7 = 0;
+  GPSEN = 0;
   
   // Compass Initialization
   DDRT_DDRT2 = 1;
@@ -335,7 +350,27 @@ void  initializations(void) {
   compassWriteByte(CTRL_REG6_XM, 0x00);
   compassWriteByte(CTRL_REG7_XM, 0x00);
   compassWriteByte(CTRL_REG4_XM, 0x04);
-  compassWriteByte(INT_CTRL_REG_M, 0x09); 
+  compassWriteByte(INT_CTRL_REG_M, 0x09);
+  
+  // Get initial compass heading
+  if(compassReadByte(WHO_AM_I_XM)== WHOAMICHECKSUM){
+    bigDelay();
+    bigDelay();
+    bigDelay();
+    bigDelay();
+    currentPosition = averageHeadings(1000);
+    bigDelay();
+    bigDelay();
+    bigDelay();
+  
+    // Move stepper to position
+    stepToDegree(0);
+  }
+  
+  // Turn things back on
+  PWME = 0x02; //PWM
+  PTAD_PTAD2 = 1; //XBEE
+  TSCR1 = 0x80; //TIM
             
 /* Initialize interrupts */
 	      
@@ -356,7 +391,16 @@ void main(void) {
  for(;;) {
   
 /* < start of your main loop > */
+      #ifndef NORECEIVE
       get_Data();
+      #endif
+      
+      #ifdef NORECEIVE
+      new_Data = 0;
+      star_Calculate_Complete = 1;
+      azimuth_Complete = 0;
+      altitude_Complete = 0;
+      #endif
      
       if(new_Data == 1)
       {
@@ -364,6 +408,7 @@ void main(void) {
          star_Calculate_Complete = 0;
          azimuth_Complete = 0;
          altitude_Complete = 0;
+         stepToDegree(0);
       }
       
       if(!star_Calculate_Complete&&Receive_Complete)
@@ -372,6 +417,11 @@ void main(void) {
          //Change PWM Duty Cycle Here (I think...)
          TIE_C7I = 1;
       }
+              
+      #ifdef NORECEIVE        
+      ALT = 40.87;
+      AZ = 200;
+      #endif
       
       if(star_Calculate_Complete && !azimuth_Complete) 
       {
@@ -815,6 +865,7 @@ void bigDelay(void){
 }
 
 void stepMotor(void){ // Pulses the step pin
+  /* WARNING: Assumes the motor is already awake. */
   delay();
   MOTORSTEP = 1;
   delay();
@@ -829,6 +880,12 @@ void setStepperDir(char dir){
 }
 
 void setStep(char stepSize){
+  /*        MS1      MS2
+  FULL       0        0
+  HALF       1        0
+  QUARTER    0        1
+  EIGHTH     1        1
+  */
   currentStepSize = stepSize;
   if(stepSize == FULLSTEP || stepSize == HALFSTEP){
     MOTORMS2 = 0;
@@ -846,9 +903,11 @@ void setStep(char stepSize){
 
 void stepMotorMult(int steps){
   int count;
+  MOTORSLP = 1; // Wakes up the motor
   for(count = 0; count < steps; count++){
     stepMotor();
   }
+  MOTORSLP = 0; //Puts the motor back to sleep
 }
 
 void stepDegrees(double degrees){
@@ -887,6 +946,10 @@ void stepToDegree(double destination){
     setStepperDir(CCW);
   }
   difference = fabs(difference);
+  if(difference > 180.0){
+    difference = 360.0 - difference;
+    setStepperDir(TOGGLEDIR);
+  }
   
   // Moves required degrees
   stepDegrees(difference);
@@ -973,6 +1036,22 @@ void getHeading(double xMag, double yMag){
     if(xMag < 0) heading = 180;
     else heading = 0;
   }
+  heading += 90;
+  while(heading >= 360 || heading < 0){
+    if(heading >= 360) heading -= 360;
+    else heading += 360;
+  }
+}
+
+double averageHeadings(int count){
+  int index;
+  double headingSum = 0;
+  for(index = 0; index < count; index++){
+    readMag();
+    getHeading((double) mx, (double) my);
+    headingSum += heading;
+  }
+  return headingSum / (double) count;
 }
 
 /*
