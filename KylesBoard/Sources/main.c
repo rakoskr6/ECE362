@@ -1,4 +1,4 @@
-//#define NORECEIVE
+#define NORECEIVE
 /*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
@@ -355,7 +355,13 @@ void  initializations(void) {
   // Get initial compass heading
   if(compassReadByte(WHO_AM_I_XM)== WHOAMICHECKSUM){
     bigDelay();
+    bigDelay();
+    bigDelay();
+    bigDelay();
     currentPosition = averageHeadings(1000);
+    bigDelay();
+    bigDelay();
+    bigDelay();
   
     // Move stepper to position
     stepToDegree(0);
@@ -1030,6 +1036,7 @@ void getHeading(double xMag, double yMag){
     if(xMag < 0) heading = 180;
     else heading = 0;
   }
+  heading += 90;
   while(heading >= 360 || heading < 0){
     if(heading >= 360) heading -= 360;
     else heading += 360;
