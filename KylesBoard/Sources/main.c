@@ -1,4 +1,4 @@
-#define NORECEIVE
+///#define NORECEIVE
 /*
 ************************************************************************
  ECE 362 - Mini-Project C Source File - Spring 2015
