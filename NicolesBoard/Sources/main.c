@@ -40,15 +40,15 @@
  List of project-specific success criteria (functionality that will be
  demonstrated):
 
- 1.
+ 1. The Remote Board will accept input via keypad
 
- 2.
+ 2. The Remote Board will drive a user interface via LCD screen
 
- 3.
+ 3. The Remote Board will store data such that the latitude, longitude, date, time, and star selection are known
 
- 4.
+ 4. The Remote Board will not allow users to input impossible latitudes, longitudes, dates, or times
 
- 5.
+ 5. The Remote Board will successfully transmit information to the motor control board
 
 ***********************************************************************
 
