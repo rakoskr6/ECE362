@@ -4,19 +4,21 @@
  ECE 362 - Mini-Project C Source File - Spring 2015
 ***********************************************************************
 	 	   			 		  			 		  		
- Team ID: < ? >
+ Team ID: 11
 
- Project Name: < ? >
+ Project Name: Star Treker
 
  Team Members:
 
-   - Team/Doc Leader: < ? >      Signature: ______________________
+   - Team/Doc Leader: Allison Gruninger      Signature: Allison Gruninger
    
-   - Software Leader: < ? >      Signature: ______________________
+   - Software Leader: Alex Marcellus      Signature: Alexander Marcellus
 
-   - Interface Leader: < ? >     Signature: ______________________
+   - Interface Leader: Kyle Rakos     Signature: Kyle Rakos
+   
+   - Interface Leader: Nicole LaGue   Signature: Nicole LaGue
 
-   - Peripheral Leader: < ? >    Signature: ______________________
+   - Peripheral Leader: Christopher Chow    Signature: Christopher Chow
 
 
  Academic Honesty Statement:  In signing above, we hereby certify that we 
@@ -27,7 +29,10 @@
 
 ***********************************************************************
 
- The objective of this Mini-Project is to .... < ? >
+ The objective of this Mini-Project source file is to drive motor(s) to orient a pan and tilt bracket towards
+ a star given latitude, longitude, date, time, right ascension, and left declination for the target star,
+ The motors should update every 10 minutes to maintain
+ orientation towards the star until a new star is chosen or other inputs are somehow changed.
 
 
 ***********************************************************************
@@ -35,27 +40,29 @@
  List of project-specific success criteria (functionality that will be
  demonstrated):
 
- 1.
+ 1. Motor Board will successfully receive wireless input from a remote location
 
- 2.
+ 2. Motor Board will successfully calculate altitude and azimuth from given inputs
 
- 3.
+ 3. Motor Board will successfully orient pan and tilt bracket towards star
 
- 4.
+ 4. Motor Board will successfully keep track of time
 
- 5.
+ 5. Motor Board will successfully reorient whenever an input or multiple inputs change
 
 ***********************************************************************
 
-  Date code started: < ? >
+  Date code started: 4/25/2015
 
   Update history (add an entry every time a significant change is made):
 
-  Date: < ? >  Name: < ? >   Update: < ? >
+  Date: 4/25/2015  Name: Allison Gruninger   Update: Added getting data Star Determination Algorithm
 
-  Date: < ? >  Name: < ? >   Update: < ? >
+  Date: 4/27/2015  Name: Alex Marcellus   Update: Added Compass Code
+  
+  Date: 4/28/2015  Name: Allison Gruninger   Update: Added Code to drive servo 
 
-  Date: < ? >  Name: < ? >   Update: < ? >
+  Date: 4/29/2015  Name: Alex Marcellus   Update: Added stepper code and integrated existing code
 
 
 ***********************************************************************
