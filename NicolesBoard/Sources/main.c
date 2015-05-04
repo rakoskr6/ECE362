@@ -64,6 +64,11 @@
   Date: 4/29   Name: Christopher Chow   Update: more Error Trapping
 
 ***********************************************************************
+
+***********************************************************************
+REFERENCES FOR CODE
+Arduino, "Philips PCD8544 (Nokia 3310) driver." playground.arduino.cc. [Online]. Available: http://playground.arduino.cc/Code/PCD8544. [Accessed 25 April 2015].
+***********************************************************************
 */
 
 #include <hidef.h>      /* common defines and macros */
