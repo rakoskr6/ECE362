@@ -9,10 +9,10 @@
 
  Team Members:
 
-   - Team/Doc Leader: < ? >      Signature: Allison Gruninger________
-   - Software Leader: < ? >      Signature: Alexander Marcellus______
-   - Interface Leader: < ? >     Signature: Kyle Rakos / Nicole laGue
-   - Peripheral Leader: < ? >    Signature: Christopher Chow_________
+   - Team/Doc Leader: Allison Gruninger      Signature: Allison Gruninger
+   - Software Leader: Alex Marcellus      Signature: Alexander Marcellus
+   - Interface Leader: Kyle Rakos / Nicole LaGue     Signature: Kyle Rakos / Nicole LaGue
+   - Peripheral Leader: Christopher Chow    Signature: Christopher Chow
 
  Academic Honesty Statement:  In signing above, we hereby certify that we 
  are the individuals who created this HC(S)12 source file and that we have
